@@ -3,7 +3,7 @@
 
 cp -r ~/.config/{dunst,i3,nvim,qutebrowser,ranger,wal,compton.conf} ~/dotfiles/.config/
 cp -r ~/.Scripts ~/dotfiles/
-cp -r ~/{sl,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} ~/dotfiles/
+cp -r ~/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} ~/dotfiles/
 cd ~/dotfiles/
 git add .
 git commit -a -m "yet another"
