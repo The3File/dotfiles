@@ -10,7 +10,7 @@ main() {
 	LC_ALL=C
 	LANG=C
 	printf "\e[2J\e[H\e[s"
-	trap 'completed && tput cvvis && exit' EXIT
+	trap 'tput cvvis && completed && exit' EXIT
 	trap 'clean' SIGWINCH
 	clean && prompt && stty -echo && tput civis && start_work
 }
@@ -75,7 +75,7 @@ start_notwork() {
 work_done() {
 	((count+=1))
 	printf "\e[10;17H\e[1;39m - Work completed!"
-	play ~/.Scripts/.pomodoro/bowl.wav 2>/dev/null &
+	play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
 	if [ $antal -gt $count ];then
 		printf "\n\e[1;33mPress ENTER to start break"
 		read 2>/dev/null
@@ -89,7 +89,7 @@ work_done() {
 
 notwork_done() {
 	printf "\e[10;18H\e[1;39m - Break completed!"
-	play ~/.Scripts/.pomodoro/bowl.wav 2>/dev/null &
+	play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
 	printf "\n\e[1;35mPress ENTER to start work"
 	read 2>/dev/null
 	printf "\e[1A"
@@ -99,8 +99,9 @@ notwork_done() {
 
 completed() {
 	[[ $((count*work/60)) > 0 ]] && hour="%2d hours and" || hour=""
-	printf "\e[10;0H\e[J\e[1;33mCompleted work total:$hour%2d min."\
-		"$(((count*work/60)))" "$(((count*work)%60))"
+	printf "\e[10;0H\e[J\e[1;33mCompleted work total:$hour%2d min. \n\e[1;31mPress ENTER to exit."\
+		"$((count*work/60))" "$(((count*work)%60))"
+	read &>/dev/null;clear -x
 }
 
 main
