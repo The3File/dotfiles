@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prokrastimer
+# Prokrastimer, a simple terminal pomodoro timer
 main() {
 	LC_ALL=C
 	LANG=C

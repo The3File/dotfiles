@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# A try at something
 
 stty -echo
 elaps="0"
@@ -10,9 +11,9 @@ while ((elaps<uI))
 do
 	((elaps+=1))
 	((total=elaps*size/uI))
-	printf -v prog "%$((total))s"
+	printf -v progr "%$((total))s"
 	printf -v total "%$((size-total))s"
-	printf '\e['$rows';0H%s\r' "[${prog// /\#}${total}]"
+	printf '\e['$rows';0H%s\r' "[${progr// /\#}${total}]"
 		sleep 1
 done
 printf "\nTest complete"
