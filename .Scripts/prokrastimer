@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
-# Prokrastimer, a simple terminal pomodoro timer
+#
+# Prokrastimer
+# A simple terminal pomodoro timer
+# Couldn't find one online, so i made this
+# Might be a bit overenginered, and badly written,
+# but i keep learning.. lol.
+# Oh, and credit to the bash bible on github.
+
 main() {
 	LC_ALL=C
 	LANG=C
@@ -22,9 +29,9 @@ bar() {
 }
 
 prompt() {
-	printf "\e[10;0H\e[1;37mWork lenght in min. (Default is 25): \e[1;35m\e[s"; read work
-	printf "\e[1;37mLength of breaks in min. (Default is 5): \e[1;33m\e[s"; read notwork
-	printf "\e[1;37mNumber of sessions (Default is 2): \e[s"; read antal
+	printf "\e[10;0H\e[1;37mLenght of work in minuttes (25): \e[1;35m\e[s"; read work
+	printf "\e[1;37mLength of breaks in min. (5): \e[1;33m\e[s"; read notwork
+	printf "\e[1;37mNumber of sessions (2): \e[s"; read antal
 	printf "\e[1;37mTimer started! (Stop with Ctrl+c)"
 	[[ -z "$work" ]] && work=25
 	[[ -z "$notwork" ]] && notwork=5
