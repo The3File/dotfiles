@@ -1,0 +1,237 @@
+########################   the3config  ############################
+##		Startup			##
+exec 		feh --bg-fill ~/.config/wall.png
+#exec 		--no-startup-id nm-applet
+exec_always 	compton -b
+exec_always 	setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape
+#exec_always 	xrdb ~/.Xresources
+exec		dunst
+exec		xmodmap ~/.Xmodmap
+exec 		--no-startup-id unclutter -noevents -grab -visible
+exec		wal -Rn
+
+bindsym $mod+a exec killall dunst && dunst && notify-send "Dette er en test notifikation" -a Test
+
+##		General			##
+set $mod Mod4
+set $browser qutebrowser
+set $browser2 chromium
+set $term st
+floating_modifier $mod
+workspace_auto_back_and_forth yes
+
+##	Theme
+
+font pango:Terminus 9
+#new_window none
+
+##	Gaps
+gaps inner 9
+gaps outer 3
+bindsym $mod+Shift+e gaps inner current set 0; gaps outer current set 0
+bindsym $mod+e gaps inner current set 9; gaps outer current set 3
+#smart_gaps on
+
+##	Borders	
+new_window pixel 3
+#smart_borders on
+
+
+set_from_resource $color0	color0
+set_from_resource $color1	color1
+set_from_resource $color2	color2
+set_from_resource $color3	color3
+set_from_resource $color4	color4
+set_from_resource $color5	color5
+set_from_resource $color6	color6
+set_from_resource $color7	color7
+set_from_resource $color8	color8
+set_from_resource $color9	color9
+set_from_resource $color10	color10
+set_from_resource $color11	color11
+set_from_resource $color12	color12
+set_from_resource $color13	color13
+set_from_resource $color14	color14
+set_from_resource $color15	color15
+set $backgr	#000000
+set $text	#FFFFFF
+set $highl	#00FF00
+set $subtl	#777777
+set $black	#000000
+set $urgnt	#FF0000
+set $orange	#d95030
+set $green	#00FF00
+set $blue	#200399
+set $purp	#990590
+set $mdark	#55555555
+
+
+# class                 border  backgr. text    indic.  child_border
+client.focused          #001100 $color1	#FFFFFF $color1
+client.focused_inactive $backgr $color0e9 #999999 $color0e9
+client.unfocused        $backgr $color0e9 #16A085 $color0e9
+client.urgent           #FF0000 $color0e9 #16A085 $color0e9
+client.placeholder      $backgr $color0e9 #ffffff $color0e9 #0c0c0c
+
+client.background       #2B2C2B
+
+## 	Bar
+bar {
+		font pango:Inconsolata 10
+		position bottom
+		status_command i3blocks -c ~/.config/i3/i3blocks.conf 
+		i3bar_command i3bar -t
+		height 25
+		#modifier none
+	  	separator_symbol " " 
+
+	colors {
+       		 background $color0e9
+       		 statusline $text
+       		 separator  #ffffff
+
+				#border		#backgr.	#text
+	focused_workspace  	$color3 	$color3 	$color0
+	active_workspace   	$color0e9	$color0e9 	$subtl
+	inactive_workspace 	$color0e9 	$color0e9 	$subtl
+	urgent_workspace   	$color0e9 	$color0e9 	$subtl
+    }
+}
+bindsym $mod+b bar mode toggle
+
+## 	dropdowns
+
+# math
+for_window [instance="math"] floating enable
+for_window [instance="math"] resize set 800 300
+for_window [instance="math"] move scratchpad
+for_window [instance="math"] border pixel 4
+exec $term -n math -e qalc
+
+# terminal
+for_window [instance="term"] floating enable
+for_window [instance="term"] resize set 800 400
+for_window [instance="term"] border pixel 4
+for_window [instance="term"] move position 20 20 
+# math
+bindsym 	$mod+Shift+m 	exec $term -n math -e qalc
+bindsym 	$mod+m		[instance="math"] scratchpad show; [instance="math"] move position center
+
+# terminal
+bindsym		$mod+Shift+p	[instance="term"] move scratchpad
+bindsym		$mod+p 		[instance="term"] scratchpad show; [instance="term"] move position center
+
+
+## 	App Bindings
+
+bindsym		$mod+w 			exec $browser
+bindsym		$mod+Shift+w 		exec $browser2
+
+bindsym		$mod+Shift+y 		exec $term -e mpsyt
+
+bindsym		$mod+r 			exec $term -e ranger
+
+
+bindsym 	$mod+Return 		exec $term
+bindsym 	$mod+Shift+Return 	exec $term -n term
+
+#bindsym		$mod+b		exec electron /usr/lib/android-messages-desktop/resources/app.asar|g
+
+bindsym 	$mod+d			exec rundmenu
+
+
+##	Other Bindings
+
+bindsym		$mod+g			gaps outer all plus 1; gaps inner current plus 3
+bindsym		$mod+Shift+g		gaps outer all minus 1; gaps inner current minus 3
+
+bindsym 	$mod+Shift+c		reload
+bindsym 	$mod+Shift+r		restart
+
+bindsym		$mod+Escape 		exec byebye
+
+bindsym 	$mod+q			kill
+bindsym 	$mod+x			exec i3lock --color '#000000'
+
+bindsym 	$mod+h			focus left
+bindsym		$mod+Shift+h   		move left
+
+bindsym 	$mod+j 	       		focus down
+bindsym		$mod+Shift+j   		move down
+
+bindsym 	$mod+k 	       		focus up
+bindsym		$mod+Shift+k   		move up
+
+bindsym 	$mod+l	       		focus right
+bindsym		$mod+Shift+l   		move right
+
+bindsym		$mod+y			resize shrink width 5 px or 5 ppt
+bindsym		$mod+u			resize grow height 5 px or 5 ppt
+
+bindsym		$mod+i			resize shrink height 5 px or 5 ppt
+bindsym 	$mod+o			resize grow width 5 px or 5 ppt
+
+bindsym		$mod+t			split toggle
+bindsym		$mod+f 	       		fullscreen toggle
+
+bindsym		$mod+space 		focus mode_toggle
+bindsym		$mod+Shift+space	floating toggle
+
+
+##	Workspaces
+set $ws1	workspace 1 
+set $ws2	workspace 2 
+set $ws3	workspace 3 
+set $ws4	workspace 4 
+set $ws5	workspace 5 
+set $ws6	workspace 6 
+set $ws7	workspace 7 
+set $ws8	workspace 8 
+set $ws9	workspace 9 
+set $ws10	workspace 10  
+
+
+# switch to workspace
+bindsym		$mod+1	$ws1
+bindsym		$mod+2	$ws2
+bindsym		$mod+3	$ws3
+bindsym		$mod+4	$ws4
+bindsym		$mod+5	$ws5
+bindsym		$mod+6	$ws6
+bindsym		$mod+7	$ws7
+bindsym		$mod+8	$ws8
+bindsym		$mod+9	$ws9
+bindsym		$mod+0	$ws10
+
+# move focused container to workspace
+bindsym		$mod+Shift+1 move container to $ws1
+bindsym		$mod+Shift+2 move container to $ws2
+bindsym		$mod+Shift+3 move container to $ws3
+bindsym		$mod+Shift+4 move container to $ws4
+bindsym		$mod+Shift+5 move container to $ws5
+bindsym		$mod+Shift+6 move container to $ws6
+bindsym		$mod+Shift+7 move container to $ws7
+bindsym		$mod+Shift+8 move container to $ws8
+bindsym		$mod+Shift+9 move container to $ws9
+bindsym		$mod+Shift+0 move container to $ws10
+
+##	Laptop
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id "pactl set-sink-volume 0 +5% #increase sound", exec "pkill -SIGRTMIN+10 i3blocks"
+bindsym XF86AudioLowerVolume exec --no-startup-id "pactl set-sink-volume 0 -5% #decrease sound", exec "pkill -SIGRTMIN+10 i3blocks"
+bindsym XF86AudioMute exec --no-startup-id "pactl set-sink-mute 0 toggle # mute sound", exec "pkill -SIGRTMIN+10 i3blocks"
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+# Touchpad controls
+bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play
+bindsym XF86AudioPause exec playerctl pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+#bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
+##########################################
+#:set ft=i3config

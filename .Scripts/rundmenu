@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+dmenu_run -nf white -nb black -h 25 -b
+

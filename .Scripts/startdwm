@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape &
+xmodmap $HOME/Xmodmap &
+xrdb $HOME/.Xresources &
+dunst &
+
+while true; do
+	xsetroot -name "her er jeg"
+done &
+
+while true; do 
+	$HOME/sl/dwm/dwm >/dev/null 2>&1
+done

@@ -1,0 +1,31 @@
+alias vim="nvim"
+alias zrc="nvim ~/.zshrc"
+alias za="nvim ~/.zsh_aliases"
+
+alias rrc="nvim ~/.config/ranger/rc.conf"
+alias vrc="nvim ~/.config/nvim/init.vim"
+
+alias xrc="nvim ~/.Xresources"
+alias xr="xrdb ~/.Xresources"
+
+alias con="nvim ~/.config/i3/config"
+alias brc="nvim ~/.config/i3/i3blocks.conf"
+
+alias c="clear -x"
+alias nf="clear -x && echo -e && neofetch"
+alias y="yaourt"
+alias p="sudo pacman"
+
+alias la="ls -a"
+alias lla="ls -la"
+
+alias week="gcalcli calw 1"
+alias day="gcalcli agenda"
+
+alias fastboot="sudo fastboot"
+alias fr="fastboot reboot"
+alias ff="fastboot flash"
+alias ap="adb push"
+alias rr="adb reboot recovery"
+
+alias capstone="setsid wine .wine/drive_c/Program\ Files\ \(x86\)/PASCO\ scietific/Capstone/Capstone.exe"

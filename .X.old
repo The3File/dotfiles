@@ -1,0 +1,38 @@
+*foreground: #00cc00
+*foreground_bold: #a8a19f
+*cursor: #a8a19f
+*background:       #000000
+!!*background: rgba(0, 0, 0, .7)
+
+!! black
+*color0: #000000
+*color15: #766e6b
+!! red
+*color11: #f22c40
+*color9: #f22c40
+!! green
+*color12: #09c812
+*color6: #5ab738
+!! yellow
+*color2: #c5a11a
+*color3: #d5911a
+!! blue
+*color4: #4400aa
+*color13: #30c921
+!! magenta
+*color1: #9999ff
+*color14: #6666ea
+!! cyan
+*color4: #00ad9c
+*color10: #00ad9c
+!! white
+*color7: #a8a19f
+*color8: #f1efee
+
+URxvt.intensityStyles:	false
+URxvt.background:       [70]#000000
+URxvt.depth:		32
+URxvt.font: 		xft:monospace:size=10,xft:Inconsolata\ for\ Powerline:pixelsize=12
+URxvt.scrollBar:	false
+URxvt.cursorColor:	white
+URxvt.letterSpace: 	-1

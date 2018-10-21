@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+stty -echo
+elaps="0"
+uI="$1"
+size="(($(tput cols)-2))"
+rows="$(tput lines)"
+
+while ((elaps<uI))
+do
+	((elaps+=1))
+	((total=elaps*size/uI))
+	printf -v prog "%$((total))s"
+	printf -v total "%$((size-total))s"
+	printf '\e['$rows';0H%s\r' "[${prog// /\#}${total}]"
+		sleep 1
+done
+printf "\nTest complete"
+read &>/dev/null

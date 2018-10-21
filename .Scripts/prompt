@@ -1,0 +1,4 @@
+#!/bin/bash
+
+[ $( echo -e "no\nyes" | rundmenu -i -p "$1?" ) == "yes" ] && $2
+exit 0

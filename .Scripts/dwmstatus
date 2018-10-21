@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+while true; do
+percent="$(acpi -b | sed 's/,//g; s/://g; s/%//g' | awk '{print $4}')"
+state="$(acpi -b | sed 's/,//g; s/://g; s/%//g' | awk '{print $3}')"
+
+if [[ $state = Discharging ]];then
+        state="dis:"
+elif [[ $state = Charging ]];then
+        state="chr:"
+fi
+        echo "$state $percent%"
+done
+exit 0

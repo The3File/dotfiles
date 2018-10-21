@@ -1,0 +1,32 @@
+#!/bin/bash
+### Written by Filip Ringdal
+
+# Formatting
+percent="$(acpi -b | sed 's/,//g; s/://g; s/%//g' | awk '{print $4}')"
+state="$(acpi -b | sed 's/,//g; s/://g; s/%//g' | awk '{print $3}')"
+
+# Dynamic label icons
+if [[ $state = Discharging ]];then
+	if [[ $percent -lt 16 ]];then
+		state=""
+	elif [[ $percent -lt 35 ]];then
+		state=""
+	elif [[ $percent -lt 65 ]];then
+		state=""
+	elif [[ $percent -lt 81 ]];then
+		state=""
+	elif [[ $percent -gt 80 ]];then
+		state=""
+	fi
+elif [[ $state = Charging ]];then
+	state=""
+fi
+
+# Setting color for low battery
+if [[ $percent -lt "16" ]];then
+	echo -e "$state <span color='red' > $percent%</span>\n"
+else
+	echo "$state $percent%"
+fi
+
+exit 0

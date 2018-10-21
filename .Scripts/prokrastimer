@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+# Prokrastimer
+main() {
+	LC_ALL=C
+	LANG=C
+	printf "\e[2J\e[H\e[s"
+	trap 'completed && tput cvvis && exit' EXIT
+	trap 'clean' SIGWINCH
+	clean && prompt && stty -echo && tput civis && start_work
+}
+
+clean() { 
+	printf "\e[8;0\e[1J\e[0;0H"
+	figlet -f big prokrastimer | awk '{ printf "\033[3%dm%s\034\n", 6, $0;}'
+	printf "\e[u"
+}
+	
+bar() {
+	printf -v prog "%$(($2))s"
+	printf -v total "%$(($1-$2))s"
+	printf '\e[J\e['$3';0H%s\r' "[${prog// /\#}${total}]"
+}
+
+prompt() {
+	printf "\e[10;0H\e[1;37mWork lenght in min. (Default is 25): \e[1;35m\e[s"; read work
+	printf "\e[1;37mLength of breaks in min. (Default is 5): \e[1;33m\e[s"; read notwork
+	printf "\e[1;37mNumber of sessions (Default is 2): \e[s"; read antal
+	printf "\e[1;37mTimer started! (Stop with Ctrl+c)"
+	[[ -z "$work" ]] && work=25
+	[[ -z "$notwork" ]] && notwork=5
+	[[ -z "$antal" ]] && antal=2
+	count="0"
+}
+
+start_work() {
+	sec="2"
+	start_time="$SECONDS"
+	elaps="0"
+	while [ $sec -gt 1 ]; do
+		((elaps+=1))
+		((size=$(tput cols)-2))
+		((total=elaps*size/work/60))
+		((rows=$(tput lines)))
+		sec="$((work*60-(SECONDS-start_time)))"
+		printf "\e[10;0H\e[1;35mWork left: %02d:%02d" "$((sec/60))" "$((sec%60))"
+		bar "$size" "$total" "$rows"
+		sleep 1
+	done
+	work_done
+}
+
+start_notwork() {
+	sec="2"
+	start_time="$SECONDS"
+	elaps="0"
+	while [ $sec -gt 1 ]; do
+		((size=$(tput cols)-2))
+		((rows=$(tput lines)))
+		sec="$((notwork*60-(SECONDS-start_time)))"
+		((elaps+=1))
+		((total=elaps*size/notwork/60))
+		printf "\e[10;0H\e[1;33mBreak left: %02d:%02d" "$((sec/60))" "$((sec%60))"
+		bar "$size" "$total" "$rows"
+		sleep 1
+	done
+	notwork_done
+}
+
+work_done() {
+	((count+=1))
+	printf "\e[10;17H\e[1;39m - Work completed!"
+	play ~/.Scripts/.pomodoro/bowl.wav 2>/dev/null &
+	if [ $antal -gt $count ];then
+		printf "\n\e[1;33mPress ENTER to start break"
+		read 2>/dev/null
+		printf "\e[1A"
+		printf "\r\e[J"
+		start_notwork
+	else
+		exit 0
+	fi
+}
+
+notwork_done() {
+	printf "\e[10;18H\e[1;39m - Break completed!"
+	play ~/.Scripts/.pomodoro/bowl.wav 2>/dev/null &
+	printf "\n\e[1;35mPress ENTER to start work"
+	read 2>/dev/null
+	printf "\e[1A"
+	printf "\r\e[J"
+	start_work
+}
+
+completed() {
+	[[ $((count*work/60)) > 0 ]] && hour="%2d hours and" || hour=""
+	printf "\e[10;0H\e[J\e[1;33mCompleted work total:$hour%2d min."\
+		"$(((count*work/60)))" "$(((count*work)%60))"
+}
+
+main
