@@ -3,9 +3,8 @@
 # Prokrastimer
 # A simple terminal pomodoro timer
 # Couldn't find one online, so i made this
-# Might be a bit overenginered, and badly written,
-# but i keep learning.. lol.
-# Oh, and credit to the bash bible on github.
+# Might be a bit overenginered, and badly written, and not done. :P
+# Oh, and credit to the pure bash bible on github.
 
 main() {
 	LC_ALL=C
