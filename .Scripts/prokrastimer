@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
 #
-# Prokrastimer
-# A simple terminal pomodoro timer
-# Couldn't find one online, so i made this
-# Might be a bit overenginered, and badly written, and not done. :P
-# Oh, and credit to the pure bash bible on github.
+# prokrastimer - an over-engineered terminal pomodoro timer
 
 main() {
-	LC_ALL=C
-	LANG=C
 	printf "\e[2J\e[H\e[s"
 	trap 'tput cvvis && completed && exit' EXIT
 	trap 'clean' SIGWINCH
@@ -16,8 +10,8 @@ main() {
 }
 
 clean() { 
-	printf "\e[8;0\e[1J\e[0;0H"
-	figlet -f big prokrastimer | awk '{ printf "\033[3%dm%s\034\n", 6, $0;}'
+	printf "\e[8;0\e[1J\e[H"
+	figlet -f big prokrastimer | awk '{ printf "\033[3%dm%s\034\n", 6, $0;}' 
 	printf "\e[u"
 }
 	
@@ -39,69 +33,46 @@ prompt() {
 }
 
 start_work() {
-	sec="2"
-	start_time="$SECONDS"
-	elaps="0"
+	sec="2" start_time="$SECONDS" elaps="0"
 	while [ $sec -gt 1 ]; do
-		((elaps+=1))
-		((size=$(tput cols)-2))
-		((total=elaps*size/work/60))
-		((rows=$(tput lines)))
-		sec="$((work*60-(SECONDS-start_time)))"
+		((sec=(work*60-(SECONDS-start_time)),elaps+=1))
+		((size=$(tput cols)-2,rows=$(tput lines),total=(elaps*size/work/60)))
 		printf "\e[10;0H\e[1;35mWork left: %02d:%02d" "$((sec/60))" "$((sec%60))"
-		bar "$size" "$total" "$rows"
-		sleep 1
-	done
-	work_done
+		bar "$size" "$total" "$rows"; sleep 1
+	done && work_done
 }
 
 start_notwork() {
-	sec="2"
-	start_time="$SECONDS"
-	elaps="0"
+	sec="2" start_time="$SECONDS" elaps="0"
 	while [ $sec -gt 1 ]; do
-		((size=$(tput cols)-2))
-		((rows=$(tput lines)))
-		sec="$((notwork*60-(SECONDS-start_time)))"
-		((elaps+=1))
-		((total=elaps*size/notwork/60))
+		((sec=(notwork*60-(SECONDS-start_time)),elaps+=1))
+		((size=$(tput cols)-2,rows=$(tput lines),total=elaps*size/notwork/60))
 		printf "\e[10;0H\e[1;33mBreak left: %02d:%02d" "$((sec/60))" "$((sec%60))"
-		bar "$size" "$total" "$rows"
-		sleep 1
-	done
-	notwork_done
+		bar "$size" "$total" "$rows"; sleep 1
+	done && notwork_done
 }
 
 work_done() {
 	((count+=1))
 	printf "\e[10;17H\e[1;39m - Work completed!"
 	play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
-	if [ $antal -gt $count ];then
-		printf "\n\e[1;33mPress ENTER to start break"
-		read 2>/dev/null
-		printf "\e[1A"
-		printf "\r\e[J"
-		start_notwork
-	else
-		exit 0
-	fi
+	[[ $count == $antal ]] && exit 0
+		printf "\n\e[1;33mPress ENTER to start break" && read 2>/dev/null
+		printf "\e[1A\r\e[J" && start_notwork
 }
 
 notwork_done() {
 	printf "\e[10;18H\e[1;39m - Break completed!"
 	play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
-	printf "\n\e[1;35mPress ENTER to start work"
-	read 2>/dev/null
-	printf "\e[1A"
-	printf "\r\e[J"
-	start_work
+	printf "\n\e[1;35mPress ENTER to start work" && read 2>/dev/null
+	printf "\e[1A\r\e[J" && start_work
 }
 
 completed() {
 	[[ $((count*work/60)) > 0 ]] && hour="%2d hours and" || hour=""
 	printf "\e[10;0H\e[J\e[1;33mCompleted work total:$hour%2d min. \n\e[1;31mPress ENTER to exit."\
 		"$((count*work/60))" "$(((count*work)%60))"
-	read &>/dev/null;clear -x
+	read &>/dev/null && clear
 }
 
 main

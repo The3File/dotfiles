@@ -37,9 +37,9 @@ autocmd FileType tex nnoremap ;i <ESC>\item<Space>
 
 autocmd FileType tex nnoremap ;b i\begin{}<Enter>\end{}<ESC>kf}i
 
-"autocmd FileType tex nnoremap ;e i\begin{enumerate}[label=\alph*.]<Enter>\end{enumerate}<ESC>kf}i
+autocmd FileType tex nnoremap ;la i\begin{enumerate}[label=]<Enter>\item <++><ENTER>\end{enumerate}<ESC>2k0f=a
 
-autocmd FileType tex nnoremap ;e i\begin{enumerate}[label=<++>]<Enter>\end{enumerate}<ESC>O\item 
+autocmd FileType tex nnoremap ;e i\begin{enumerate}[label=\textbf{\alph*)}]<Enter>\end{enumerate}<ESC>O\item 
 
 autocmd FileType tex inoremap ;r \ref{}<++><ESC>T{i
 
@@ -53,9 +53,11 @@ autocmd FileType tex inoremap ;e \begin{equation}<ESC>o\end{equation}<ESC>O\labe
 
 autocmd FileType tex inoremap ;E \begin{align}<ESC>o\end{align}<ESC>O\label{eq:<++>}<ESC>o
 
-autocmd FileType tex inoremap ;e \begin{align*}<ESC>o\end{align*}<ESC>O
+autocmd FileType tex inoremap ;a \begin{align*}<ESC>o\end{align*}<ESC>O
 
 autocmd FileType tex inoremap ;t \times
+
+autocmd FileType tex inoremap ;d \div
 
 autocmd FileType tex inoremap ;f \frac{}{<++>}<++><ESC>Fcf}i
 

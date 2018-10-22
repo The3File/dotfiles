@@ -3,5 +3,7 @@
 
 config_version: 2
 settings:
-  tabs.position:
-    global: top
+  colors.tabs.selected.even.bg:
+    global: white
+  colors.tabs.selected.odd.bg:
+    global: white
