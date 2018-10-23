@@ -11,9 +11,7 @@ prompt() {
 	[[ -z "$notwork" ]] && notwork=5
 	[[ -z "$sess" ]] && sess=2
 
-	((work*=60))
-	((notwork*=60))
-	((sess*=60))
+	((work*=60,notwork*=60,sess*=60))
 }
 
 bar() {
