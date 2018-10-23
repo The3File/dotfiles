@@ -1,5 +1,4 @@
-#!/bin/bash
-### Written by Filip Ringdal
+#!/usr/bin/env bash
 
 # Formatting
 percent="$(acpi -b | sed 's/,//g; s/://g; s/%//g' | awk '{print $4}')"

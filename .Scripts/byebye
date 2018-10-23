@@ -1,5 +1,4 @@
-#!/bin/bash
-### Written by Filip Ringdal
+#!/usr/bin/env bash
 
 ask=$( echo -e "nevermind\nshutdown\nreboot\nexit i3" | dmenu -i -p "vil du udføre:" ) 
 

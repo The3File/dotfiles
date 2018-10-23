@@ -157,9 +157,9 @@ bindsym		$mod+Shift+g		gaps outer all minus 1; gaps inner current minus 3
 bindsym 	$mod+Shift+c		reload
 bindsym 	$mod+Shift+r		restart
 
-bindsym		$mod+Escape 		exec byebye
-
 bindsym 	$mod+q			kill
+
+bindsym		$mod+Shift+x 		exec byebye
 bindsym 	$mod+x			exec i3lock --color '#000000'
 
 bindsym 	$mod+h			focus left
