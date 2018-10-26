@@ -1,7 +1,8 @@
 #!/bin/bash
 
 status="$( networkctl status | grep State: | awk '{print $3}')"
-ip="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $1}' )"
+ssid="$(iwgetid -r)"
+#ip="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $1}' )"
 if="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}' )"
 
 if [[ $if = wlp3s0 ]];then
@@ -10,7 +11,7 @@ elif [[ $if = enp0s25 ]];then
 	if=''
 fi
 if [[ $status = routable ]];then
-	echo "$if <span color='#00cc00' > $ip</span>"
+	echo "$if <span color='#00cc00' > $ssid</span>"
 elif [[ $status = no-carrier ]];then
 	echo -e "<span color='red'>  No Connection</span>"
 else

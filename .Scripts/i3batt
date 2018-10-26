@@ -6,13 +6,13 @@ state="$(acpi -b | sed 's/,//g; s/://g; s/%//g' | awk '{print $3}')"
 
 # Dynamic label icons
 if [[ $state = Discharging ]];then
-	if [[ $percent -lt 16 ]];then
+	if [[ $percent -le 15 ]];then
 		state=""
-	elif [[ $percent -lt 35 ]];then
+	elif [[ $percent -le 35 ]];then
 		state=""
-	elif [[ $percent -lt 65 ]];then
+	elif [[ $percent -le 65 ]];then
 		state=""
-	elif [[ $percent -lt 81 ]];then
+	elif [[ $percent -le 80 ]];then
 		state=""
 	elif [[ $percent -gt 80 ]];then
 		state=""
@@ -22,7 +22,7 @@ elif [[ $state = Charging ]];then
 fi
 
 # Setting color for low battery
-if [[ $percent -lt "16" ]];then
+if [[ $percent -le "15" ]];then
 	echo -e "$state <span color='red'> $percent%</span>\n"
 else
 	echo "$state  $percent%"
