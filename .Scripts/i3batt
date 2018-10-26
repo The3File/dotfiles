@@ -1,31 +1,17 @@
 #!/usr/bin/env bash
 
-# Formatting
 percent="$(acpi -b | sed 's/,//g; s/://g; s/%//g' | awk '{print $4}')"
 state="$(acpi -b | sed 's/,//g; s/://g; s/%//g' | awk '{print $3}')"
 
-# Dynamic label icons
 if [[ $state = Discharging ]];then
-	if [[ $percent -le 15 ]];then
-		state=""
-	elif [[ $percent -le 35 ]];then
-		state=""
-	elif [[ $percent -le 65 ]];then
-		state=""
-	elif [[ $percent -le 80 ]];then
-		state=""
-	elif [[ $percent -gt 80 ]];then
-		state=""
-	fi
-elif [[ $state = Charging ]];then
-	state=""
+	[[ $percent -le 15 ]] && state=""
+	[[ $percent -le 35 ]] && state=""
+	[[ $percent -le 65 ]] && state=""
+	[[ $percent -le 80 ]] && state=""
+	[[ $percent -gt 80 ]] && state=""
 fi
+	[[ $state = Charging ]] && state=""
 
-# Setting color for low battery
-if [[ $percent -le "15" ]];then
-	echo -e "$state <span color='red'> $percent%</span>\n"
-else
-	echo "$state  $percent%"
-fi
+[[ $percent -le "15" ]] && echo -e "$state <span color='red'> $percent%</span>\n" || echo "$state  $percent%"
 
 exit 0

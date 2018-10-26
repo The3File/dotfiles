@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 
-	today="$(date +%u)"
-	[[ $today == 7 ]] && today=sun tomorrow=mon
-	[[ $today == 6 ]] && today=sat tomorrow=sun
-	[[ $today == 5 ]] && today=fri tomorrow=sat
-	[[ $today == 4 ]] && today=thu tomorrow=fri
-	[[ $today == 3 ]] && today=wed tomorrow=thu
-	[[ $today == 2 ]] && today=tue tomorrow=wed
-	[[ $today == 1 ]] && today=mon tomorrow=tue
+day="$(date +%u)"
+[[ $day == 7 ]] && today=sun tomorrow=mon
+[[ $day == 6 ]] && today=sat tomorrow=sun
+[[ $day == 5 ]] && today=fri tomorrow=sat
+[[ $day == 4 ]] && today=thu tomorrow=fri
+[[ $day == 3 ]] && today=wed tomorrow=thu
+[[ $day == 2 ]] && today=tue tomorrow=wed
+[[ $day == 1 ]] && today=mon tomorrow=tue
+cal="$()"
 
-gcalcli agenda $today $tomorrow --nocolor
+[[ $day == [1-4,7] ]] && [[ $(date +%H) < 16 ]] && {
+	gcalcli agenda $today $tomorrow --nocolor --nostarted; }
+[[ $day == [5-7] ]] && { 
+	gcalcli agenda tue wed --nocolor --calendar fili0514@vucfyn.net\
+	| sed -n 's/  */ /g;n;p;q' | awk '{FS=" "} {$0=$0;print $4" - "$7" "$8}'\
+	| sed -e 's/[ \s]*$//';
+gcalcli agenda tue wed --nocolor --calendar fili0514@vucfyn.net\
+	| sed -n '2n;p'\
+	| awk '{FS=" "} NF {$0=$0;print $1" - "$4" "$5;}'\
+	| sed -e 's/[[:space:]]*$//g' ; }
