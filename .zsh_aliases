@@ -28,4 +28,4 @@ alias ff="fastboot flash"
 alias ap="adb push"
 alias rr="adb reboot recovery"
 
-alias capstone="setsid wine .wine/drive_c/Program\ Files\ \(x86\)/PASCO\ scietific/Capstone/Capstone.exe"
+alias capstone="setsid wine ~/.wine/drive_c/Program\ Files\ \(x86\)/PASCO\ scientific/Capstone/Capstone.exe"

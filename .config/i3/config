@@ -39,11 +39,11 @@ gaps inner 9
 gaps outer 3
 bindsym $mod+Shift+e gaps inner current set 0; gaps outer current set 0
 bindsym $mod+e gaps inner current set 9; gaps outer current set 3
-smart_gaps on
+#smart_gaps on
 
 ##	Borders	
-new_window pixel 3
-smart_borders on
+new_window pixel 2
+#smart_borders on
 
 
 set_from_resource $color0	color0

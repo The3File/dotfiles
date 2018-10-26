@@ -23,9 +23,9 @@ fi
 
 # Setting color for low battery
 if [[ $percent -lt "16" ]];then
-	echo -e "$state <span color='red' > $percent%</span>\n"
+	echo -e "$state <span color='red'> $percent%</span>\n"
 else
-	echo "$state $percent%"
+	echo "$state  $percent%"
 fi
 
 exit 0

@@ -37,9 +37,9 @@ autocmd FileType tex nnoremap ;i <ESC>\item<Space>
 
 autocmd FileType tex nnoremap ;b i\begin{}<Enter>\end{}<ESC>kf}i
 
-autocmd FileType tex nnoremap ;la i\begin{enumerate}[label=]<Enter>\item <++><ENTER>\end{enumerate}<ESC>2k0f=a
+autocmd FileType tex nnoremap ;e i\begin{enumerate}<Enter>\item <++><ENTER>\end{enumerate}<ESC>2k0f=a
 
-autocmd FileType tex nnoremap ;e i\begin{enumerate}[label=\textbf{\alph*)}]<Enter>\end{enumerate}<ESC>O\item 
+autocmd FileType tex nnoremap ;a i\begin{enumerate}[label=\textbf{\alph*)}]<Enter>\end{enumerate}<ESC>O\item 
 
 autocmd FileType tex inoremap ;r \ref{}<++><ESC>T{i
 

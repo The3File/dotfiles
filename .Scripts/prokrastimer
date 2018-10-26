@@ -11,9 +11,10 @@ prompt() {
 	[[ -z "$notwork" ]] && notwork=5
 	[[ -z "$sess" ]] && sess=2
 
-	((work*=60,notwork*=60,sess*=60))
+	((work*=60))
+	((notwork*=60))
+	((sess*=60))
 }
-
 bar() {
 	((width=$(tput cols)-2,rows=$(tput lines)))
 
@@ -24,7 +25,6 @@ bar() {
 
 	sleep .1
 }
-
 start_work() {
 	((sec=1,start_time=$SECONDS))
 
@@ -35,7 +35,6 @@ start_work() {
 	done
 	work_done
 }
-
 start_notwork() {
 	((sec=1,start_time=$SECONDS))
 
@@ -46,7 +45,6 @@ start_notwork() {
 	done
 	notwork_done
 }
-
 work_done() {
 	play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
 
@@ -59,7 +57,6 @@ work_done() {
 	printf "\e[1A\r\e[J"
 	start_notwork
 }
-
 notwork_done() {
 	play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
 
@@ -69,16 +66,13 @@ notwork_done() {
 	printf "\e[1A\r\e[J"
 	start_work
 }
-
 completed() {
 	[[ $((count*work/60)) > 0 ]] && hour="%2d hours and" || hour=""
 
 	printf "\e[10;0H\e[J\e[1;33mWorked total:$hour%2d min."\
 		"$((count*work/60))" "$(((count*work)%60))"
 }
-
 clean() { [[ ${FUNCNAME[1]} != prompt ]] && printf "\e[1J\e[H\e[1;36m$logo"; }
-
 main() {
 	printf "\e[2J"
 

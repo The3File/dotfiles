@@ -8,23 +8,22 @@ main() {
 
 start_work() {
 	((t=1,st=$SECONDS))
-	
 	while [[ $t > 0 ]];do
 		((t=(work-(SECONDS-st))))
 		printf "\rwork: %02d:%02d" "$((t/60))" "$((t%60))"
 		sleep 1
 	done;play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
-	read 2>/dev/null && start_notwork
+	read -p " - done" && start_notwork
 }
 
 start_notwork() {
-	((t=1,st=$SECONDS));printf "\e[1A"
+	((t=1,st=$SECONDS))
 	while [[ $t > 0 ]];do
 		((t=(notwork-(SECONDS-st))))
 		printf "\rpaus: %02d:%02d" "$((t/60))" "$((t%60))"
 		sleep 1
 	done;play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null & 
-	read 2>/dev/null && start_work
+	read -p " - done" && start_work
 }
 work=$1
 notwork=$2

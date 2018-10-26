@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+	today="$(date +%u)"
+	[[ $today == 7 ]] && today=sun tomorrow=mon
+	[[ $today == 6 ]] && today=sat tomorrow=sun
+	[[ $today == 5 ]] && today=fri tomorrow=sat
+	[[ $today == 4 ]] && today=thu tomorrow=fri
+	[[ $today == 3 ]] && today=wed tomorrow=thu
+	[[ $today == 2 ]] && today=tue tomorrow=wed
+	[[ $today == 1 ]] && today=mon tomorrow=tue
+
+gcalcli agenda $today $tomorrow --nocolor
