@@ -1,14 +1,6 @@
 #!/bin/bash
-### Written by Filip Ringdal
 
-# Formatting
 temp="$(acpi -t | sed 's/Thermal 0: ok,//g' | awk -F . '{print $1}')"
 
-# Setting color for high temp, and echo output
-if [[ $temp -gt 75 ]];then
-	echo -e "<span color='red'>$temp°C</span>"
-else
-	echo " $temp°C"
-fi
-
+[[ $temp -gt 75 ]] && echo -e "<span color='red'>$temp°C</span>" || echo " $temp°C"
 exit 0

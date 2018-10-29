@@ -1,25 +1,23 @@
-#  _   _          ____                   __ _
-# | | | |        |___ \                 / _(_)
-# | |_| |__   ___  __) | ___ ___  _ __ | |_ _  __ _
-# | __| '_ \ / _ \|__ < / __/ _ \| '_ \|  _| |/ _` |
-# | |_| | | |  __/___) | (_| (_) | | | | | | | (_| |
-#  \__|_| |_|\___|____/ \___\___/|_| |_|_| |_|\__, |
-#                                              __/ |
-#                                             |___/
+#	  _   _          ____                   __ _
+#	 | | | |        |___ \                 / _(_)
+#	 | |_| |__   ___  __) | ___ ___  _ __ | |_ _  __ _
+#	 | __| '_ \ / _ \|__ < / __/ _ \| '_ \|  _| |/ _` |
+#	 | |_| | | |  __/___) | (_| (_) | | | | | | | (_| |
+#	  \__|_| |_|\___|____/ \___\___/|_| |_|_| |_|\__, |
+#	                                              __/ |
+#	                                             |___/
 
 ##		Startup			##
 exec 		feh --bg-fill ~/.config/wall.png
 exec_always 	compton -b
-exec		dunst
-exec		conky
-exec		wal -Rn
+exec		dunst && notify-send "Boot succesfuld. Velkommen." -a "System"
+#exec		conky
+#exec		wal -Rn
 exec_always 	setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape
-exec		xmodmap ~/.Xmodmap
-exec 		--no-startup-id unclutter -noevents -grab -visible
+exec_always	xmodmap ~/.Xmodmap
+#exec 		--no-startup-id unclutter -noevents -grab -visible
 exec_always 	xrdb ~/.Xresources
 #exec 		--no-startup-id nm-applet
-
-bindsym $mod+a exec killall dunst && dunst && notify-send "Dette er en test notifikation" -a Test
 
 ##		General			##
 set $mod Mod4
@@ -43,7 +41,7 @@ bindsym $mod+e gaps inner current set 9; gaps outer current set 3
 
 ##	Borders	
 new_window pixel 2
-#smart_borders on
+smart_borders on
 
 
 set_from_resource $color0	color0
@@ -76,11 +74,11 @@ set $mdark	#55555555
 
 
 # class                 border  backgr. text    indic.  child_border
-client.focused          #001100 $color1	#FFFFFF $color1
-client.focused_inactive $backgr $color0e9 #999999 $color0e9
-client.unfocused        $backgr $color0e9 #16A085 $color0e9
-client.urgent           #FF0000 $color0e9 #16A085 $color0e9
-client.placeholder      $backgr $color0e9 #ffffff $color0e9 #0c0c0c
+client.focused          #001100 $color5	#FFFFFF $color5
+client.focused_inactive $backgr $color11 #999999 $color11
+client.unfocused        $backgr $color11 #16A085 $color11
+client.urgent           #FF0000 $color11 #16A085 $color11
+client.placeholder      $backgr $color11 #ffffff $color11 #0c0c0c
 
 client.background       #2B2C2B
 
@@ -91,19 +89,19 @@ bar {
 		status_command i3blocks -c ~/.config/i3/i3blocks.conf 
 		i3bar_command i3bar -t
 		height 25
-		#modifier none
-	  	separator_symbol " " 
+		modifier none
+	  	#separator_symbol " "
 
 	colors {
-       		 background $color0e9
+       		 background $black
        		 statusline $text
-       		 separator  #ffffff
+       		 separator  #888888
 
 				#border		#backgr.	#text
-	#focused_workspace  	$color3 	$color3 	$color0
-	#active_workspace   	$color0e9	$color0e9 	$subtl
-	#inactive_workspace 	$color0e9 	$color0e9 	$subtl
-	#urgent_workspace   	$color0e9 	$color0e9 	$subtl
+	focused_workspace  	#004444 	#003333 	#ffffff
+	active_workspace   	$black		$black	 	$subtl
+	inactive_workspace 	$black	 	$black	 	$subtl
+	urgent_workspace   	$black 		$black	 	$subtl
     }
 }
 bindsym $mod+b bar mode toggle
@@ -139,6 +137,8 @@ bindsym		$mod+Shift+w 		exec $browser2
 bindsym		$mod+Shift+y 		exec $term -e mpsyt
 
 bindsym		$mod+r 			exec $term -e ranger
+
+bindsym		$mod+v			exec $term -e vmail
 
 
 bindsym 	$mod+Return 		exec $term

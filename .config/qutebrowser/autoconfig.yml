@@ -3,7 +3,7 @@
 
 config_version: 2
 settings:
-  colors.tabs.selected.even.bg:
-    global: white
-  colors.tabs.selected.odd.bg:
-    global: white
+  content.user_stylesheets:
+    global: invert.css
+  statusbar.hide:
+    global: false

@@ -1,19 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 status="$( networkctl status | grep State: | awk '{print $3}')"
 ssid="$(iwgetid -r)"
-#ip="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $1}' )"
 if="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}' )"
+	#ip="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $1}' )"
 
-if [[ $if = wlp3s0 ]];then
-	if=''
-elif [[ $if = enp0s25 ]];then
-	if=''
-fi
-if [[ $status = routable ]];then
-	echo "$if <span color='#00cc00' > $ssid</span>"
-elif [[ $status = no-carrier ]];then
-	echo -e "<span color='red'>  No Connection</span>"
-else
-	echo "<span color='red'>  Error</span>"
-fi
+	[[ $if = wlp3s0 ]] && if=''
+	[[ $if = enp0s25 ]] && if=''
+
+	[[ $status = routable ]] && echo "$if $ssid" || echo -e "<span color='red'>  $status</span>"
+	exit 0

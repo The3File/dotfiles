@@ -2,7 +2,6 @@
 # Prokrastimer
 # Over-engineered cli pomodoro timer
 
-
 main() {
 	count=0
 	logo=$(figlet -f big prokrastimer)
@@ -55,7 +54,7 @@ start_notwork() {
 	while [[ $sec > 0 ]]; do
 		((sec=(notwork-(SECONDS-start_time))))
 		printf "\e[10;0H\e[1;33mBreak left: %02d:%02d" "$((sec/60))" "$((sec%60))"
-		bar $((SECONDS-start_time)) work
+		bar $((SECONDS-start_time)) notwork
 	done
 	notwork_done
 }
