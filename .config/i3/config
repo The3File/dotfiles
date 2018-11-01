@@ -10,13 +10,13 @@
 ##		Startup			##
 exec 		feh --bg-fill ~/.config/wall.png
 exec_always 	compton -b
-exec		dunst && notify-send "Boot succesfuld. Velkommen." -a "System"
 #exec		conky
-#exec		wal -Rn
+exec		wal -Rn
+#exec_always 	xrdb ~/.Xresources
 exec_always 	setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape
-exec_always	xmodmap ~/.Xmodmap
+#exec_always	xmodmap ~/.Xmodmap
 #exec 		--no-startup-id unclutter -noevents -grab -visible
-exec_always 	xrdb ~/.Xresources
+exec		notify-send "Boot succesfuld. Velkommen." -a "System"
 #exec 		--no-startup-id nm-applet
 
 ##		General			##
@@ -37,7 +37,7 @@ gaps inner 9
 gaps outer 3
 bindsym $mod+Shift+e gaps inner current set 0; gaps outer current set 0
 bindsym $mod+e gaps inner current set 9; gaps outer current set 3
-#smart_gaps on
+smart_gaps on
 
 ##	Borders	
 new_window pixel 2
@@ -64,7 +64,7 @@ set $backgr	#000000
 set $text	#FFFFFF
 set $highl	#00FF00
 set $subtl	#777777
-set $black	#000000
+set $black	#000000ee
 set $urgnt	#FF0000
 set $orange	#d95030
 set $green	#00FF00
@@ -74,11 +74,11 @@ set $mdark	#55555555
 
 
 # class                 border  backgr. text    indic.  child_border
-client.focused          #001100 $color5	#FFFFFF $color5
-client.focused_inactive $backgr $color11 #999999 $color11
-client.unfocused        $backgr $color11 #16A085 $color11
-client.urgent           #FF0000 $color11 #16A085 $color11
-client.placeholder      $backgr $color11 #ffffff $color11 #0c0c0c
+client.focused          #001100 $color3	#FFFFFF $color3
+client.focused_inactive $backgr $color10 #999999 $color10
+client.unfocused        $backgr $color10 #16A085 $color10
+client.urgent           #FF0000 $color10 #16A085 $color10
+client.placeholder      $backgr $color10 #ffffff $color10 #0c0c0c
 
 client.background       #2B2C2B
 
@@ -90,7 +90,7 @@ bar {
 		i3bar_command i3bar -t
 		height 25
 		modifier none
-	  	#separator_symbol " "
+	  	separator_symbol " "
 
 	colors {
        		 background $black
@@ -98,7 +98,7 @@ bar {
        		 separator  #888888
 
 				#border		#backgr.	#text
-	focused_workspace  	#004444 	#003333 	#ffffff
+	focused_workspace  	$color5		$black 		$text
 	active_workspace   	$black		$black	 	$subtl
 	inactive_workspace 	$black	 	$black	 	$subtl
 	urgent_workspace   	$black 		$black	 	$subtl

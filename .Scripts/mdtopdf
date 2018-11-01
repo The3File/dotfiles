@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-[[ -z $1 ]] && echo Missing filename.; exit
+[[ -z $1 ]] && echo Missing filename.
 out="${1%.md}.pdf"
-pandoc -t latex $1 -o ${1%.md}.pdf
-exit 0
+pandoc -t latex $1 -o $out

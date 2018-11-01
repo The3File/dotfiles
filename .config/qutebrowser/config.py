@@ -39,7 +39,7 @@ config.set('content.javascript.enabled', True, 'qute://*/*')
 
 # List of user stylesheet filenames to use.
 # Type: List of File, or File
-c.content.user_stylesheets = 'invert.css'
+c.content.user_stylesheets = []
 
 # Hide the statusbar unless a message is shown.
 # Type: Bool
@@ -111,6 +111,26 @@ c.colors.completion.category.border.top = 'white'
 # Type: QssColor
 c.colors.completion.category.border.bottom = 'white'
 
+# Background color of the statusbar.
+# Type: QssColor
+c.colors.statusbar.normal.bg = 'black'
+
+# Background color of the tab bar.
+# Type: QtColor
+c.colors.tabs.bar.bg = 'black'
+
+# Color gradient start for the tab indicator.
+# Type: QtColor
+c.colors.tabs.indicator.start = 'black'
+
+# Color gradient end for the tab indicator.
+# Type: QtColor
+c.colors.tabs.indicator.stop = 'black'
+
+# Color for the tab indicator on errors.
+# Type: QtColor
+c.colors.tabs.indicator.error = 'black'
+
 # Background color of unselected odd tabs.
 # Type: QtColor
 c.colors.tabs.odd.bg = 'black'
@@ -121,19 +141,19 @@ c.colors.tabs.even.bg = 'black'
 
 # Foreground color of selected odd tabs.
 # Type: QtColor
-c.colors.tabs.selected.odd.fg = '#000000'
+c.colors.tabs.selected.odd.fg = '#00ff00'
 
 # Background color of selected odd tabs.
 # Type: QtColor
-c.colors.tabs.selected.odd.bg = '#aba800'
+c.colors.tabs.selected.odd.bg = 'black'
 
 # Foreground color of selected even tabs.
 # Type: QtColor
-c.colors.tabs.selected.even.fg = '#000000'
+c.colors.tabs.selected.even.fg = '#00ff00'
 
 # Background color of selected even tabs.
 # Type: QtColor
-c.colors.tabs.selected.even.bg = '#aba800'
+c.colors.tabs.selected.even.bg = 'black'
 
 # Background color for webpages if unset (or empty to use the theme's
 # color).
@@ -145,5 +165,10 @@ c.colors.webpage.bg = 'white'
 # Type: Font
 c.fonts.monospace = 'inconsolata'
 
+# Font used in the statusbar.
+# Type: Font
+c.fonts.statusbar = '9pt monospace'
+
 # Bindings for normal mode
+config.bind(',n', 'config-cycle content.user_stylesheets solar.css ""')
 config.bind('tg', 'tab-give')

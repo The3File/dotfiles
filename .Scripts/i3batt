@@ -12,5 +12,5 @@ if [[ $state = Discharging ]];then
 fi
 	[[ $state = Charging ]] && state=""
 
-[[ $percent -le "16" ]] && echo -e "<span color='red'>$state  $percent%</span>\n" || echo "$state  $percent%"
+[[ $percent -le "15" ]] && echo -e "<span color='red'>$state  $percent%</span>\n" || echo "$state  $percent%"
 exit 0

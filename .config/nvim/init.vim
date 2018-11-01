@@ -2,6 +2,7 @@ call plug#begin()
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'lervag/vimtex'
+Plug 'scrooloose/nerdtree'
 call plug#end()
 
 syntax enable
@@ -9,14 +10,20 @@ syntax enable
 filetype plugin indent on
 filetype plugin on
 
-
 set number
 set relativenumber
+
+set smartindent
+set autoindent
+set shiftwidth=4
+
 colorscheme default
 
+set clipboard=unnamedplus
+set nohlsearch
 
-inoremap <C-j> <ESC>/<++><Enter>"_c4l
-nnoremap <C-j> <ESC>/<++><Enter>"_c4l
+inoremap <C-Space> <ESC>/<++><Enter>"_c4l
+nnoremap <C-Space> <ESC>/<++><Enter>"_c4l
 nnoremap gf :G<ENTER>:silent !{i3-msg fullscreen toggle}<ENTER>
 
 autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
@@ -49,6 +56,8 @@ autocmd FileType tex inoremap ;m \[\]<ESC>hi
 
 autocmd FileType tex inoremap $$ $$<++><ESC>F$i
 
+autocmd FileType tex inoremap __ _{}<++><ESC>F}i
+
 autocmd FileType tex inoremap ;e \begin{equation}<ESC>o\end{equation}<ESC>O\label{eq:<++>}<ESC>o
 
 autocmd FileType tex inoremap ;E \begin{align}<ESC>o\end{align}<ESC>O\label{eq:<++>}<ESC>o
@@ -65,17 +74,33 @@ autocmd FileType tex inoremap ;s \sqrt{}<++><ESC>Ftf}i
 
 "GNUPLOT	#--------------------------------#
 
-autocmd FileType tex nnoremap ;g i\begin{figure}[h!]<Enter>\caption{<++>}<Enter>\label{fig:<++>}<ENTER>\begin{gnuplot}[terminal=epslatex]<ENTER><++><ENTER>\end{gnuplot}<ENTER>\end{gnuplot}<ESC>5k/<+*+><Enter>"_c4l
+autocmd FileType tex nnoremap ;g i\begin{figure}[h!]<Enter>\caption{<++>}<Enter>\label{fig:<++>}<ENTER>\begin{gnuplot}[terminal=epslatex]<ENTER><++><ENTER>\end{gnuplot}<ENTER>\end{figure}<ESC>5k/<+*+><Enter>"_c4l
 
 "######### MARKDOWN ###########"
 
 autocmd FileType markdown inoremap ;f \frac{}{<++>}<++><ESC>Fcf}i
 autocmd FileType markdown inoremap ;t \times
 autocmd FileType markdown inoremap ;s \sqrt{}<++><ESC>Ftf}i
+autocmd FileType markdown inoremap $$ $$<++><ESC>F$i
+autocmd FileType markdown inoremap ;m \[\]<ESC>hi
 
 "#####################################"
 "#####		Plugins		 #####"
 "#####################################"
+
+"NERDtree
+" Guess
+map <C-n> :NERDTreeToggle<CR>
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+
+" If vim starts without a file
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" If vim starts with a dir
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 
 "VimTex
 
