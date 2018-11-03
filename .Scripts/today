@@ -12,7 +12,6 @@ main() {
 [[ $day == [1-4] ]] && [[ $(date +%H) < 16 ]] && format || exit
 }
 
-
 format() {
 	firstString="$(gcalcli agenda $today $tomorrow --nocolor --calendar fili0514@vucfyn.net | sed -n 's/  */ /g;s/^ *//g;s/$ *//g;p')"
 	secondString=""

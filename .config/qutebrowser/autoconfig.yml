@@ -3,11 +3,5 @@
 
 config_version: 2
 settings:
-  tabs.favicons.scale:
-    global: 0.85
-  tabs.indicator.padding:
-    global:
-      bottom: 0
-      left: 0
-      right: 0
-      top: 0
+  content.user_stylesheets:
+    global: null

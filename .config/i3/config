@@ -10,14 +10,13 @@
 ##		Startup			##
 exec 		feh --bg-fill ~/.config/wall.png
 exec_always 	compton -b
-#exec		conky
 exec		wal -Rn
 #exec_always 	xrdb ~/.Xresources
 exec_always 	setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape
 #exec_always	xmodmap ~/.Xmodmap
-#exec 		--no-startup-id unclutter -noevents -grab -visible
+exec 		dunst
+exec 		networkd-dispatcher
 exec		notify-send "Boot succesfuld. Velkommen." -a "System"
-#exec 		--no-startup-id nm-applet
 
 ##		General			##
 set $mod Mod4
@@ -37,11 +36,11 @@ gaps inner 9
 gaps outer 3
 bindsym $mod+Shift+e gaps inner current set 0; gaps outer current set 0
 bindsym $mod+e gaps inner current set 9; gaps outer current set 3
-smart_gaps on
+#smart_gaps on
 
 ##	Borders	
 new_window pixel 2
-smart_borders on
+#smart_borders on
 
 
 set_from_resource $color0	color0
@@ -60,11 +59,11 @@ set_from_resource $color12	color12
 set_from_resource $color13	color13
 set_from_resource $color14	color14
 set_from_resource $color15	color15
-set $backgr	#000000
+set $back	#000000d9
+set $black	#000000
 set $text	#FFFFFF
 set $highl	#00FF00
 set $subtl	#777777
-set $black	#000000ee
 set $urgnt	#FF0000
 set $orange	#d95030
 set $green	#00FF00
@@ -74,11 +73,11 @@ set $mdark	#55555555
 
 
 # class                 border  backgr. text    indic.  child_border
-client.focused          #001100 $color3	#FFFFFF $color3
-client.focused_inactive $backgr $color10 #999999 $color10
-client.unfocused        $backgr $color10 #16A085 $color10
-client.urgent           #FF0000 $color10 #16A085 $color10
-client.placeholder      $backgr $color10 #ffffff $color10 #0c0c0c
+client.focused          #001100 $color4	#FFFFFF $color4
+client.focused_inactive $backgr $color0 #999999 $color0
+client.unfocused        $backgr $color0 #16A085 $color0
+client.urgent           #FF0000 $color0 #16A085 $color0
+client.placeholder      $backgr $color0 #ffffff $color0 #0c0c0c
 
 client.background       #2B2C2B
 
@@ -89,19 +88,20 @@ bar {
 		status_command i3blocks -c ~/.config/i3/i3blocks.conf 
 		i3bar_command i3bar -t
 		height 25
-		modifier none
-	  	separator_symbol " "
+		#mode hide
+		modifier $mod
+	  	#separator_symbol " "
 
 	colors {
-       		 background $black
+       		 background $back
        		 statusline $text
        		 separator  #888888
 
 				#border		#backgr.	#text
-	focused_workspace  	$color5		$black 		$text
-	active_workspace   	$black		$black	 	$subtl
-	inactive_workspace 	$black	 	$black	 	$subtl
-	urgent_workspace   	$black 		$black	 	$subtl
+	focused_workspace  	$color2		$back 		$color2
+	active_workspace   	$back		$back	 	$color8
+	inactive_workspace 	$back	 	$back	 	$color8
+	urgent_workspace   	$back 		$back	 	$color8
     }
 }
 bindsym $mod+b bar mode toggle
@@ -147,7 +147,7 @@ bindsym 	$mod+Shift+Return 	exec $term -n term
 #bindsym		$mod+b		exec electron /usr/lib/android-messages-desktop/resources/app.asar|g
 
 bindsym 	$mod+d			exec rundmenu
-
+bindsym		$mod+c			exec networkmanager_dmenu -nf white -nb black -h 25
 
 ##	Other Bindings
 
