@@ -8,6 +8,8 @@ alias vrc="nvim ~/.config/nvim/init.vim"
 alias xrc="nvim ~/.Xresources"
 alias xr="xrdb ~/.Xresources"
 
+alias prc="nvim ~/.config/polybar/config"
+
 alias con="nvim ~/.config/i3/config"
 alias brc="nvim ~/.config/i3/i3blocks.conf"
 

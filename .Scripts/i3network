@@ -8,5 +8,5 @@ if="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ 
 	[[ $if = wlp3s0 ]] && if=''
 	[[ $if = enp0s25 ]] && if=''
 
-	[[ $status = routable ]] && echo "$if $ssid" || echo -e "<span color='red'>  $status</span>"
-	exit 0
+	#[[ $status = routable ]] && echo "$if $ssid" || echo -e "<span color='red'>  $status</span>"
+	echo "$if $ssid"
