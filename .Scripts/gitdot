@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cp -r ~/.config/{dunst,i3,nvim,qutebrowser,ranger,wal,compton.conf} ~/dotfiles/.config/
+cp -r ~/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
 cp -r ~/.Scripts ~/dotfiles/
 cp -r ~/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} ~/dotfiles/
 cd ~/dotfiles/
