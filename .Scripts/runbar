@@ -13,8 +13,8 @@ killbar(){
 
 restartbar(){
     killall -q polybar
-    while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
-    polybar dummy &
-    polybar example &
+    while pgrep -u $UID -x polybar >/dev/null; do sleep 0.001; done
+    polybar -r dummy &
+    polybar -r example &
 }
 main

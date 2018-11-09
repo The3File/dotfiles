@@ -6,7 +6,7 @@ settings:
   bindings.commands:
     global:
       normal:
-        ',n': config-cycle content.user_stylesheets dark.css ""
+        ',n': config-cycle content.user_stylesheets style.css ""
         tg: tab-give
   content.user_stylesheets:
-    global: null
+    global: style.css

@@ -1,12 +1,17 @@
 alias vim="nvim"
-alias zrc="nvim ~/.zshrc"
+
 alias za="nvim ~/.zsh_aliases"
 
+alias zrc="nvim ~/.zshrc"
 alias rrc="nvim ~/.config/ranger/rc.conf"
 alias vrc="nvim ~/.config/nvim/init.vim"
+alias crc="nvim ~/.config/compton.conf"
 
 alias xrc="nvim ~/.Xresources"
 alias xr="xrdb ~/.Xresources"
+
+
+alias timer="((s=$SECONDS)); while :; do echo $(($SECONDS-s)); sleep 1; done"
 
 alias prc="nvim ~/.config/polybar/config"
 

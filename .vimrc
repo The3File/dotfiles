@@ -100,3 +100,4 @@ let g:limelight_default_coefficient = 0.7
 
 """"
 set grepprg=grep\ -nH\ $*
+set title titlestring=

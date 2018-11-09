@@ -3,6 +3,8 @@ Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'lervag/vimtex'
 Plug 'scrooloose/nerdtree'
+Plug 'dylanaraps/wal.vim'
+Plug 'gioele/vim-autoswap'
 call plug#end()
 
 syntax enable
@@ -17,7 +19,7 @@ set smartindent
 set autoindent
 set shiftwidth=4
 
-colorscheme desert
+colorscheme wal
 
 set clipboard=unnamedplus
 set nohlsearch
@@ -132,6 +134,8 @@ let g:limelight_default_coefficient = 0.7
 
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
+
+set title titlestring=
 
 """"
 set grepprg=grep\ -nH\ $*

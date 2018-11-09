@@ -4,6 +4,7 @@ percent="$(acpi -b | sed 's/,//g;s/://g;s/%//g' | awk '{print $4}')"
 state="$(acpi -b | sed 's/,//g;s/://g;s/%//g' | awk '{print $3}')"
 
 [[ $state = Charging ]] && state=""
+[[ $state = Unknown ]] && state=""
 [[ $state = Discharging ]] && {
     [[ $percent -gt 80 ]] && state=""
     [[ $percent -le 80 ]] && state=""

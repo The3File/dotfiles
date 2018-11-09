@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 ask=$( echo -e "Shutdown\nReboot\nExit i3" \
-    | dmenu -nf white -nb black -h 25 -b -i -p "Hvad vil du?:" ) 
+    | rofi -dmenu -i -p " Power")
+#| dmenu -nf white -nb black -h 25 -b -i -p "Hvad vil du?:" ) 
 
 [[ $ask = "Exit i3" ]] && i3-msg exit
 [[ $ask = "Shutdown" ]] && shutdown now

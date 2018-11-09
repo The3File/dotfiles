@@ -11,6 +11,7 @@
 exec 		feh --bg-fill ~/.config/wall.png
 exec_always 	compton -b
 exec		wal -Rn
+exec		greenclip daemon
 #exec_always 	xrdb ~/.Xresources
 exec_always 	setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape
 #exec_always	xmodmap ~/.Xmodmap
@@ -37,8 +38,8 @@ font pango:Terminus 9
 gaps inner 9
 gaps outer 3
 
-#bindsym 	$mod+e 		gaps inner current set 9; gaps outer current set 3
-#bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0
+bindsym 	$mod+e 		gaps inner current set 9; gaps outer current set 3
+bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0
 #bindsym		$mod+g		gaps outer current plus 1; gaps inner current plus 3
 #bindsym		$mod+Shift+g	gaps outer current minus 1; gaps inner current minus 3
 
@@ -82,10 +83,10 @@ set $mdark			#55555555
 
 # class                 border  backgr. text    indic.  child_border
 client.focused          #001100 $color3	#FFFFFF $color3
-client.focused_inactive $backgr $color4 #999999 $color4
-client.unfocused        $backgr $color4 #16A085 $color4
-client.urgent           #FF0000 $color4 #16A085 $color4
-client.placeholder      $backgr $color4 #ffffff $color4 #0c0c0c
+client.focused_inactive $backgr $color0 #999999 $color0
+client.unfocused        $backgr $color0 #16A085 $color0
+client.urgent           #FF0000 $color0 #16A085 $color0
+client.placeholder      $backgr $color0 #ffffff $color0 #0c0c0c
 
 client.background       #2B2C2B
 
@@ -116,7 +117,7 @@ bindsym		$mod+p 		[instance="term"] scratchpad show; [instance="term"] move posi
 ## App Bindings
 
 bindsym		$mod+w 			exec $browser
-bindsym		$mod+Shift+w 		exec $browser2
+bindsym		$mod+c	 		exec networkmanager_dmenu
 
 bindsym		$mod+Shift+y 		exec $term -e mpsyt
 
@@ -127,8 +128,9 @@ bindsym		$mod+v			exec $term -e vmail
 bindsym 	$mod+Return 		exec $term
 bindsym 	$mod+Shift+Return 	exec $term -n term
 
-bindsym 	$mod+d			exec rundmenu
-bindsym		$mod+c			exec networkmanager_dmenu -nf white -nb black -b -h 25
+#bindsym 	$mod+d			exec rundmenu
+bindsym 	$mod+d 			exec rofi -modi drun -show drun -p "Kør"
+bindsym		$mod+Insert		exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
 
 ##	Other Bindings
 
@@ -138,7 +140,7 @@ bindsym 	$mod+Shift+r		restart
 
 bindsym 	$mod+q			kill
 
-bindsym		$mod+Shift+x 		exec byebye
+bindsym		$mod+Shiftx 		exec byebye
 bindsym 	$mod+x			exec i3lock --color '#000000'
 
 bindsym 	$mod+h			focus left
@@ -171,11 +173,11 @@ set $ws1	workspace 1: 
 set $ws2	workspace 2: 
 set $ws3	workspace 3: 
 set $ws4	workspace 4: 
-set $ws5	workspace 5: 
-set $ws6	workspace 6: 
-set $ws7	workspace 7: 
+set $ws5	workspace 5: 
+set $ws6	workspace 6: 
+set $ws7	workspace 7: 
 set $ws8	workspace 8: 
-set $ws9	workspace 9: 
+set $ws9	workspace 9: 
 set $ws10	workspace 10: 
 
 

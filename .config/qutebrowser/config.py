@@ -39,7 +39,7 @@ config.set('content.javascript.enabled', True, 'qute://*/*')
 
 # List of user stylesheet filenames to use.
 # Type: List of File, or File
-c.content.user_stylesheets = []
+c.content.user_stylesheets = 'style.css'
 
 # Hide the statusbar unless a message is shown.
 # Type: Bool
@@ -75,7 +75,7 @@ c.statusbar.widgets = ['keypress', 'progress', 'url']
 #   - bottom
 #   - left
 #   - right
-c.tabs.position = 'bottom'
+c.tabs.position = 'top'
 
 # When to show the tab bar.
 # Type: String
@@ -170,5 +170,5 @@ c.fonts.monospace = 'inconsolata'
 c.fonts.statusbar = '9pt monospace'
 
 # Bindings for normal mode
-config.bind(',n', 'config-cycle content.user_stylesheets solar.css ""')
+config.bind(',n', 'config-cycle content.user_stylesheets style.css ""')
 config.bind('tg', 'tab-give')

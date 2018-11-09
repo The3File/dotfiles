@@ -1,0 +1,148 @@
+* {{
+    active-background: @background;
+    active-foreground: @foreground;
+    normal-background: @background;
+    normal-foreground: @foreground;
+
+    selected-active-background: {color3};
+    selected-active-foreground: @foreground;
+    selected-normal-background: {color3};
+    selected-normal-foreground: @foreground;
+    selected-urgent-background: {color3};
+    selected-urgent-foreground: @foreground;
+
+    background-color: @transparent;
+    background: #000000e9;
+    /*background: {color0};*/
+    transparent: #00000000;
+    foreground: {color7};
+    border-color: {color3};
+    spacing: 0;
+}}
+
+#window {{
+    background-color: @background;
+    border: 2;
+    anchor:			center;
+    location:			center;
+    orientation: vertical;
+    width: 40%;
+    height: 40%;
+    /*y-offset:			190;*/
+    /*x-offset:			-370;*/
+}}
+
+#mainbox {{
+    background: @transparent;
+    border: 0;
+    padding: 0;
+}}
+
+#message {{
+    background: @transparent;
+    border: 0px 0px 0px;
+    border-color: @border-color;
+    padding: 0px;
+}}
+
+#textbox {{
+    text-color: @foreground;
+    background-color: @transparent;
+    background: @transparent;
+}}
+
+#inputbar {{
+    spacing:	3px;
+    border: 0 0 4;
+    border-color: @border-color;
+}}
+
+#listview {{
+    fixed-height: 0;
+border: 0px 0px 0px;
+	border-color: @border-color;
+spacing: 0px;
+scrollbar: false;
+padding: 6px 6px 6px;
+}}
+
+#element {{
+padding: 6px;
+}}
+
+#element.normal.normal {{
+    background-color: @transparent;
+    text-color: @foreground;
+}}
+
+#element.normal.urgent {{
+    background-color: @transparent;
+    text-color: @foreground;
+}}
+
+#element.normal.active {{
+    background-color: @transparent;
+    text-color: @foreground;
+}}
+
+#element.selected.normal {{
+    background-color: @selected-normal-background;
+    text-color: @background;
+}}
+
+#element.selected.urgent {{
+    background-color: @selected-urgent-background;
+    text-color: @background;
+}}
+
+#element.selected.active {{
+    background-color: @selected-active-background;
+    text-color: @background;
+}}
+
+#element.alternate.normal {{
+    background-color: @transparent;
+    text-color: @foreground;
+}}
+
+#element.alternate.urgent {{
+    background-color: @transparent;
+    text-color: @foreground;
+}}
+
+#element.alternate.active {{
+    background-color: @transparent;
+    text-color: @foreground;
+}}
+
+#button {{
+    background-color: @border-color;
+    text-color: @normal-foreground;
+}}
+
+#button.selected {{
+    background-color: @selected-normal-background;
+    text-color: @background;
+}}
+
+#inputbar {{
+spacing: 3;
+	 text-color: @normal-foreground;
+padding: 0px;
+}}
+
+#entry {{
+	padding:				6px 10px;
+	spacing: 0;
+	text-color: @normal-foreground;
+	padding:				10px;
+}}
+
+#prompt {{
+    padding:				6px 9px;
+    spacing: 		0;
+    text-color:		@normal-foreground;
+    background-color:	@border-color;
+    text-color:		@background;
+    padding:		9 1% 9;
+}}
