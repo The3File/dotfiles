@@ -22,11 +22,11 @@ copy(){
 }
 
 push(){
+    stty echo
     cd ~/dotfiles/
     git add .
     git commit -a -m "I'm lazy"
     git push -u origin master
-    stty echo
     exit 0
 }
 main
