@@ -4,11 +4,11 @@
     normal-background: @background;
     normal-foreground: @foreground;
 
-    selected-active-background: {color3};
+    selected-active-background: {color4};
     selected-active-foreground: @foreground;
-    selected-normal-background: {color3};
+    selected-normal-background: {color4};
     selected-normal-foreground: @foreground;
-    selected-urgent-background: {color3};
+    selected-urgent-background: {color4};
     selected-urgent-foreground: @foreground;
 
     background-color: @transparent;
@@ -16,7 +16,7 @@
     /*background: {color0};*/
     transparent: #00000000;
     foreground: {color7};
-    border-color: {color3};
+    border-color: {color4};
     spacing: 0;
 }}
 

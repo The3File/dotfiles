@@ -1,24 +1,8 @@
-#	  _   _          ____                   __ _
-#	 | | | |        |___ \                 / _(_)
-#	 | |_| |__   ___  __) | ___ ___  _ __ | |_ _  __ _
-#	 | __| '_ \ / _ \|__ < / __/ _ \| '_ \|  _| |/ _` |
-#	 | |_| | | |  __/___) | (_| (_) | | | | | | | (_| |
-#	  \__|_| |_|\___|____/ \___\___/|_| |_|_| |_|\__, |
-#	                                              __/ |
-#	                                             |___/
-
+# ============
+# === i3wm ===
+# ============
 ##		Startup			##
-exec 		feh --bg-fill ~/.config/wall.png
-exec_always 	compton -b
-exec		wal -Rn
-exec		greenclip daemon
-#exec_always 	xrdb ~/.Xresources
-exec_always 	setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape
-#exec_always	xmodmap ~/.Xmodmap
-exec 		dunst
-exec 		networkd-dispatcher
-exec 		networkd-notify
-exec		notify-send "Boot succesfuld. Velkommen." -a "System"
+exec_always	awrstrt
 
 ##		General			##
 set $mod Mod4
@@ -48,7 +32,6 @@ bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0
 new_window pixel 2
 
 ## Bar
-exec_always --no-startup-id runbar
 bindsym $mod+b exec --no-startup-id runbar toggle
 
 set_from_resource $color0	color0
@@ -82,7 +65,7 @@ set $mdark			#55555555
 
 
 # class                 border  backgr. text    indic.  child_border
-client.focused          #001100 $color3	#FFFFFF $color3
+client.focused          #001100 $color4	#FFFFFF $color4
 client.focused_inactive $backgr $color0 #999999 $color0
 client.unfocused        $backgr $color0 #16A085 $color0
 client.urgent           #FF0000 $color0 #16A085 $color0
@@ -103,8 +86,8 @@ exec $term -n math -e qalc
 # terminal
 for_window [instance="term"] floating enable
 for_window [instance="term"] resize set 800 400
-for_window [instance="term"] border pixel 4
-for_window [instance="term"] move position 20 20 
+#for_window [instance="term"] border pixel 4
+for_window [instance="term"] move position 20 60 
 # math
 bindsym 	$mod+Shift+m 	exec $term -n math -e qalc
 bindsym 	$mod+m		[instance="math"] scratchpad show; [instance="math"] move position center
@@ -128,12 +111,12 @@ bindsym		$mod+v			exec $term -e vmail
 bindsym 	$mod+Return 		exec $term
 bindsym 	$mod+Shift+Return 	exec $term -n term
 
-#bindsym 	$mod+d			exec rundmenu
-bindsym 	$mod+d 			exec rofi -modi drun -show drun -p "Kør"
+bindsym 	$mod+d 			exec rofi -show run
 bindsym		$mod+Insert		exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
 
 ##	Other Bindings
 
+bindsym		$mod+Shift+a		exec notify-send "Dette er en notifikation" -a Test
 
 bindsym 	$mod+Shift+c		reload
 bindsym 	$mod+Shift+r		restart
@@ -155,11 +138,10 @@ bindsym		$mod+Shift+k   		move up
 bindsym 	$mod+l	       		focus right
 bindsym		$mod+Shift+l   		move right
 
-bindsym		$mod+y			resize shrink width 5 px or 5 ppt
-bindsym		$mod+u			resize grow height 5 px or 5 ppt
-
-bindsym		$mod+i			resize shrink height 5 px or 5 ppt
-bindsym 	$mod+o			resize grow width 5 px or 5 ppt
+bindsym		$mod+Mod1+h		resize shrink width 5 px or 5 ppt
+bindsym		$mod+Mod1+j		resize grow height 5 px or 5 ppt
+bindsym		$mod+Mod1+k		resize shrink height 5 px or 5 ppt
+bindsym 	$mod+Mod1+l		resize grow width 5 px or 5 ppt
 
 bindsym		$mod+t			split toggle
 bindsym		$mod+f 	       		fullscreen toggle
@@ -207,15 +189,12 @@ bindsym		$mod+Shift+0 move container to $ws10
 
 ##	Laptop
 
-# Pulse Audio controls
 bindsym XF86AudioRaiseVolume 	exec --no-startup-id "pactl set-sink-volume 0 +5% #increase sound", exec "pkill -SIGRTMIN+10 i3blocks"
 bindsym XF86AudioLowerVolume	exec --no-startup-id "pactl set-sink-volume 0 -5% #decrease sound", exec "pkill -SIGRTMIN+10 i3blocks"
 bindsym XF86AudioMute 		exec --no-startup-id "pactl set-sink-mute 0 toggle # mute sound", exec "pkill -SIGRTMIN+10 i3blocks"
 
-# Screen brightness controls
 bindsym XF86MonBrightnessUp 	exec xbacklight -inc 10 # increase screen brightness
 bindsym XF86MonBrightnessDown 	exec xbacklight -dec 10 # decrease screen brightness
 
-#bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 ##########################################
 #:set ft=i3config

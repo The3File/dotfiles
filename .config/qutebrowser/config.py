@@ -39,7 +39,12 @@ config.set('content.javascript.enabled', True, 'qute://*/*')
 
 # List of user stylesheet filenames to use.
 # Type: List of File, or File
-c.content.user_stylesheets = 'style.css'
+c.content.user_stylesheets = []
+
+# Duration (in milliseconds) to wait before removing finished downloads.
+# If set to -1, downloads are never removed.
+# Type: Int
+c.downloads.remove_finished = 2000
 
 # Hide the statusbar unless a message is shown.
 # Type: Bool
@@ -75,7 +80,7 @@ c.statusbar.widgets = ['keypress', 'progress', 'url']
 #   - bottom
 #   - left
 #   - right
-c.tabs.position = 'top'
+c.tabs.position = 'bottom'
 
 # When to show the tab bar.
 # Type: String
@@ -110,6 +115,27 @@ c.colors.completion.category.border.top = 'white'
 # Bottom border color of the completion widget category headers.
 # Type: QssColor
 c.colors.completion.category.border.bottom = 'white'
+
+# Font color for hints.
+# Type: QssColor
+c.colors.hints.fg = 'black'
+
+# Background color for hints. Note that you can use a `rgba(...)` value
+# for transparency.
+# Type: QssColor
+c.colors.hints.bg = 'white'
+
+# Highlight color for keys to complete the current keychain.
+# Type: QssColor
+c.colors.keyhint.suffix.fg = '#FFFF00'
+
+# Background color of the keyhint widget.
+# Type: QssColor
+c.colors.keyhint.bg = 'rgba(0, 0, 0, 80%)'
+
+# Background color for prompts.
+# Type: QssColor
+c.colors.prompts.bg = 'black'
 
 # Background color of the statusbar.
 # Type: QssColor
