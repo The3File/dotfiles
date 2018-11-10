@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 main(){
-    rsync -av --dry-run $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
-    rsync -av --dry-run $HOME/.Scripts $HOME/dotfiles/
-    rsync -av --dry-run $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
+    rsync -av --delete --dry-run $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
+    rsync -av --delete --dry-run $HOME/.Scripts $HOME/dotfiles/
+    rsync -av --delete --dry-run $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
     read -p "Commit to changes? (y/N)" a
     case $a in
 	y) copy
@@ -14,9 +14,9 @@ main(){
 }
 
 copy(){
-    rsync -a $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
-    rsync -a $HOME/.Scripts $HOME/dotfiles
-    rsync -a $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
+    rsync --delete -a $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
+    rsync --delete -a $HOME/.Scripts $HOME/dotfiles
+    rsync --delete -a $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
     push
 }
 
