@@ -13,10 +13,10 @@ main(){
 	*) exit 0
 	;;
     esac
-    stty echo
 }
 
 copy(){
+    stty echo
     rsync --delete -a $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
     rsync --delete -a $HOME/.Scripts $HOME/dotfiles
     rsync --delete -a $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
