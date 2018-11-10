@@ -13,7 +13,7 @@ main() {
     clean; prompt; stty -echo; tput civis; start_work
 }
 
-clean() { [[ ${FUNCNAME[1]} != prompt ]] && printf "\e[1J\e[H\e[1;32m$logo"; }
+clean() { [[ ${FUNCNAME[1]} != prompt ]] && printf "\e[1J\e[H\e[1;34m$logo"; }
 
 prompt() {
     printf "\e[10;0H\e[1;37mLenght of work in min (25): \e[1;35m\e[s"; read work

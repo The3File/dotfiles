@@ -11,20 +11,20 @@ alert = #bd2c40
 
 [bar/dummy]
 width = 100%
-height = 42
+height = 33
 background = #00000000
 modules-left = blank
-bottom = false
+bottom = true
 
 [bar/example]
 width = 98.4%
-height = 26
+height = 30
 offset-x = 0.8%
-offset-y = 1.4%
+offset-y = 0.0%
 radius = 0
 fixed-center = true
 override-redirect = true
-bottom = false
+bottom = true
 
 background = ${colors.background}
 foreground = ${colors.foreground}
@@ -33,8 +33,8 @@ line-size = 3
 line-color = #f00
 
 border-size = 2
+border-bottom = 0
 border-color = ${colors.primary}
-;border-color = #0000000
 
 padding-left = 0
 padding-right = 0
@@ -140,9 +140,8 @@ interval = 3.0
 [settings]
 screenchange-reload = true
 ;compositing-background = xor
-;compositing-background = screen
-;compositing-foreground = source
-;compositing-border = over
+;compositing-foreground = xor
+;compositing-border = xor
 
 [global/wm]
 margin-top = 5

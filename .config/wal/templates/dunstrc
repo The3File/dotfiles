@@ -1,7 +1,7 @@
 [global]
     monitor = 0
     follow = mouse
-    geometry = "300x5-19+60"
+    geometry = "300x5-18+18"
     indicate_hidden = yes
     shrink = yes
     transparency = false
@@ -9,7 +9,7 @@
     separator_height = 2
     padding = 10
     horizontal_padding = 20
-    frame_width = 3
+    frame_width = 2
     frame_color = "{color4}"
     separator_color = frame
     sort = yes

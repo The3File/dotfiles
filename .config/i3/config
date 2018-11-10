@@ -2,13 +2,13 @@
 # === i3wm ===
 # ============
 ##		Startup			##
-exec_always	awrstrt
+exec_always	--no-startup-id awrstrt
 
 ##		General			##
 set $mod Mod4
-set $browser qutebrowser
-set $browser2 chromium
-set $term st
+set $browser --no-startup-id qutebrowser
+set $browser2 --no-startup-id chromium
+set $term --no-startup-id st
 floating_modifier $mod
 workspace_auto_back_and_forth yes
 
@@ -24,8 +24,8 @@ gaps outer 3
 
 bindsym 	$mod+e 		gaps inner current set 9; gaps outer current set 3
 bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0
-#bindsym		$mod+g		gaps outer current plus 1; gaps inner current plus 3
-#bindsym		$mod+Shift+g	gaps outer current minus 1; gaps inner current minus 3
+#bindsym	$mod+g		gaps outer current plus 1; gaps inner current plus 3
+#bindsym	$mod+Shift+g	gaps outer current minus 1; gaps inner current minus 3
 
 ## Borders	
 #smart_borders on
@@ -87,7 +87,7 @@ exec $term -n math -e qalc
 for_window [instance="term"] floating enable
 for_window [instance="term"] resize set 800 400
 #for_window [instance="term"] border pixel 4
-for_window [instance="term"] move position 20 60 
+for_window [instance="term"] move position 20 20 
 # math
 bindsym 	$mod+Shift+m 	exec $term -n math -e qalc
 bindsym 	$mod+m		[instance="math"] scratchpad show; [instance="math"] move position center
