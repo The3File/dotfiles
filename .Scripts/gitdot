@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 main(){
-    rsync -rv --dry-run $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
-    rsync -rv --dry-run $HOME/.Scripts $HOME/dotfiles/
-    rsync -rv --dry-run $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
+    rsync -av --dry-run $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
+    rsync -av --dry-run $HOME/.Scripts $HOME/dotfiles/
+    rsync -av --dry-run $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
     read -p "Commit to changes? (y/N)" a
     case $a in
 	y) copy
