@@ -5,7 +5,8 @@ main(){
     rsync -ai --delete --dry-run $HOME/.Scripts $HOME/dotfiles/
     rsync -ai --delete --dry-run $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
     stty -echo
-    read -p "Commit to changes? (y/N)" a
+    printf "Commit to changes? (y/N)\n"
+    read  a
     case $a in
 	y) copy
 	;;
