@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# ============= #
+# == AWRSTRT == #
+# ============= #
+
+setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape &
+
+runbar &
+
+# Compton
+pkill compton
+compton -b &
+
+# Dunst
+ln -sf "${HOME}/.cache/wal/dunstrc" "${HOME}/.config/dunst/dunstrc"
+
+pkill dunst
+dunst &

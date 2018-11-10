@@ -1,10 +1,30 @@
 #!/usr/bin/env bash
 
-cp -r ~/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
-cp -r ~/.Scripts ~/dotfiles/
-cp -r ~/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} ~/dotfiles/
-cd ~/dotfiles/
-git add .
-git commit -a -m "I'm lazy"
-git push -u origin master
-exit 0
+main(){
+    rsync -rv --dry-run $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
+    rsync -rv --dry-run $HOME/.Scripts $HOME/dotfiles/
+    rsync -rv --dry-run $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
+    read -p "Commit to changes? (y/N)" a
+    case $a in
+	y) copy
+	;;
+	*) exit 0
+	;;
+    esac
+}
+
+copy(){
+    rsync -a $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
+    rsync -a $HOME/.Scripts $HOME/dotfiles
+    rsync -a $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
+    push
+}
+
+push(){
+    cd ~/dotfiles/
+    git add .
+    git commit -a -m "I'm lazy"
+    git push -u origin master
+    exit 0
+}
+main
