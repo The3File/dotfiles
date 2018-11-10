@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 main(){
-    rsync -av --delete --dry-run $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
-    rsync -av --delete --dry-run $HOME/.Scripts $HOME/dotfiles/
-    rsync -av --delete --dry-run $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
+    rsync -ai --delete --dry-run $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
+    rsync -ai --delete --dry-run $HOME/.Scripts $HOME/dotfiles/
+    rsync -ai --delete --dry-run $HOME/{suckless,.latexmkrc,.nvimrc,.profile,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
+    stty -echo
     read -p "Commit to changes? (y/N)" a
     case $a in
 	y) copy
@@ -25,6 +26,7 @@ push(){
     git add .
     git commit -a -m "I'm lazy"
     git push -u origin master
+    stty echo
     exit 0
 }
 main
