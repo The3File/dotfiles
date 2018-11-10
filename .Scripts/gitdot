@@ -13,6 +13,7 @@ main(){
 	*) exit 0
 	;;
     esac
+    stty echo
 }
 
 copy(){
@@ -23,7 +24,6 @@ copy(){
 }
 
 push(){
-    stty echo
     cd ~/dotfiles/
     git add .
     git commit -a -m "I'm lazy"
