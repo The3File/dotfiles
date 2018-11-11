@@ -10,7 +10,7 @@ main(){
     case $a in
 	y) copy
 	;;
-	*) exit 0
+	*) printf "\n"; exit 0
 	;;
     esac
 }
