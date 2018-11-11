@@ -15,11 +15,9 @@ endfunction
 
 " }}}1
 function! vimtex#compiler#latexmk#wrap_option(name, value) abort " {{{1
-  if has('win32')
-    return ' -e "$' . a:name . ' = ''' . a:value . '''"'
-  else
-    return ' -e ''$' . a:name . ' = "' . a:value . '"'''
-  endif
+  return has('win32')
+        \ ? ' -e "$' . a:name . ' = ''' . a:value . '''"'
+        \ : ' -e ''$' . a:name . ' = "' . a:value . '"'''
 endfunction
 
 "}}}1
@@ -217,6 +215,7 @@ function! s:compiler.get_engine() abort dict " {{{1
         \  '_'                : '-pdf',
         \  'pdfdvi'           : '-pdfdvi',
         \  'pdflatex'         : '-pdf',
+        \  'luatex'           : '-lualatex',
         \  'lualatex'         : '-lualatex',
         \  'xelatex'          : '-xelatex',
         \  'context (pdftex)' : '-pdf -pdflatex=texexec',
@@ -418,7 +417,7 @@ function! s:compiler_process.start_single() abort dict " {{{1
 
   if self.continuous
     let g:vimtex_compiler_callback_hooks += ['VimtexSSCallback']
-    function! VimtexSSCallback(status)
+    function! VimtexSSCallback(status) abort
       silent call vimtex#compiler#stop()
       call remove(g:vimtex_compiler_callback_hooks, 'VimtexSSCallback')
     endfunction

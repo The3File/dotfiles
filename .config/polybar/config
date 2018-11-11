@@ -33,17 +33,18 @@ line-size = 3
 line-color = #f00
 
 border-size = 2
-border-bottom = 0
+border-bottom-size = 0
 border-color = ${colors.primary}
 
 padding-left = 0
 padding-right = 0
 
-module-margin-left = 1
-module-margin-right = 2
+module-margin-left = 2
+module-margin-right = 3
 
-font-0 = Terminus:pixelsize=10;2
-font-1 = FontAwesome:fontformat=truetype:size=10:antialias=false;2
+font-0 = SFNS Display:style=Regular:pixelsize=10:fontformat=truetype:antialias=true;2
+font-1 = FontAwesome:fontformat=truetype:size=10:antialias=true;2
+font-2 = SFNS Display:style=Bold:pixelsize=10:fontformat=truetype:antialias=true;1
 
 modules-left = i3
 modules-center = 
@@ -86,9 +87,9 @@ label-mode-background = ${colors.primary}
 label-focused = %name%
 label-focused-foreground= ${colors.background}
 label-focused-background = ${colors.primary}
-label-focused-padding = 3
+label-focused-padding = 4
 label-unfocused = %name%
-label-unfocused-padding = 3
+label-unfocused-padding = 4
 label-unfocused-background = ${colors.background}
 label-urgent = %name%
 label-urgent-foreground= ${colors.alert}
@@ -117,15 +118,15 @@ interval = 5
 date = "   %A, %e/%m"
 date-alt = " %Y-%m-%d"
 
-time = " %H:%M   "
+time = "    %H:%M    "
 time-alt = %H:%M:%S
 
-format-prefix = 
+format-prefix = 
 format-prefix-foreground = ${colors.background}
 format-foreground = ${colors.background}
 format-background = ${colors.primary}
 
-label = %date%  | %time%
+label = %time%
 
 [module/i3batt]
 type = custom/script

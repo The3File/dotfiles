@@ -4,7 +4,7 @@
 " Email:      karl.yngve@gmail.com
 "
 
-function! vimtex#misc#init_buffer() " {{{1
+function! vimtex#misc#init_buffer() abort " {{{1
   command! -buffer                VimtexReload call vimtex#misc#reload()
   command! -buffer -bang -range=% VimtexCountWords
         \ call vimtex#misc#wordcount_display({
@@ -93,7 +93,7 @@ function! vimtex#misc#wordcount_display(opts) abort " {{{1
   0delete _
 
   " Set mappings
-  nnoremap <buffer> <silent> q :bwipeout<cr>
+  nnoremap <buffer><nowait><silent> q :bwipeout<cr>
 
   " Set buffer options
   setlocal bufhidden=wipe

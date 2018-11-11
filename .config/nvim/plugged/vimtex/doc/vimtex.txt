@@ -322,17 +322,16 @@ Manipulate surrounding commands/delimiters/environments~
   `""`, `()`, `[]`, `{}`, and `<>`.  As such, the mappings from vimtex
   should work well together with, and as an extension of, `surround.vim`.
   Consider also the customization described under |vimtex-faq-surround|.
-  The mappings may be repeated with the dot mapping |.| if one has
-  `vim-repeat` [1].
+  The mappings may be repeated with the dot command |.|.
 
-  A different possibility is to use `vim-sandwich` [2] (|sandwich.txt|) by
+  A different possibility is to use `vim-sandwich` [1] (|sandwich.txt|) by
   Machakann, which may be considered a generalisation of `surround.vim` in
   that it can handle much more complex sets of delimiters.  `vim-sandwich`
   is relatively easy to expand with custom surroundings and has built in
   support for LaTeX-specific surroundings such as quotations, ```text''`,
   and math delimiters, `$\left(a+b\right)$`.  For a list of supported
-  delimiters, see |sandwich-filetype-recipes|.  `vim-sandwich` also supports
-  `vim-repeat` in addition to `visualrepeat.vim` [3].
+  delimiters, see |sandwich-filetype-recipes|.  `vim-sandwich` supports
+  `vim-repeat` [2] in addition to `visualrepeat.vim` [3].
 
   Note: The default mappings of `vim-sandwich` differ from those of
     `surround.vim`, in that the use `s` as the prefix.  E.g., to add
@@ -347,8 +346,8 @@ Manipulate surrounding commands/delimiters/environments~
     |sandwich.txt|, |operator-sandwich.txt|, and |textobj-sandwich.txt|.
 
   [0]: https://github.com/tpope/vim-surround
-  [1]: https://github.com/tpope/vim-repeat
-  [2]: https://github.com/machakann/vim-sandwich
+  [1]: https://github.com/machakann/vim-sandwich
+  [2]: https://github.com/tpope/vim-repeat
   [3]: http://www.vim.org/scripts/script.php?script_id=3848
 
 Enhanced matching and higlighting of delimiters~
@@ -957,6 +956,18 @@ OPTIONS                                                        *vimtex-options*
 
   Default value: 1
 
+*g:vimtex_complete_smart_case*
+  If enabled, then vimtex will filter case sensitive if there is a capital
+  letter in the completion input. This is only relevant if
+  |g:vimtex_complete_ignore_case| is also enabled.
+
+  Default value: Same as your 'smartcase' value
+
+*g:vimtex_complete_ignore_case*
+  If enabled, then vimtex will filter case insensitive.
+
+  Default value: Same as your 'ignorecase' value
+
 *g:vimtex_complete_close_braces*
   This option controls whether to append a closing brace after a label or
   a citation has been completed.
@@ -1447,9 +1458,13 @@ OPTIONS                                                        *vimtex-options*
       \]
 
 *g:vimtex_indent_on_ampersands*
-  By default, vimtex will align on ampersands e.g. in math aligned
+  By default, vimtex will align on `leading` ampersands e.g. in math aligned
   environments or in tabular environments. If this feature is not wanted it
   may be disabled through this option.
+
+  Note: To get a more advanced tabular like alignment feature, you may be
+        interested in something like |vim-easy-align|:
+        https://github.com/junegunn/vim-easy-align
 
   Default value: 1
 
@@ -2776,6 +2791,12 @@ is a highly customizable and flexible completion manager.
 
 To configure for `vimtex`, one may use: >
 
+  " This is new style
+  call deoplete#custom#var('omni', 'input_patterns', {
+          \ 'tex': g:vimtex#re#deoplete
+          \})
+
+  " This is old style (deprecated)
   if !exists('g:deoplete#omni#input_patterns')
       let g:deoplete#omni#input_patterns = {}
   endif

@@ -5,8 +5,8 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "mono:pixelsize=14:antialias=true:autohint=true";
-static int borderpx = 3;
+static char *font = "SF Mono:style=Light:pixelsize=13:antialias=true:autohint=true";
+static int borderpx = 10;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -103,9 +103,10 @@ static const char *colorname[] = {
 	"#93a1a1",  /* 14: brcyan   */
 	"#fdf6e3",  /* 15: brwhite  */
 	/* more colors can be added after 255 to use with DefaultXX */
-	"#000000",   /* 256 -> bg */
+	"#000000",   /* 256 -> null */
 	"#00cc00", /* 257 -> fg */
     	"magenta"  /* 258 -> cursor */
+	"#000000",   /* 259 -> bg */
 };
 
 
@@ -114,7 +115,7 @@ static const char *colorname[] = {
  * foreground, background, cursor, reverse cursor
  */
 unsigned int defaultfg = 12;
-unsigned int defaultbg = 256;
+unsigned int defaultbg = 259;
 static unsigned int defaultcs = 14;
 static unsigned int defaultrcs = 15;
 

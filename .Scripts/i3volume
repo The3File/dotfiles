@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-volume="$(amixer get Master | sed -n '/Left:/g;s/\[//g;s/\]//p' | awk '{print $5}')"
-[[ -z $(amixer get Master | grep -wo "on") ]] && volume="mute"; echo " $volume"
+volume="$(pamixer --get-volume)%"
+[[ $(pamixer --get-mute) = "true" ]] && volume="mute"; echo " $volume"

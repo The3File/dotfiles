@@ -33,13 +33,13 @@ exec 'syn match NERDTreeFile  #^[^"\.'.s:dirArrows.'] *[^'.s:dirArrows.']*# cont
 "highlighting for readonly files
 exec 'syn match NERDTreeRO # *\zs.*\ze \['.g:NERDTreeGlyphReadOnly.'\]# contains=NERDTreeIgnore,NERDTreeBookmark,NERDTreeFile'
 
-syn match NERDTreeFlags #^ *\zs\[.\]# containedin=NERDTreeFile,NERDTreeExecFile
-syn match NERDTreeFlags #\[.\]# containedin=NERDTreeDir
+syn match NERDTreeFlags #^ *\zs\[[^\]]*\]# containedin=NERDTreeFile,NERDTreeExecFile
+syn match NERDTreeFlags #\[[^\]]*\]# containedin=NERDTreeDir
 
 "highlighing to conceal the delimiter around the file/dir name
 if has("conceal")
     exec 'syn match NERDTreeNodeDelimiters #' . g:NERDTreeNodeDelimiter . '# conceal containedin=NERDTreeFile,NERDTreeLinkFile,NERDTreeExecFile,NERDTreeRO,NERDTreeDir'
-    setlocal conceallevel=2 concealcursor=nvic
+    setlocal conceallevel=3 concealcursor=nvic
 else
     exec 'syn match NERDTreeNodeDelimiters #' . g:NERDTreeNodeDelimiter . '# containedin=NERDTreeFile,NERDTreeLinkFile,NERDTreeExecFile,NERDTreeRO,NERDTreeDir'
     hi! link NERDTreeNodeDelimiters Ignore

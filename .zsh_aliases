@@ -26,9 +26,6 @@ alias p="sudo pacman"
 alias la="ls -a"
 alias lla="ls -la"
 
-alias week="gcalcli calw 1"
-alias day="gcalcli agenda"
-
 alias fastboot="sudo fastboot"
 alias fr="fastboot reboot"
 alias ff="fastboot flash"

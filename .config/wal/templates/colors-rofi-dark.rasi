@@ -11,6 +11,7 @@
     selected-urgent-background: {color4};
     selected-urgent-foreground: @foreground;
 
+    font: "SFNS Display 13.97";
     background-color: @transparent;
     background: #000000e9;
     /*background: {color0};*/
@@ -28,8 +29,8 @@
     orientation: vertical;
     width: 40%;
     height: 40%;
-    /*y-offset:			190;*/
-    /*x-offset:			-370;*/
+    y-offset:			-190;
+    x-offset:			-370;
 }}
 
 #mainbox {{

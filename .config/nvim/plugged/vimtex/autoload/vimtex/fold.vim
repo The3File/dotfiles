@@ -15,8 +15,8 @@ function! vimtex#fold#init_buffer() abort " {{{1
 
   if g:vimtex_fold_manual
     " Remap zx to refresh fold levels
-    nnoremap <silent><buffer> zx :call vimtex#fold#refresh('zx')<cr>
-    nnoremap <silent><buffer> zX :call vimtex#fold#refresh('zX')<cr>
+    nnoremap <silent><nowait><buffer> zx :call vimtex#fold#refresh('zx')<cr>
+    nnoremap <silent><nowait><buffer> zX :call vimtex#fold#refresh('zX')<cr>
 
     " Define commands
     command! -buffer VimtexRefreshFolds call vimtex#fold#refresh('zx')
@@ -31,7 +31,7 @@ function! vimtex#fold#init_buffer() abort " {{{1
       " vint: +ProhibitAutocmdWithNoGroup
     augroup END
 
-    function! s:fold_manual_refresh()
+    function! s:fold_manual_refresh() abort
       call vimtex#fold#refresh('zx')
       if exists('b:fold_manual_augroup')
         execute 'autocmd!' b:fold_manual_augroup

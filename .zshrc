@@ -2,7 +2,6 @@ export PATH=$HOME/bin:/usr/local/bin:$HOME/.Scripts/:$PATH
 
 export KEYTIMEOUT=1
 export ZSH="/home/ringdal/.oh-my-zsh"
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 bindkey -a "^R" redo
 bindkey "^s" history-incremental-search-backward

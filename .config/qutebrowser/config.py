@@ -73,6 +73,10 @@ c.statusbar.position = 'bottom'
 #   - progress: Progress bar for the current page loading.
 c.statusbar.widgets = ['keypress', 'progress', 'url']
 
+# Padding (in pixels) around text for tabs.
+# Type: Padding
+c.tabs.padding = {'top': 2, 'bottom': 2, 'left': 0, 'right': 0}
+
 # Position of the tab bar.
 # Type: Position
 # Valid values:
@@ -80,7 +84,7 @@ c.statusbar.widgets = ['keypress', 'progress', 'url']
 #   - bottom
 #   - left
 #   - right
-c.tabs.position = 'bottom'
+c.tabs.position = 'top'
 
 # When to show the tab bar.
 # Type: String
@@ -110,28 +114,28 @@ c.colors.completion.category.bg = 'black'
 
 # Top border color of the completion widget category headers.
 # Type: QssColor
-c.colors.completion.category.border.top = 'white'
+c.colors.completion.category.border.top = 'black'
 
 # Bottom border color of the completion widget category headers.
 # Type: QssColor
-c.colors.completion.category.border.bottom = 'white'
+c.colors.completion.category.border.bottom = 'black'
 
 # Font color for hints.
 # Type: QssColor
-c.colors.hints.fg = 'black'
+c.colors.hints.fg = '#171716'
 
 # Background color for hints. Note that you can use a `rgba(...)` value
 # for transparency.
 # Type: QssColor
-c.colors.hints.bg = 'white'
+c.colors.hints.bg = '#171716'
 
 # Highlight color for keys to complete the current keychain.
 # Type: QssColor
-c.colors.keyhint.suffix.fg = '#FFFF00'
+c.colors.keyhint.suffix.fg = '#171716'
 
 # Background color of the keyhint widget.
 # Type: QssColor
-c.colors.keyhint.bg = 'rgba(0, 0, 0, 80%)'
+c.colors.keyhint.bg = '#171716'
 
 # Background color for prompts.
 # Type: QssColor
@@ -147,19 +151,27 @@ c.colors.tabs.bar.bg = 'black'
 
 # Color gradient start for the tab indicator.
 # Type: QtColor
-c.colors.tabs.indicator.start = 'black'
+c.colors.tabs.indicator.start = '#171716'
 
 # Color gradient end for the tab indicator.
 # Type: QtColor
-c.colors.tabs.indicator.stop = 'black'
+c.colors.tabs.indicator.stop = '#171716'
 
 # Color for the tab indicator on errors.
 # Type: QtColor
-c.colors.tabs.indicator.error = 'black'
+c.colors.tabs.indicator.error = '#171716'
+
+# Foreground color of unselected odd tabs.
+# Type: QtColor
+c.colors.tabs.odd.fg = '#c5c5c4'
 
 # Background color of unselected odd tabs.
 # Type: QtColor
 c.colors.tabs.odd.bg = 'black'
+
+# Foreground color of unselected even tabs.
+# Type: QtColor
+c.colors.tabs.even.fg = '#c5c5c4'
 
 # Background color of unselected even tabs.
 # Type: QtColor
@@ -167,33 +179,73 @@ c.colors.tabs.even.bg = 'black'
 
 # Foreground color of selected odd tabs.
 # Type: QtColor
-c.colors.tabs.selected.odd.fg = '#00ff00'
+c.colors.tabs.selected.odd.fg = '#171716'
 
 # Background color of selected odd tabs.
 # Type: QtColor
-c.colors.tabs.selected.odd.bg = 'black'
+c.colors.tabs.selected.odd.bg = '#b88d37'
 
 # Foreground color of selected even tabs.
 # Type: QtColor
-c.colors.tabs.selected.even.fg = '#00ff00'
+c.colors.tabs.selected.even.fg = '#171716'
 
 # Background color of selected even tabs.
 # Type: QtColor
-c.colors.tabs.selected.even.bg = 'black'
+c.colors.tabs.selected.even.bg = '#b88d37'
 
 # Background color for webpages if unset (or empty to use the theme's
 # color).
 # Type: QtColor
-c.colors.webpage.bg = 'white'
+c.colors.webpage.bg = 'black'
 
 # Default monospace fonts. Whenever "monospace" is used in a font
 # setting, it's replaced with the fonts listed here.
 # Type: Font
-c.fonts.monospace = 'inconsolata'
+c.fonts.monospace = 'SF Mono'
+
+# Font used in the completion widget.
+# Type: Font
+c.fonts.completion.entry = '9pt monospace'
+
+# Font used for the debugging console.
+# Type: QtFont
+c.fonts.debug_console = '9pt monospace'
+
+# Font used for the downloadbar.
+# Type: Font
+c.fonts.downloads = '9pt monospace'
+
+# Font used in the keyhint widget.
+# Type: Font
+c.fonts.keyhint = '9pt monospace'
+
+# Font used for error messages.
+# Type: Font
+c.fonts.messages.error = '9pt monospace'
+
+# Font used for info messages.
+# Type: Font
+c.fonts.messages.info = '9pt monospace'
+
+# Font used for warning messages.
+# Type: Font
+c.fonts.messages.warning = '9pt monospace'
 
 # Font used in the statusbar.
 # Type: Font
 c.fonts.statusbar = '9pt monospace'
+
+# Font used in the tab bar.
+# Type: QtFont
+c.fonts.tabs = '9pt monospace'
+
+# Default font size (in pixels) for regular text.
+# Type: Int
+c.fonts.web.size.default = 15
+
+# Default font size (in pixels) for fixed-pitch text.
+# Type: Int
+c.fonts.web.size.default_fixed = 12
 
 # Bindings for normal mode
 config.bind(',n', 'config-cycle content.user_stylesheets style.css ""')
