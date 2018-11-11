@@ -16,6 +16,7 @@ main(){
 }
 
 copy(){
+    printf "\n"
     stty echo
     rsync --delete -a $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
     rsync --delete -a $HOME/.Scripts $HOME/dotfiles
