@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 main(){
     rsync -ai --delete --dry-run $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
     rsync -ai --delete --dry-run $HOME/.Scripts $HOME/dotfiles/
@@ -7,12 +6,7 @@ main(){
     stty -echo
     printf "Commit to changes? (y/N)"
     read -rsn1 a
-    case $a in
-	y) copy
-	;;
-	*) printf "\n"; exit 0
-	;;
-    esac
+    [[ $a == y ]] && copy || printf "\n" && exit
 }
 
 copy(){
@@ -31,4 +25,6 @@ push(){
     git push -u origin master
     exit 0
 }
+[[ $1 == push ]] && push
+[[ -z $1 ]] || printf "Unknown option: '$1'\n"
 main
