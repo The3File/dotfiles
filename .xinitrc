@@ -11,7 +11,8 @@ usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
 
-exec            wal -R &
+exec		feh --bg-fill $HOME/.config/wall.png &
+exec            wal -Rn &
 exec            greenclip daemon &
 exec            dunst &
 exec            networkd-dispatcher &

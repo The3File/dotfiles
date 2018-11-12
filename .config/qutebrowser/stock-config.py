@@ -5,35 +5,6 @@
 
 # Uncomment this to still load settings configured via autoconfig.yml
 # config.load_autoconfig()
-#
-c.colors.statusbar.url.fg = '#22150f'
-c.colors.statusbar.url.error.fg = '#22150f'
-c.colors.statusbar.url.hover.fg = '#22150f'
-c.colors.statusbar.url.warn.fg = '#22150f'
-c.colors.statusbar.url.success.http.fg = '#22150f'
-c.colors.statusbar.url.success.https.fg = '#22150f'
-
-c.colors.statusbar.normal.bg = '#b8b6c3'
-c.colors.statusbar.normal.bg = '#b8b6c3'
-c.colors.statusbar.normal.fg = '#22150f'
-c.colors.tabs.bar.bg = 'black'
-c.colors.tabs.odd.bg = 'black'
-c.colors.tabs.even.bg = 'black'
-c.colors.tabs.selected.odd.bg = '#b8b6c3'
-c.colors.tabs.selected.odd.bg = '#b8b6c3'
-c.colors.tabs.selected.even.bg = '#b8b6c3'
-c.colors.tabs.selected.even.bg = '#b8b6c3'
-c.colors.tabs.selected.odd.fg = '#22150f'
-c.colors.tabs.selected.even.fg = '#22150f'
-
-c.colors.tabs.indicator.start = '#b8b6c3'
-c.colors.tabs.indicator.start = '#b8b6c3'
-c.colors.tabs.indicator.stop = '#b8b6c3'
-c.colors.tabs.indicator.stop = '#b8b6c3'
-#c.colors.tabs.indicator.error = '#b8b6c3'
-#c.colors.tabs.indicator.error = '#b8b6c3'
-#c.colors.tabs.indicator.system = '#b8b6c3'
-#c.colors.tabs.indicator.system = '#b8b6c3'
 
 # Aliases for commands. The keys of the given dictionary are the
 # aliases, while the values are the commands they map to.
@@ -68,7 +39,7 @@ config.set('content.javascript.enabled', True, 'qute://*/*')
 
 # List of user stylesheet filenames to use.
 # Type: List of File, or File
-c.content.user_stylesheets = ['style.css']
+c.content.user_stylesheets = []
 
 # Duration (in milliseconds) to wait before removing finished downloads.
 # If set to -1, downloads are never removed.
@@ -77,7 +48,7 @@ c.downloads.remove_finished = 2000
 
 # Hide the statusbar unless a message is shown.
 # Type: Bool
-c.statusbar.hide = True
+c.statusbar.hide = False
 
 # Padding (in pixels) for the statusbar.
 # Type: Padding
@@ -113,7 +84,7 @@ c.tabs.padding = {'top': 2, 'bottom': 2, 'left': 0, 'right': 0}
 #   - bottom
 #   - left
 #   - right
-c.tabs.position = 'bottom'
+c.tabs.position = 'top'
 
 # When to show the tab bar.
 # Type: String
@@ -129,6 +100,13 @@ c.tabs.show = 'multiple'
 # Type: Int
 c.tabs.show_switching_delay = 2000
 
+c.colors.tabs.bar.bg = 'black'
+c.colors.tabs.odd.bg = 'black'
+c.colors.tabs.even.bg = 'black'
+c.colors.tabs.selected.odd.bg = 'black'
+c.colors.tabs.selected.even.bg = 'black'
+c.colors.tabs.selected.odd.fg = 'white'
+c.colors.tabs.selected.even.fg = 'white'
 
 # Default monospace fonts. Whenever "monospace" is used in a font
 # setting, it's replaced with the fonts listed here.

@@ -9,7 +9,6 @@ main() {
     trap 'tput cvvis && completed && exit' EXIT
     trap 'clean' SIGWINCH
 
-
     clean; prompt; stty -echo; tput civis; start_work
 }
 
@@ -33,7 +32,6 @@ bar() {
 
     printf -v prog "%$(($1*width/$2))s"
     printf -v total "%$((width-($1*width/$2)))s"
-
     printf '\e[J\e['$rows';0H%s\r' "[${prog// /\#}${total}]"
 
 	sleep .1
@@ -46,6 +44,7 @@ start_work() {
 	printf "\e[10;0H\e[1;35mWork left: %02d:%02d" "$((sec/60))" "$((sec%60))"
 	bar $((SECONDS-start_time)) work
     done
+
     work_done
 }
 start_notwork() {
@@ -56,27 +55,30 @@ start_notwork() {
 	printf "\e[10;0H\e[1;33mBreak left: %02d:%02d" "$((sec/60))" "$((sec%60))"
 	bar $((SECONDS-start_time)) notwork
     done
+
     notwork_done
 }
 work_done() {
     play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
+    notify-send "Work completed!" -a Prokrastimer
 
     ((count++))
     [[ $count == $sess ]] && exit 0
 
     printf "\e[10;17H\e[1;39m - Work completed!"
     printf "\n\e[1;33mPress ENTER to start break"; read 2>/dev/null
-
     printf "\e[1A\r\e[J"
+
     start_notwork
 }
 notwork_done() {
     play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
+    notify-send "Break over!" -a Prokrastimer
 
     printf "\e[10;18H\e[1;39m - Break completed!"
     printf "\n\e[1;35mPress ENTER to start work"; read 2>/dev/null
-
     printf "\e[1A\r\e[J"
+
     start_work
 }
 completed() {

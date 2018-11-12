@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-[[ -z $1 ]] && echo Missing filename.
+[[ -z $1 ]] && echo "Missing filename." && exit
 out="${1%.md}.pdf"
-[[ -z $2 ]] && pandoc -t latex $1 -o $out || pandoc -t latex $@ -o samlet.pdf
+[[ -z $2 ]] && pandoc -t latex $1 -o $out || read -p "Hvad skal filen hedde?:" a && pandoc -t latex $@ -o ${a}.pdf

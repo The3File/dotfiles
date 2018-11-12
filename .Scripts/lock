@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+    source ~/.cache/wal/colors.sh
+main(){
+    scrot -z ~/.wall.png
+    convert ~/.wall.png -scale 25% -scale 400% -fill black -colorize 50% ~/.wall.png
+    #xwobf -s 5 -f /tmp/.i3lock.png
+    lock_
+    fade end
+}
+
+fade(){
+    dis=$(echo -n "$DISPLAY" | tr -c '[:alnum:]' _)
+    ifc='com.github.chjj.compton'
+    obj='/com/github/chjj/compton'
+    if [[ "$1" == "start" ]]; then
+	dbus-send --print-reply --dest=$ifc.$dis \
+	    $obj $ifc.opts_set string:fade_in_step double:0.025
+	dbus-send --print-reply --dest=$ifc.$dis \
+	    $obj $ifc.opts_set string:fade_out_step double:0.025
+    else
+	dbus-send --print-reply --dest=$ifc.$dis \
+	    $obj $ifc.opts_set string:fade_in_step double:1
+	dbus-send --print-reply --dest=$ifc.$dis \
+	    $obj $ifc.opts_set string:fade_out_step double:1
+    fi
+}
+
+lock_(){ 
+	fade start 
+	wrong=ff000099
+	back=00000000
+	fore=ffffff99
+	#i3lock -e -i /tmp/.i3lock.png \
+	i3lock -e -i ~/.wall.png \
+	    --insidecolor=$back --ringcolor=$back --line-uses-inside \
+	    --keyhlcolor=$back --bshlcolor=$back --separatorcolor=$back \
+	    --insidevercolor=$back --insidewrongcolor=$back\
+	    --ringvercolor=$back --ringwrongcolor=$back --verifcolor=$fore\
+	    --greetertext="LOCKED" --wrongcolor=$wrong \
+	    --veriftext='verifying' --wrongtext='invalid passwd' \
+	    --timecolor="$fore" --datecolor="$fore" --noinputtext='empty'\
+	    --greetercolor=$fore --indpos="20:85" --greeterpos="80:50"\
+	    --layout-align=1 --verif-align=1  --wrong-align=1
+	while pgrep -x i3lock;do sleep .1;done
+	sleep .4
+}
+main

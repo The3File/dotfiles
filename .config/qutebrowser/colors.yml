@@ -1,1 +1,118 @@
-/home/ringdal/.cache/wal/qutebrowser.yml
+colors:
+    statusbar:
+        caret:
+            bg: "#4DA991"
+            fg: "#e7e2cc"
+        command:
+            bg: "#B3B19B"
+            fg: "#0C0D21"
+            private:
+                bg: "black"
+        insert:
+            bg: "#509175"
+            fg: "#e7e2cc"
+        normal:
+            bg: "#0C0D21"
+            fg: "#e7e2cc"
+        private:
+            bg: "#0C0D21"
+            fg: "#e7e2cc"
+        progress:
+            bg: "#e7e2cc"
+        url:
+            fg: "#e7e2cc"
+            error:
+                fg: "#A46754"
+            hover:
+                fg: "#987D80"
+            success:
+                http:
+                    fg: "#e7e2cc"
+                https:
+                    fg: "#509175"
+            warn:
+                fg: "#CBA759"
+    tabs:
+        bar:
+            bg: "#0C0D21"
+        even:
+            fg: "#e7e2cc"
+            bg: "#0C0D21"
+        odd:
+            fg: "#e7e2cc"
+            bg: "#0C0D21"
+        selected:
+            even:
+                fg: "#0C0D21"
+                bg: "#e7e2cc"
+            odd:
+                fg: "#0C0D21"
+                bg: "#e7e2cc"
+    completion:
+        category:
+            bg: "#B3B19B"
+            fg: "#0C0D21"
+            border:
+                bottom: "#0C0D21"
+                top: "#B3B19B"
+        even:
+            bg: "#0C0D21"
+        odd:
+            bg: "#0C0D21"
+        item:
+            selected:
+                bg: "#987D80"
+                fg: "#e7e2cc"
+                border:
+                    bottom: "#987D80"
+                    top: "#987D80"
+        match:
+            fg: "#509175"
+        scrollbar:
+            bg: "#e7e2cc"
+            fg: "#0C0D21"
+    downloads:
+        bar:
+            bg: "#0C0D21"
+        error:
+            fg: "#e7e2cc"
+            bg: "#A46754"
+        start:
+            fg: "#e7e2cc"
+            bg: "#4DA991"
+        stop:
+            fg: "#e7e2cc"
+            bg: "#509175"
+    hints:
+        fg: "#e7e2cc"
+        bg: "#0C0D21"
+        match:
+            fg: "#CBA759"
+    keyhint:
+        fg: "#e7e2cc"
+        bg: "#0C0D21"
+        suffix:
+            fg: "#CBA759"
+    messages:
+        error:
+            fg: "#e7e2cc"
+            bg: "#A46754"
+            border: "#A46754"
+        info:
+            fg: "#e7e2cc"
+            bg: "#509175"
+            border: "#509175"
+        warning:
+            fg: "#e7e2cc"
+            bg: "#CBA759"
+            border: "#CBA759"
+    prompts:
+        fg: "#e7e2cc"
+        bg: "#0C0D21"
+        border: "#0C0D21"
+        selected:
+            bg: "#CBA759"
+    webpage:
+        bg: "#e7e2cc"
+hints:
+    border: "1px solid #e7e2cc"

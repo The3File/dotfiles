@@ -85,9 +85,9 @@ exec $term -n math -e qalc
 
 # dropdown
 for_window [instance="term"] floating enable
-for_window [instance="term"] resize set 800 410
+for_window [instance="term"] resize set 800 435
 for_window [instance="term"] move scratchpad
-exec $term -n math -e qalc
+exec $term -n term -e tmux
 
 # float new term
 for_window [instance="float"] floating enable
@@ -96,11 +96,11 @@ for_window [instance="float"] move position 20 20
 
 # math
 bindsym 	$mod+Shift+a 	exec $term -n math -e qalc
-bindsym 	$mod+a		[instance="math"] scratchpad show; [instance="math"] move position center
+bindsym 	$mod+a		[instance="math"] scratchpad show; move position 540 410
 
 # terminal
 bindsym		$mod+Shift+p	exec $term -n term -e tmux
-bindsym		$mod+p 		[instance="term"] scratchpad show; [instance="term"] move position center
+bindsym		$mod+p 		[instance="term"] scratchpad show; move position 270 30
 
 
 ## App Bindings
@@ -131,7 +131,7 @@ bindsym 	$mod+Shift+r		restart
 bindsym 	$mod+q			kill
 
 bindsym		$mod+Shiftx 		exec --no-startup-id byebye
-bindsym 	$mod+x			exec i3lock --color '#000000'
+bindsym 	$mod+x			exec --no-startup-id lock
 
 bindsym 	$mod+h			focus left
 bindsym		$mod+Shift+h   		move left

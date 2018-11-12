@@ -7,9 +7,10 @@
 setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape &
 runbar &
 
+ln -sf    "${HOME}/.cache/wal/dunstrc"    "${HOME}/.config/dunst/dunstrc"
 # Compton
 pkill compton
-compton -b &
+compton --dbus -b &
 
 # Dunst
 pkill dunst
