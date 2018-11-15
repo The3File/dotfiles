@@ -5,7 +5,9 @@
 # ============= #
 
 setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape &
+
 runbar &
+qutewal &
 
 ln -sf    "${HOME}/.cache/wal/dunstrc"    "${HOME}/.config/dunst/dunstrc"
 # Compton

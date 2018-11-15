@@ -51,6 +51,7 @@ set_from_resource $color13	color13
 set_from_resource $color14	color14
 set_from_resource $color15	color15
 
+set $bg				$color2
 set $back			#000000d9
 set $black			#000000
 set $text			#FFFFFF
@@ -66,10 +67,10 @@ set $mdark			#55555555
 
 # class                 border  backgr. text    indic.  child_border
 client.focused          #001100 $color4	#FFFFFF $color4
-client.focused_inactive $backgr $color0 #999999 $color0
-client.unfocused        $backgr $color0 #16A085 $color0
-client.urgent           #FF0000 $color0 #16A085 $color0
-client.placeholder      $backgr $color0 #ffffff $color0 #0c0c0c
+client.focused_inactive $back 	$back 	#999999 $back
+client.unfocused        $back 	$back 	#16A085 $back
+client.urgent           #FF0000 $back 	#16A085 $back
+client.placeholder      $backgr $back 	#ffffff $back 	#0c0c0c
 
 client.background       #2B2C2B
 
@@ -200,8 +201,8 @@ bindsym XF86AudioRaiseVolume 	exec --no-startup-id "pactl set-sink-volume 0 +5% 
 bindsym XF86AudioLowerVolume	exec --no-startup-id "pactl set-sink-volume 0 -5% #decrease sound", exec --no-startup-id "pkill -SIGRTMIN+10 i3blocks"
 bindsym XF86AudioMute 		exec --no-startup-id "pactl set-sink-mute 0 toggle # mute sound", exec --no-startup-id "pkill -SIGRTMIN+10 i3blocks"
 
-bindsym XF86MonBrightnessUp 	exec xbacklight -inc 10 # increase screen brightness
-bindsym XF86MonBrightnessDown 	exec xbacklight -dec 10 # decrease screen brightness
+bindsym XF86MonBrightnessUp 	exec --no-startup-id light -A 10
+bindsym XF86MonBrightnessDown 	exec --no-startup-id light -U 10
 
 ##########################################
 #:set ft=i3config

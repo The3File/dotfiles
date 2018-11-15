@@ -57,3 +57,6 @@
 *color13:      base06
 *color14:      base0F
 *color15:      base07
+
+*bg: color0
+*fg: color2

@@ -16,5 +16,5 @@ exec            wal -Rn &
 exec            greenclip daemon &
 exec            dunst &
 exec            networkd-dispatcher &
-exec            networkd-notify &
+#exec            networkd-notify &
 exec 		i3

@@ -44,11 +44,11 @@ module-margin-right = 3
 
 font-0 = SFNS Display:style=Regular:pixelsize=10:fontformat=truetype:antialias=true;2
 font-1 = FontAwesome:fontformat=truetype:size=10:antialias=true;2
-font-2 = SFNS Display:style=Bold:pixelsize=10:fontformat=truetype:antialias=true;1
+#font-1 = SF Mono:style=Regular:pixelsize=10:fontformat=truetype:antialias=true;1
 
 modules-left = i3
-modules-center = 
-modules-right = i3volume i3batt i3network date
+modules-center =
+modules-right = i3cpu i3temp i3volume i3batt i3network date
 
 tray-position = right
 tray-padding = 2
@@ -115,10 +115,10 @@ signal = 10
 type = internal/date
 interval = 5
 
-date = "   %A, %e/%m"
+date = "    %e/%m "
 date-alt = " %Y-%m-%d"
 
-time = "    %H:%M    "
+time = "-  %H:%M    "
 time-alt = %H:%M:%S
 
 format-prefix = 
@@ -126,7 +126,7 @@ format-prefix-foreground = ${colors.background}
 format-foreground = ${colors.background}
 format-background = ${colors.primary}
 
-label = %time%
+label = %date% %time%
 
 [module/i3batt]
 type = custom/script
@@ -136,6 +136,11 @@ interval = 3.0
 [module/i3temp]
 type = custom/script
 exec = i3temp
+interval = 3.0
+
+[module/i3cpu]
+type = custom/script
+exec = i3cpu
 interval = 3.0
 
 [settings]

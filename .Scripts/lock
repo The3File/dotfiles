@@ -35,11 +35,11 @@ lock_(){
 	    --insidecolor=$back --ringcolor=$back --line-uses-inside \
 	    --keyhlcolor=$back --bshlcolor=$back --separatorcolor=$back \
 	    --insidevercolor=$back --insidewrongcolor=$back\
-	    --ringvercolor=$back --ringwrongcolor=$back --verifcolor=$fore\
-	    --greetertext="LOCKED" --wrongcolor=$wrong \
+	    --ringvercolor=$back --ringwrongcolor=$back --verifcolor=00ff0099\
+	    --greetertext="" --wrongcolor=$wrong \
 	    --veriftext='verifying' --wrongtext='invalid passwd' \
 	    --timecolor="$fore" --datecolor="$fore" --noinputtext='empty'\
-	    --greetercolor=$fore --indpos="20:85" --greeterpos="80:50"\
+	    --greetercolor=$fore --indpos="20:50" --greeterpos="80:50"\
 	    --layout-align=1 --verif-align=1  --wrong-align=1
 	while pgrep -x i3lock;do sleep .1;done
 	sleep .4

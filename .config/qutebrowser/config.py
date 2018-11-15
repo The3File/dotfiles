@@ -6,34 +6,34 @@
 # Uncomment this to still load settings configured via autoconfig.yml
 # config.load_autoconfig()
 #
-c.colors.statusbar.url.fg = '#22150f'
-c.colors.statusbar.url.error.fg = '#22150f'
-c.colors.statusbar.url.hover.fg = '#22150f'
-c.colors.statusbar.url.warn.fg = '#22150f'
-c.colors.statusbar.url.success.http.fg = '#22150f'
-c.colors.statusbar.url.success.https.fg = '#22150f'
+c.colors.statusbar.url.fg = '#181715'
+c.colors.statusbar.url.error.fg = '#181715'
+c.colors.statusbar.url.hover.fg = '#181715'
+c.colors.statusbar.url.warn.fg = '#181715'
+c.colors.statusbar.url.success.http.fg = '#181715'
+c.colors.statusbar.url.success.https.fg = '#181715'
 
-c.colors.statusbar.normal.bg = '#b8b6c3'
-c.colors.statusbar.normal.bg = '#b8b6c3'
-c.colors.statusbar.normal.fg = '#22150f'
+c.colors.statusbar.normal.bg = '#c2811b'
+c.colors.statusbar.normal.bg = '#c2811b'
+c.colors.statusbar.normal.fg = '#181715'
 c.colors.tabs.bar.bg = 'black'
 c.colors.tabs.odd.bg = 'black'
 c.colors.tabs.even.bg = 'black'
-c.colors.tabs.selected.odd.bg = '#b8b6c3'
-c.colors.tabs.selected.odd.bg = '#b8b6c3'
-c.colors.tabs.selected.even.bg = '#b8b6c3'
-c.colors.tabs.selected.even.bg = '#b8b6c3'
-c.colors.tabs.selected.odd.fg = '#22150f'
-c.colors.tabs.selected.even.fg = '#22150f'
+c.colors.tabs.selected.odd.bg = '#c2811b'
+c.colors.tabs.selected.odd.bg = '#c2811b'
+c.colors.tabs.selected.even.bg = '#c2811b'
+c.colors.tabs.selected.even.bg = '#c2811b'
+c.colors.tabs.selected.odd.fg = '#181715'
+c.colors.tabs.selected.even.fg = '#181715'
 
-c.colors.tabs.indicator.start = '#b8b6c3'
-c.colors.tabs.indicator.start = '#b8b6c3'
-c.colors.tabs.indicator.stop = '#b8b6c3'
-c.colors.tabs.indicator.stop = '#b8b6c3'
-#c.colors.tabs.indicator.error = '#b8b6c3'
-#c.colors.tabs.indicator.error = '#b8b6c3'
-#c.colors.tabs.indicator.system = '#b8b6c3'
-#c.colors.tabs.indicator.system = '#b8b6c3'
+c.colors.tabs.indicator.start = '#c2811b'
+c.colors.tabs.indicator.start = '#c2811b'
+c.colors.tabs.indicator.stop = '#c2811b'
+c.colors.tabs.indicator.stop = '#c2811b'
+#c.colors.tabs.indicator.error = '#c2811b'
+#c.colors.tabs.indicator.error = '#c2811b'
+#c.colors.tabs.indicator.system = '#c2811b'
+#c.colors.tabs.indicator.system = '#c2811b'
 
 # Aliases for commands. The keys of the given dictionary are the
 # aliases, while the values are the commands they map to.
@@ -180,5 +180,5 @@ c.fonts.web.size.default = 15
 c.fonts.web.size.default_fixed = 12
 
 # Bindings for normal mode
-config.bind(',n', 'config-cycle content.user_stylesheets style.css ""')
+config.bind(',n', 'config-cycle content.user_stylesheets style.css "" ')
 config.bind('tg', 'tab-give')

@@ -173,5 +173,5 @@ c.fonts.web.size.default = 15
 c.fonts.web.size.default_fixed = 12
 
 # Bindings for normal mode
-config.bind(',n', 'config-cycle content.user_stylesheets style.css ""')
+config.bind(',n', 'config-cycle content.user_stylesheets style.css "" ')
 config.bind('tg', 'tab-give')
