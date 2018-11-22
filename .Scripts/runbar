@@ -4,17 +4,18 @@ op="$1"
 
 main(){
     [[ -z $op ]] && restartbar
-    [[ $op == "toggle" ]] && killbar
+    [[ $op == "toggle" ]] && togglebar
+    [[ $op == "kill" ]] && killall -x polybar
 }
 
-killbar(){
-    [[ -z $(pgrep -x polybar) ]] && restartbar || killall -q polybar
+togglebar(){ 
+    [[ -z $(pgrep -x polybar) ]] && restartbar || killall -q polybar 
 }
 
 restartbar(){
     killall -q polybar
     while pgrep -u $UID -x polybar >/dev/null; do sleep 0.001; done
-    polybar -r dummy &
-    polybar -r example &
+    polybar dummy &
+    polybar example &
 }
 main

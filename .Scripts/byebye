@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-ask=$( echo -e "shutdown\nreboot\nlogout\nrestart wm" \
-    | rofi -dmenu -i -p " power")
-#| dmenu -nf white -nb black -h 25 -b -i -p "Hvad vil du?:" ) 
+ask=$( echo -e "shutdown\nreboot\nlogout" | rofi -dmenu -i -p " power")
 
-[[ $ask = "logout" ]] && pkill xinit
+[[ $ask = "logout" ]] && sudo pkill Xorg
 [[ $ask = "shutdown" ]] && shutdown now
 [[ $ask = "reboot" ]] && reboot
-[[ $ask = "restart wm" ]] && i3-msg restart

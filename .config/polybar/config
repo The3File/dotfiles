@@ -1,3 +1,9 @@
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-foreground = xor
+;compositing-border = xor
+
 [colors]
 #background = ${xrdb:color0:#222}
 background = #e9000000
@@ -17,6 +23,7 @@ modules-left = blank
 bottom = true
 
 [bar/example]
+enable-ipc = true
 width = 98.4%
 height = 30
 offset-x = 0.8%
@@ -34,6 +41,7 @@ line-color = #f00
 
 border-size = 2
 border-bottom-size = 0
+#border-top-size = 0
 border-color = ${colors.primary}
 
 padding-left = 0
@@ -48,12 +56,12 @@ font-1 = FontAwesome:fontformat=truetype:size=10:antialias=true;2
 
 modules-left = i3
 modules-center =
-modules-right = i3cpu i3temp i3volume i3batt i3network date
+modules-right = i3light i3volume i3batt i3network date
 
-tray-position = right
+tray-position = center
 tray-padding = 2
 ;tray-transparent = true
-;tray-background = #0063ff
+;tray-background = ${colors.primary}
 
 wm-restack = i3
 
@@ -100,22 +108,25 @@ label-visible-background = ${colors.background-alt}
 ;label-visible-padding = ${self.label-focused-padding}
 
 [module/i3network]
-type = custom/script
-exec = i3network
-interval = 3.0
-signal = 11
+type = custom/ipc
+hook-0 = i3network
+initial = 1
 
 [module/i3volume]
-type = custom/script
-exec = i3volume
-interval = 1.0
-signal = 10
+type = custom/ipc
+hook-0 = i3vol
+initial = 1
+
+[module/i3light]
+type = custom/ipc
+hook-0 = i3light
+initial = 1
 
 [module/date]
 type = internal/date
 interval = 5
 
-date = "    %e/%m "
+date = "    %a %e %b "
 date-alt = " %Y-%m-%d"
 
 time = "-  %H:%M    "
@@ -143,11 +154,6 @@ type = custom/script
 exec = i3cpu
 interval = 3.0
 
-[settings]
-screenchange-reload = true
-;compositing-background = xor
-;compositing-foreground = xor
-;compositing-border = xor
 
 [global/wm]
 margin-top = 5

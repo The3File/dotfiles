@@ -38,7 +38,7 @@ autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
 
 autocmd FileType tex nnoremap mp :w<ENTER>:! pdflatex -shell-escape %<CR><CR>
 
-autocmd FileType tex nnoremap mo :! mupdf <TAB>
+autocmd FileType tex nnoremap mo :! texopenpdf %<CR><CR>
 
 autocmd FileType tex nnoremap ;S i\section{}<ENTER><ENTER><++><ESC>2kf}i
 
@@ -84,11 +84,11 @@ autocmd FileType tex nnoremap ;g i\begin{figure}[h!]<Enter>\caption{<++>}<Enter>
 
 "######### MARKDOWN ###########"
 
+autocmd FileType markdown inoremap ;m $$$$<++><ESC>5hi
 autocmd FileType markdown inoremap ;f \frac{}{<++>}<++><ESC>Fcf}i
 autocmd FileType markdown inoremap ;t \times
 autocmd FileType markdown inoremap ;s \sqrt{}<++><ESC>Ftf}i
 autocmd FileType markdown inoremap $$ $$<++><ESC>F$i
-autocmd FileType markdown inoremap ;m \[\]<ESC>hi
 autocmd FileType markdown nnoremap mo :w<CR>:! mdtopdf open %<CR><CR>
 autocmd FileType markdown nnoremap mp :w<CR>:! mdtopdf %<CR><CR>
 autocmd FileType markdown nnoremap md :w<CR>:! mdtodoc %<CR><CR>

@@ -3,16 +3,16 @@
 # Over-engineered cli pomodoro timer
 
 main() {
-    count=0
     logo=$(figlet -f big prokrastimer)
+    count=0
 
     trap 'tput cvvis && completed && exit' EXIT
     trap 'clean' SIGWINCH
 
-    clean; prompt; stty -echo; tput civis; start_work
+    clean; prompt; clean; stty -echo; tput civis; start_work
 }
 
-clean() { [[ ${FUNCNAME[1]} != prompt ]] && printf "\e[1J\e[H\e[1;34m$logo"; }
+clean() { [[ ${FUNCNAME[1]} != prompt ]] && printf "\e[2J\e[H\e[1;34m$logo"; }
 
 prompt() {
     printf "\e[10;0H\e[1;37mLenght of work in min (25): \e[1;35m\e[s"; read work
@@ -26,43 +26,54 @@ prompt() {
     ((work*=60))
     ((notwork*=60))
     ((sess*=60))
+
+    printf "\e[3A\r\e[J\e[1;35mPress ENTER to start work"; read 2>/dev/null
 }
+
 bar() {
     ((width=$(tput cols)-2,rows=$(tput lines)))
 
     printf -v prog "%$(($1*width/$2))s"
     printf -v total "%$((width-($1*width/$2)))s"
-    printf '\e[J\e['$rows';0H%s\r' "[${prog// /\#}${total}]"
 
+    printf '\e[J\e['$rows';0H%s\r' "[${prog// /\#}${total}]"
 	sleep .1
 }
+
 start_work() {
     ((sec=1,start_time=$SECONDS))
 
     while [[ $sec > 0 ]]; do
+
 	((sec=(work-(SECONDS-start_time))))
+
 	printf "\e[10;0H\e[1;35mWork left: %02d:%02d" "$((sec/60))" "$((sec%60))"
 	bar $((SECONDS-start_time)) work
     done
 
     work_done
 }
+
 start_notwork() {
     ((sec=1,start_time=$SECONDS))
 
     while [[ $sec > 0 ]]; do
+
 	((sec=(notwork-(SECONDS-start_time))))
+
 	printf "\e[10;0H\e[1;33mBreak left: %02d:%02d" "$((sec/60))" "$((sec%60))"
 	bar $((SECONDS-start_time)) notwork
     done
 
     notwork_done
 }
+
 work_done() {
     play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
     notify-send "Work completed!" -a Prokrastimer
 
     ((count++))
+
     [[ $count == $sess ]] && exit 0
 
     printf "\e[10;17H\e[1;39m - Work completed!"
@@ -71,6 +82,7 @@ work_done() {
 
     start_notwork
 }
+
 notwork_done() {
     play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
     notify-send "Break over!" -a Prokrastimer
@@ -81,6 +93,7 @@ notwork_done() {
 
     start_work
 }
+
 completed() {
     [[ $((count*work/60/60)) > 0 ]] && hour="%2d hours and" || hour=""
 

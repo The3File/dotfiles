@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+sear="$(cat $HOME/.searched | head -7)" 
+ask="$(printf "$sear" | rofi -dmenu -i -p "Search")" 
+
+[[ -z $ask ]] || printf "$ask\n$sear" > $HOME/.searched
+[[ -z $ask ]] || sr duckduckgo $ask

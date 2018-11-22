@@ -3,10 +3,10 @@
 status="$( networkctl status | grep State: | awk '{print $3}')"
 ssid="$(iwgetid -r)"
 inf="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}' )"
-	#ip="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $1}' )"
+#ip="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $1}' )"
 
-	[[ $inf = wlp3s0 ]] && inf=''
-	[[ $inf = enp0s25 ]] && inf=''
+[[ $inf = wlp3s0 ]] && inf=''
+[[ $inf = enp0s25 ]] && inf=''
 
-	[[ $status = routable ]] && echo "$inf $ssid" || echo -e "  $status"
-	#[[ $status = routable ]] && echo "$inf $ssid" || echo -e "<span color='red'>  $status</span>"
+[[ $status = routable ]] && echo "$inf  $ssid" || echo "  $status"
+#[[ $status = routable ]] && echo "$inf $ssid" || echo -e "<span color='red'>  $status</span>"

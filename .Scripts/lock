@@ -3,9 +3,8 @@
 main(){
     scrot -z ~/.wall.png
     convert ~/.wall.png -scale 25% -scale 400% -fill black -colorize 50% ~/.wall.png
-    #xwobf -s 5 -f /tmp/.i3lock.png
+    #xwobf -f ~/.wall.png
     lock_
-    fade end
 }
 
 fade(){
@@ -43,5 +42,6 @@ lock_(){
 	    --layout-align=1 --verif-align=1  --wrong-align=1
 	while pgrep -x i3lock;do sleep .1;done
 	sleep .4
+    fade end
 }
 main

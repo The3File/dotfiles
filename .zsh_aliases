@@ -19,7 +19,7 @@ alias con="nvim ~/.config/i3/config"
 alias brc="nvim ~/.config/i3/i3blocks.conf"
 
 alias c="clear -x"
-alias nf="clear -x && echo -e && neofetch"
+alias nf="clear -x && echo -e \ && neofetch"
 alias y="yaourt"
 alias p="sudo pacman"
 

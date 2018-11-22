@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 
 if [[ $1 == open ]];then
-mupdf ${2%.md}.pdf &
-
+    zathura ${2%.md}.pdf &
 else
-out="${1%.md}.pdf"
-
-[[ -z $1 ]] && echo "Missing filename." && exit
-[[ -z $2 ]] && pandoc -t latex $1 -o $out || read -p "Hvad skal filen hedde?:" a && pandoc -t latex $@ -o ${a}.pdf
-
+    out="${1%.md}.pdf"
+    [[ -z $1 ]] && echo "Missing filename." && exit
+    [[ -z $2 ]] && pandoc -t latex $1 -o $out || read -p "Hvad skal filen hedde?:" a && pandoc -t latex $@ -o ${a}.pdf
 fi

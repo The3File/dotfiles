@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
-[[ -z $1 ]] && echo "Missing filename." && exit
+
 out="${1%.md}.docx"
+
+[[ -z $1 ]] && echo "Missing filename." && exit
 [[ -z $2 ]] && pandoc -t docx $1 -o $out || read -p "Hvad skal filen hedde?:" a && pandoc -t docx $@ -o ${a}.docx

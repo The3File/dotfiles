@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+volume="$(pamixer --get-volume)%"
+[[ $(pamixer --get-mute) = "true" ]] && volume="mute"; echo "  $volume"
