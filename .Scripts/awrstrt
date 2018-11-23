@@ -4,8 +4,6 @@
 # == AWRSTRT == #
 # ============= #
 
-setxkbmap -layout dk -variant nodeadkeys -option caps:escape &
-
 runbar &
 qutewal &
 

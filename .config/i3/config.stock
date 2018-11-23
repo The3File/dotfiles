@@ -8,16 +8,7 @@
 #	                                             |___/
 
 ##		Startup			##
-exec 		feh --bg-fill ~/.config/wall.png
-exec_always 	compton -b
-exec		wal -Rn
-#exec_always 	xrdb ~/.Xresources
-exec_always 	setxkbmap -layout dk -variant nodeadkeys setxkbmap -option caps:escape
-#exec_always	xmodmap ~/.Xmodmap
-exec 		dunst
-exec 		networkd-dispatcher
-exec 		networkd-notify
-exec		notify-send "Boot succesfuld. Velkommen." -a "System"
+exec_always	--no-startup-id awrstrt
 
 ##		General			##
 set $mod Mod4
@@ -29,47 +20,46 @@ workspace_auto_back_and_forth yes
 
 ## Theme
 
-font pango:Terminus 9
+font pango:SFNS Display 11
 #new_window none
 
 ## Gaps
-#smart_gaps on
+smart_gaps on
 gaps inner 9
 gaps outer 3
 
-#bindsym 	$mod+e 		gaps inner current set 9; gaps outer current set 3
-#bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0
+bindsym 	$mod+e 		gaps inner current set 9; gaps outer current set 3
+bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0
 #bindsym		$mod+g		gaps outer current plus 1; gaps inner current plus 3
 #bindsym		$mod+Shift+g	gaps outer current minus 1; gaps inner current minus 3
 
 ## Borders	
-#smart_borders on
+smart_borders on
 new_window pixel 2
 
 ## Bar
-#bar {
-#    font pango:Inconsolata 10
-#	#position bottom
-#	#status_command i3blocks -c ~/.config/i3/i3blocks.conf 
-#	i3bar_command runbar
-#	#height 25
-#	#mode hide
-#	#modifier none
-#	#separator_symbol " "
-#
-#	colors {
-#	    background $back
-#		statusline $text
-#		separator  #888888
-#
-#			#border		#backgr.	#text
+bar {
+    font pango:SFNS Display 9
+	position bottom
+	status_command i3blocks -c ~/.config/i3/i3blocks.conf 
+	height 25
+	#mode hide
+	#modifier none
+	#separator_symbol " "
+
+	colors {
+	    background #00000099
+		statusline $text
+		separator  #888888
+
+			#border		#backgr.	#text
 #focused_workspace  	#222222d9	#222222d9	$color7
 #active_workspace   	$back		$back	 	$color8
 #inactive_workspace 	$back	 	$back	 	$color8
 #urgent_workspace   	$back 		$back	 	$color8
-#	}
-#}
-#bindsym $mod+b bar mode toggle
+	}
+}
+bindsym $mod+b bar mode toggle
 
 set_from_resource $color0	color0
 set_from_resource $color1	color1
@@ -88,7 +78,7 @@ set_from_resource $color13	color13
 set_from_resource $color14	color14
 set_from_resource $color15	color15
 
-set $back			#000000d9
+set $back			#000000c9
 set $black			#000000
 set $text			#FFFFFF
 set $highl			#00FF00
@@ -102,11 +92,11 @@ set $mdark			#55555555
 
 
 # class                 border  backgr. text    indic.  child_border
-client.focused          #001100 $color3	#FFFFFF $color3
-client.focused_inactive $backgr $color4 #999999 $color4
-client.unfocused        $backgr $color4 #16A085 $color4
-client.urgent           #FF0000 $color4 #16A085 $color4
-client.placeholder      $backgr $color4 #ffffff $color4 #0c0c0c
+client.focused          #001100 $color4	#FFFFFF $color4
+client.focused_inactive $backgr $back 	#999999 $back
+client.unfocused        $backgr $back 	#16A085 $back
+client.urgent           #FF0000 $back 	#16A085 $back
+client.placeholder      $backgr $back 	#ffffff $back 	#0c0c0c
 
 client.background       #2B2C2B
 
@@ -118,49 +108,57 @@ for_window [instance="math"] floating enable
 for_window [instance="math"] resize set 800 300
 for_window [instance="math"] move scratchpad
 for_window [instance="math"] border pixel 4
-exec $term -n math -e qalc
+#exec $term -n math -e qalc
 
-# terminal
+# dropdown
 for_window [instance="term"] floating enable
-for_window [instance="term"] resize set 800 400
-for_window [instance="term"] border pixel 4
-for_window [instance="term"] move position 20 20 
+for_window [instance="term"] resize set 800 435
+for_window [instance="term"] move scratchpad
+#exec $term -n term -e tmux
+
+# float new term
+for_window [instance="float"] floating enable
+for_window [instance="float"] resize set 800 400
+for_window [instance="float"] move position 20 20 
+
 # math
-bindsym 	$mod+Shift+m 	exec $term -n math -e qalc
-bindsym 	$mod+m		[instance="math"] scratchpad show; [instance="math"] move position center
+bindsym 	$mod+Shift+a 	exec $term -n math -e qalc
+bindsym 	$mod+a		[instance="math"] scratchpad show; move position 540 410
 
 # terminal
-bindsym		$mod+Shift+p	[instance="term"] move scratchpad
-bindsym		$mod+p 		[instance="term"] scratchpad show; [instance="term"] move position center
-
+bindsym		$mod+Shift+p	exec $term -n term -e tmux
+bindsym		$mod+p 		[instance="term"] scratchpad show; move position 30 30
 
 ## App Bindings
 
 bindsym		$mod+w 			exec $browser
-bindsym		$mod+Shift+w 		exec $browser2
+bindsym		$mod+c	 		exec --no-startup-id networkmanager_dmenu
 
 bindsym		$mod+Shift+y 		exec $term -e mpsyt
 
 bindsym		$mod+r 			exec $term -e ranger
-bindsym		$mod+v			exec $term -e vmail
+bindsym		$mod+v			exec $term -e neomutt
+bindsym		$mod+Shift+t			exec $term -e vtop
 
 
 bindsym 	$mod+Return 		exec $term
-bindsym 	$mod+Shift+Return 	exec $term -n term
+bindsym 	$mod+Shift+Return 	exec $term -n float
 
-bindsym 	$mod+d			exec rundmenu
-bindsym		$mod+c			exec networkmanager_dmenu -nf white -nb black -b -h 25
+bindsym 	$mod+s			exec --no-startup-id search
+bindsym 	$mod+d 			exec --no-startup-id rofi -show run
+bindsym		$mod+Insert		exec --no-startup-id rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
 
 ##	Other Bindings
 
+bindsym		$mod+Shift+v		exec --no-startup-id notify-send "Dette er en notifikation" -a Test
 
 bindsym 	$mod+Shift+c		reload
 bindsym 	$mod+Shift+r		restart
 
 bindsym 	$mod+q			kill
 
-bindsym		$mod+Shift+x 		exec byebye
-bindsym 	$mod+x			exec i3lock --color '#000000'
+bindsym		$mod+Shiftx 		exec --no-startup-id byebye
+bindsym 	$mod+x			exec --no-startup-id lock
 
 bindsym 	$mod+h			focus left
 bindsym		$mod+Shift+h   		move left
@@ -174,11 +172,10 @@ bindsym		$mod+Shift+k   		move up
 bindsym 	$mod+l	       		focus right
 bindsym		$mod+Shift+l   		move right
 
-bindsym		$mod+y			resize shrink width 5 px or 5 ppt
-bindsym		$mod+u			resize grow height 5 px or 5 ppt
-
-bindsym		$mod+i			resize shrink height 5 px or 5 ppt
-bindsym 	$mod+o			resize grow width 5 px or 5 ppt
+bindsym		$mod+Mod1+h		resize shrink width 5 px or 5 ppt
+bindsym		$mod+Mod1+j		resize grow height 5 px or 5 ppt
+bindsym		$mod+Mod1+k		resize shrink height 5 px or 5 ppt
+bindsym 	$mod+Mod1+l		resize grow width 5 px or 5 ppt
 
 bindsym		$mod+t			split toggle
 bindsym		$mod+f 	       		fullscreen toggle
@@ -192,13 +189,12 @@ set $ws1	workspace 1: 
 set $ws2	workspace 2: 
 set $ws3	workspace 3: 
 set $ws4	workspace 4: 
-set $ws5	workspace 5: 
-set $ws6	workspace 6: 
-set $ws7	workspace 7: 
+set $ws5	workspace 5: 
+set $ws6	workspace 6: 
+set $ws7	workspace 7: 
 set $ws8	workspace 8: 
-set $ws9	workspace 9: 
+set $ws9	workspace 9: 
 set $ws10	workspace 10: 
-
 
 # switch to workspace
 bindsym		$mod+1	$ws1
@@ -232,8 +228,14 @@ bindsym XF86AudioLowerVolume	exec --no-startup-id "pactl set-sink-volume 0 -5% #
 bindsym XF86AudioMute 		exec --no-startup-id "pactl set-sink-mute 0 toggle # mute sound", exec "pkill -SIGRTMIN+10 i3blocks"
 
 # Screen brightness controls
-bindsym XF86MonBrightnessUp 	exec xbacklight -inc 10 # increase screen brightness
-bindsym XF86MonBrightnessDown 	exec xbacklight -dec 10 # decrease screen brightness
+bindsym XF86MonBrightnessUp 	exec xbacklight -inc 10 && pkill -SIGRTMIN+10 i3blocks
+bindsym XF86MonBrightnessDown 	exec xbacklight -dec 10 && pkill -SIGRTMIN+10 i3blocks
+
+bindsym $mod+n 			exec --no-startup-id redshift -P -O 4000
+bindsym $mod+Shift+n 		exec --no-startup-id xbacklight -time 400 -set 1 && pkill -SIGRTMIN+10 i3blocks
+
+bindsym $mod+m 			exec --no-startup-id redshift -x
+bindsym $mod+Shift+m 		exec --no-startup-id xbacklight -time 400 -set 100 && pkill -SIGRTMIN+10 i3blocks
 
 #bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 ##########################################

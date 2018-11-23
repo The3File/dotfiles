@@ -112,7 +112,7 @@ bindsym		$mod+c	 		exec --no-startup-id networkmanager_dmenu
 bindsym		$mod+Shift+y 		exec $term -e mpsyt
 
 bindsym		$mod+r 			exec $term -e ranger
-bindsym		$mod+v			exec $term -e vmail
+bindsym		$mod+v			exec $term -e neomutt
 bindsym		$mod+Shift+t			exec $term -e vtop
 
 
@@ -202,8 +202,12 @@ bindsym XF86AudioRaiseVolume 	exec --no-startup-id pactl set-sink-volume 0 +5% &
 bindsym XF86AudioLowerVolume	exec --no-startup-id pactl set-sink-volume 0 -5% && polybar-msg hook i3volume 1
 bindsym XF86AudioMute 		exec --no-startup-id pactl set-sink-mute 0 toggle && polybar-msg hook i3volume 1
 
-bindsym XF86MonBrightnessUp 	exec --no-startup-id xbacklight -inc 5 && polybar-msg hook i3light 1
-bindsym XF86MonBrightnessDown 	exec --no-startup-id xbacklight -dec 5 && polybar-msg hook i3light 1
+bindsym XF86MonBrightnessUp 	exec --no-startup-id xbacklight -time 60 -inc 7 && polybar-msg hook i3light 1
+bindsym XF86MonBrightnessDown 	exec --no-startup-id xbacklight -time 60 -dec 7 && polybar-msg hook i3light 1
+bindsym $mod+n 			exec --no-startup-id redshift -P -O 4000
+bindsym $mod+Shift+n 		exec --no-startup-id xbacklight -time 400 -set 1 && polybar-msg hook i3light 1
+bindsym $mod+m 			exec --no-startup-id redshift -x
+bindsym $mod+Shift+m 		exec --no-startup-id xbacklight -time 400 -set 100 && polybar-msg hook i3light 1
 
 ##########################################
 #:set ft=i3config

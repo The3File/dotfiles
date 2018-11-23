@@ -1,6 +1,6 @@
 #!/bin/sh
 export PATH=$HOME/bin:/usr/local/bin:$HOME/.Scripts/:$PATH
-export EDITOR="vim"
+export EDITOR="nvim"
 export BROWSER="qutebrowser"
 
 [[ -f ~/.zshrc ]] && source ~/.zshrc
