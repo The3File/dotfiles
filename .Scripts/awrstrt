@@ -4,7 +4,6 @@
 # == AWRSTRT == #
 # ============= #
 
-runbar &
 qutewal &
 
 ln -sf    "${HOME}/.cache/wal/dunstrc"    "${HOME}/.config/dunst/dunstrc"

@@ -1,38 +1,43 @@
-# ============
-# === i3wm ===
-# ============
+#	  _   _          ____                   __ _
+#	 | | | |        |___ \                 / _(_)
+#	 | |_| |__   ___  __) | ___ ___  _ __ | |_ _  __ _
+#	 | __| '_ \ / _ \|__ < / __/ _ \| '_ \|  _| |/ _` |
+#	 | |_| | | |  __/___) | (_| (_) | | | | | | | (_| |
+#	  \__|_| |_|\___|____/ \___\___/|_| |_|_| |_|\__, |
+#	                                              __/ |
+#	                                             |___/
+
 ##		Startup			##
-exec_always	--no-startup-id awrstrt
+	exec_always	--no-startup-id awrstrt
+	exec xmodmap -e "keycode 135 = Super_R"
 
 ##		General			##
-set $mod Mod4
-set $browser --no-startup-id qutebrowser
-set $browser2 --no-startup-id chromium
-set $term --no-startup-id st
-floating_modifier $mod
-workspace_auto_back_and_forth yes
+	set $mod Mod4
+	set $browser --no-startup-id qutebrowser
+	#set $browser2 chromium
+	set $term --no-startup-id st
+	floating_modifier $mod
+	workspace_auto_back_and_forth yes
 
 ## Theme
 
-font pango:SFNS Display 11
-#new_window none
+	font pango:SFNS Display 11
+	#new_window none
 
 ## Gaps
 #smart_gaps on
-gaps inner 9
-gaps outer 3
+#gaps inner 9
+#gaps outer 3
 
-bindsym 	$mod+e 		gaps inner current set 9; gaps outer current set 3; exec runbar
-bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0; exec killall polybar
+bindsym 	$mod+e 		gaps inner current set 9; gaps outer current set 3
+bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0
 #bindsym	$mod+g		gaps outer current plus 1; gaps inner current plus 3
 #bindsym	$mod+Shift+g	gaps outer current minus 1; gaps inner current minus 3
 
 ## Borders	
-#smart_borders on
+#smart_borders no_gaps
+smart_borders on
 new_window pixel 2
-
-## Bar
-bindsym $mod+b exec --no-startup-id runbar toggle
 
 set_from_resource $color0	color0
 set_from_resource $color1	color1
@@ -51,8 +56,8 @@ set_from_resource $color13	color13
 set_from_resource $color14	color14
 set_from_resource $color15	color15
 
-set $bg				$color2
-set $back			#000000d9
+#set_from_resource $back		color0
+set $back			#000000e9
 set $black			#000000
 set $text			#FFFFFF
 set $highl			#00FF00
@@ -64,13 +69,38 @@ set $blue			#200399
 set $purp			#990590
 set $mdark			#55555555
 
+## Bar
+bar {
+    i3bar_command i3bar -t
+	font pango:SF Mono 9
+	position bottom
+	status_command i3blocks -c ~/.config/i3/i3blocks.conf 
+	height 25
+	mode dock
+	#border		#9FBC00
+	#modifier none
+	#separator_symbol " "
+	colors {
+		background 	$back
+		statusline 	$color7
+		separator  	#888888
+
+					#border		#backgr.	#text
+		focused_workspace  	$color7		$back		$color7
+		active_workspace   	$back		$back	 	$color7
+		inactive_workspace 	$back	 	$back	 	$color7
+		urgent_workspace   	$back 		$back	 	$color7
+	}
+}
+bindsym $mod+b bar mode toggle
+
 
 # class                 border  backgr. text    indic.  child_border
 client.focused          #001100 $color4	#FFFFFF $color4
-client.focused_inactive $back 	$back 	#999999 $back
-client.unfocused        $back 	$back 	#16A085 $back
-client.urgent           #FF0000 $back 	#16A085 $back
-client.placeholder      $backgr $back 	#ffffff $back 	#0c0c0c
+client.focused_inactive $backgr $back	#999999 $back
+client.unfocused        $backgr $back	#16A085 $back
+client.urgent           #FF0000 $back	#16A085 $back
+client.placeholder      $backgr $back	#ffffff $back 	#0c0c0c
 
 client.background       #2B2C2B
 
@@ -81,7 +111,7 @@ client.background       #2B2C2B
 for_window [instance="math"] floating enable
 for_window [instance="math"] resize set 800 300
 for_window [instance="math"] move scratchpad
-for_window [instance="math"] border pixel 4
+#for_window [instance="math"] border pixel 4
 #exec $term -n math -e qalc
 
 # dropdown
@@ -92,17 +122,16 @@ for_window [instance="term"] move scratchpad
 
 # float new term
 for_window [instance="float"] floating enable
-for_window [instance="float"] resize set 800 400
-for_window [instance="float"] move position 20 20 
+for_window [instance="float"] resize set 740 425
+for_window [instance="float"] move position center
 
 # math
 bindsym 	$mod+Shift+a 	exec $term -n math -e qalc
 bindsym 	$mod+a		[instance="math"] scratchpad show; move position 540 410
 
 # terminal
-bindsym		$mod+Shift+p	exec $term -n term -e tmux
+bindsym		$mod+Shift+p	exec $term -n term
 bindsym		$mod+p 		[instance="term"] scratchpad show; move position 30 30
-
 
 ## App Bindings
 
@@ -115,12 +144,12 @@ bindsym		$mod+r 			exec $term -e ranger
 bindsym		$mod+v			exec $term -e neomutt
 bindsym		$mod+Shift+t			exec $term -e vtop
 
-
 bindsym 	$mod+Return 		exec $term
 bindsym 	$mod+Shift+Return 	exec $term -n float
+bindsym 	$mod+Mod1+Return 	exec $term -n float -e fetch
 
 bindsym 	$mod+s			exec --no-startup-id search
-bindsym 	$mod+d 			exec --no-startup-id rofi -show run
+bindsym 	$mod+d 			exec --no-startup-id rofi -show run -disable-history
 bindsym		$mod+Insert		exec --no-startup-id rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
 
 ##	Other Bindings
@@ -171,7 +200,6 @@ set $ws8	workspace 8: 
 set $ws9	workspace 9: 
 set $ws10	workspace 10: 
 
-
 # switch to workspace
 bindsym		$mod+1	$ws1
 bindsym		$mod+2	$ws2
@@ -198,16 +226,21 @@ bindsym		$mod+Shift+0 move container to $ws10
 
 ##	Laptop
 
-bindsym XF86AudioRaiseVolume 	exec --no-startup-id pactl set-sink-volume 0 +5% && polybar-msg hook i3volume 1
-bindsym XF86AudioLowerVolume	exec --no-startup-id pactl set-sink-volume 0 -5% && polybar-msg hook i3volume 1
-bindsym XF86AudioMute 		exec --no-startup-id pactl set-sink-mute 0 toggle && polybar-msg hook i3volume 1
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume 	exec --no-startup-id "pactl set-sink-volume 0 +5% #increase sound", exec "pkill -SIGRTMIN+10 i3blocks"
+bindsym XF86AudioLowerVolume	exec --no-startup-id "pactl set-sink-volume 0 -5% #decrease sound", exec "pkill -SIGRTMIN+10 i3blocks"
+bindsym XF86AudioMute 		exec --no-startup-id "pactl set-sink-mute 0 toggle # mute sound", exec "pkill -SIGRTMIN+10 i3blocks"
 
-bindsym XF86MonBrightnessUp 	exec --no-startup-id xbacklight -time 60 -inc 7 && polybar-msg hook i3light 1
-bindsym XF86MonBrightnessDown 	exec --no-startup-id xbacklight -time 60 -dec 7 && polybar-msg hook i3light 1
+# Screen brightness controls
+bindsym XF86MonBrightnessUp 	exec --no-startup-id xbacklight -inc 10 && pkill -SIGRTMIN+11 i3blocks
+bindsym XF86MonBrightnessDown 	exec --no-startup-id xbacklight -dec 10 && pkill -SIGRTMIN+11 i3blocks
+
 bindsym $mod+n 			exec --no-startup-id redshift -P -O 4000
-bindsym $mod+Shift+n 		exec --no-startup-id xbacklight -time 400 -set 1 && polybar-msg hook i3light 1
-bindsym $mod+m 			exec --no-startup-id redshift -x
-bindsym $mod+Shift+m 		exec --no-startup-id xbacklight -time 400 -set 100 && polybar-msg hook i3light 1
+bindsym $mod+Shift+n 		exec --no-startup-id xbacklight -time 400 -set 1 && pkill -SIGRTMIN+11 i3blocks
 
+bindsym $mod+m 			exec --no-startup-id redshift -x
+bindsym $mod+Shift+m 		exec --no-startup-id xbacklight -time 400 -set 100 && pkill -SIGRTMIN+11 i3blocks
+
+#bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 ##########################################
 #:set ft=i3config

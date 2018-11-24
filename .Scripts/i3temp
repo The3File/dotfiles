@@ -2,5 +2,5 @@
 
 temp="$(acpi -t | sed 's/Thermal 0: ok,//g' | awk -F . '{print $1}')"
 
-echo " $temp°C"
-#[[ $temp -gt 75 ]] && printf "<span color='red'>$temp°C</span>" || echo " $temp°C"
+#echo " $temp°C"
+[[ $temp -gt 75 ]] && printf "<span color='red'> $temp°C</span>" || echo "  $temp°C"

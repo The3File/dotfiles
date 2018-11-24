@@ -2,4 +2,4 @@
 
 brigns="$(light | awk -F"." '{print $1}')"
 #
-echo "  $brigns%"
+echo "   $brigns% "

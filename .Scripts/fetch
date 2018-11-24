@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+trap 'tput cvvis' EXIT
+printf '\e[H\e[2J\n\n'
+neofetch
+tput civis
+read 2>/dev/null

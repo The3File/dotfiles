@@ -2,7 +2,7 @@
     source ~/.cache/wal/colors.sh
 main(){
     scrot -z ~/.wall.png
-    convert ~/.wall.png -scale 25% -scale 400% -fill black -colorize 50% ~/.wall.png
+    convert ~/.wall.png -scale 25% -scale 400% ~/.wall.png
     #xwobf -f ~/.wall.png
     lock_
 }

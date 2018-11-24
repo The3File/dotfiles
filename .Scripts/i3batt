@@ -3,16 +3,18 @@
 percent="$(acpi -b | sed 's/,//g;s/://g;s/%//g' | awk '{print $4}')"
 state="$(acpi -b | sed 's/,//g;s/://g;s/%//g' | awk '{print $3}')"
 
-[[ $state = Charging ]] && state=""
-[[ $state = Unknown ]] && state=""
-
-[[ $state = Discharging ]] && {
-    [[ $percent -gt 80 ]] && state=""
-    [[ $percent -le 80 ]] && state=""
-    [[ $percent -le 65 ]] && state=""
-    [[ $percent -le 35 ]] && state=""
-    [[ $percent -le 15 ]] && state=""
-}
-
-#[[ $percent -le "15" ]] && echo -e "<span color='red'>$state  $percent%</span>\n" || echo "$state  $percent%"; 
-echo "$state  $percent%"
+if [[ $state = Charging ]];then
+    state=""
+    echo -e "<span color='#00ff00'> $state  $percent% </span>\n"
+elif [[ $state = Unknown ]];then
+    state=""
+else 
+    if [[ $state = Discharging ]];then
+	[[ $percent -gt 80 ]] && state=""
+	[[ $percent -le 80 ]] && state=""
+	[[ $percent -le 65 ]] && state=""
+	[[ $percent -le 35 ]] && state=""
+	[[ $percent -le 15 ]] && state=""
+	[[ $percent -le "15" ]] && echo -e "<span color='red'> $state  $percent% </span>\n" || echo " $state  $percent% "
+    fi
+fi
