@@ -14,7 +14,7 @@ copy(){
     stty echo
     rsync --delete -a $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
     rsync --delete -a $HOME/.Scripts $HOME/dotfiles
-    rsync --delete -a $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
+    rsync --delete -a $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
     push
 }
 
