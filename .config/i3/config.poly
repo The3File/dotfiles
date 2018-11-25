@@ -82,7 +82,7 @@ client.background       #2B2C2B
 for_window [instance="math"] floating enable
 for_window [instance="math"] resize set 800 300
 for_window [instance="math"] move scratchpad
-for_window [instance="math"] border pixel 4
+#for_window [instance="math"] border pixel 4
 #exec $term -n math -e qalc
 
 # dropdown

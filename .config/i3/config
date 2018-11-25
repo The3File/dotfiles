@@ -78,7 +78,7 @@ bar {
 	height 25
 	mode dock
 	#border		#9FBC00
-	#modifier none
+	modifier Mod1
 	#separator_symbol " "
 	colors {
 		background 	$back
