@@ -1,7 +1,7 @@
 export PATH=$HOME/bin:/usr/local/bin:$HOME/.Scripts/:$PATH
 
 export KEYTIMEOUT=1
-export ZSH="/home/ringdal/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 export EDITOR=nvim
 
 bindkey -a "^R" redo
