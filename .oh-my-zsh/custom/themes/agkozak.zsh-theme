@@ -1,0 +1,1 @@
+/home/ringdal/.oh-my-zsh/custom/themes/agkozak/agkozak-zsh-prompt.plugin.zsh
