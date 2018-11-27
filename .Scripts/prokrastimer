@@ -37,7 +37,7 @@ bar() {
     printf -v total "%$((width-($1*width/$2)))s"
 
     printf '\e[J\e['$rows';0H%s\r' "[${prog// /\#}${total}]"
-	sleep .1
+	sleep .5
 }
 
 start_work() {
@@ -47,7 +47,7 @@ start_work() {
 
 	((sec=(work-(SECONDS-start_time))))
 
-	printf "\e[10;0H\e[1;35mWork left: %02d:%02d" "$((sec/60))" "$((sec%60))"
+	printf "\e[10;0H\e[1;35m[Work] left: %02d:%02d" "$((sec/60))" "$((sec%60))"
 	bar $((SECONDS-start_time)) work
     done
 
@@ -61,7 +61,7 @@ start_notwork() {
 
 	((sec=(notwork-(SECONDS-start_time))))
 
-	printf "\e[10;0H\e[1;33mBreak left: %02d:%02d" "$((sec/60))" "$((sec%60))"
+	printf "\e[10;0H\e[1;33m[Break] left: %02d:%02d" "$((sec/60))" "$((sec%60))"
 	bar $((SECONDS-start_time)) notwork
     done
 
