@@ -15,14 +15,7 @@ primary = ${xrdb:color4}
 secondary = #e60053
 alert = #bd2c40
 
-[bar/dummy]
-width = 100%
-height = 33
-background = #00000000
-modules-left = blank
-bottom = true
-
-[bar/example]
+[bar/hvadend]
 enable-ipc = true
 width = 98.4%
 height = 30

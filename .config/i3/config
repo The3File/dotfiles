@@ -17,7 +17,7 @@
 	#set $browser2 chromium
 	set $term --no-startup-id st
 	floating_modifier $mod
-	#workspace_auto_back_and_forth yes
+	workspace_auto_back_and_forth yes
 
 ## Theme
 
@@ -156,7 +156,8 @@ bindsym		$mod+Insert		exec --no-startup-id rofi -modi "clipboard:greenclip print
 
 bindsym		$mod+Shift+v		exec --no-startup-id notify-send "Dette er en notifikation" -a Test
 
-bindsym		$mod+Tab		workspace back_and_forth
+bindsym		$mod+Tab		workspace next
+bindsym		$mod+Shift+Tab		workspace prev
 #bindsym	$mod+Escape		workspace "Escape"
 
 bindsym 	$mod+Shift+c		reload

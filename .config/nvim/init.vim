@@ -54,6 +54,8 @@ autocmd FileType tex nnoremap ;e i\begin{enumerate}<Enter>\item <++><ENTER>\end{
 
 autocmd FileType tex nnoremap ;a i\begin{enumerate}[label=\textbf{\alph*)}]<Enter>\end{enumerate}<ESC>O\item 
 
+autocmd FileType tex nnoremap ;t i\begin{table}[h]<Enter>\centering<Enter>\begin{tabular}{}<Enter>\end{tabular}<Enter>\end{table}<ESC>
+
 autocmd FileType tex inoremap ;r \ref{}<++><ESC>T{i
 
 "MATH		#--------------------------------#

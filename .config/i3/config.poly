@@ -22,18 +22,15 @@ font pango:SFNS Display 11
 #smart_gaps on
 gaps inner 9
 gaps outer 3
-
-bindsym 	$mod+e 		gaps inner current set 9; gaps outer current set 3; exec runbar
-bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0; exec killall polybar
-#bindsym	$mod+g		gaps outer current plus 1; gaps inner current plus 3
-#bindsym	$mod+Shift+g	gaps outer current minus 1; gaps inner current minus 3
+gaps bottom 36
 
 ## Borders	
 #smart_borders no_gaps
 new_window pixel 2
 
 ## Bar
-bindsym $mod+b exec --no-startup-id runbar toggle
+bindsym $mod+b exec --no-startup-id killall polybar; gaps bottom all set 3
+bindsym $mod+Shift+b exec --no-startup-id runbar; gaps bottom all set 36
 
 set_from_resource $color0	color0
 set_from_resource $color1	color1
