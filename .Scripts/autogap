@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+main(){
+funk
+}
+
+funk(){
+bspc subscribe | while read line; do
+    W=$(bspc query -N -n .local.\!floating | wc -l)
+    [ "$W" -lt 2 ] && G=100 || G=0
+    bspc config left_padding $G
+    bspc config right_padding $G
+done
+}
+main

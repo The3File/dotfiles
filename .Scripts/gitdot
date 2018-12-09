@@ -4,7 +4,7 @@ main(){
     rsync -ai --delete --dry-run $HOME/.Scripts $HOME/dotfiles/
     rsync -ai --delete --dry-run $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
     stty -echo
-    printf "Commit to changes? (y/N)"
+    printf "(y/N)"
     read -rsn1 a
     [[ $a == y ]] && copy || printf "\n" && exit
 }

@@ -1,3 +1,5 @@
+acpi showing 100 arch
+!git torque
 !arch android messages
 !arch intel
 !google n'th root gnuplot
@@ -17,5 +19,3 @@ lawnstep
 !xda mate 10 fstab.kirin
 !google extract update.app
 http://developer.android.com/tools/device.html
-!arch automatic login
-minecraft java version linux

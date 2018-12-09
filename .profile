@@ -5,4 +5,4 @@ export BROWSER="qutebrowser"
 
 [[ -f ~/.zshrc ]] && source ~/.zshrc
 [[ $(fgconsole 2>/dev/null) == 1 ]] && exec startx -- vt1 &> /dev/null
-[[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
+#[[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx

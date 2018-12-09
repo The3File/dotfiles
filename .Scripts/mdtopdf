@@ -5,5 +5,9 @@ if [[ $1 == open ]];then
 else
     out="${1%.md}.pdf"
     [[ -z $1 ]] && echo "Missing filename." && exit
-    [[ -z $2 ]] && pandoc -t latex $1 -o $out || read -p "Hvad skal filen hedde?:" a && pandoc -t latex $@ -o ${a}.pdf
+    if [[ -z $2 ]];then 
+	pandoc -V geometry:margin=1in -t latex $1 -o $out 
+    else
+	read -p "Hvad skal filen hedde?:" a && pandoc -V geometry:margin=1in -t latex $@ -o ${a}.pdf
+    fi
 fi

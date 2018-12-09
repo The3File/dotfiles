@@ -2,6 +2,6 @@
 
 ask=$( echo -e "shutdown\nreboot\nlogout" | rofi -dmenu -i -p " power")
 
-[[ $ask = "logout" ]] && sudo pkill xinit
+[[ $ask = "logout" ]] && bspc quit
 [[ $ask = "shutdown" ]] && shutdown now
 [[ $ask = "reboot" ]] && reboot

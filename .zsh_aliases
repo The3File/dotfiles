@@ -1,5 +1,7 @@
 alias vim="nvim"
 
+alias r="ranger"
+
 alias za="nvim ~/.zsh_aliases"
 
 alias zrc="nvim ~/.zshrc"
@@ -15,7 +17,9 @@ alias timer="((s=$SECONDS)); while :; do echo $(($SECONDS-s)); sleep 1; done"
 
 alias prc="nvim ~/.config/polybar/config"
 
-alias con="nvim ~/.config/i3/config"
+#alias con="nvim ~/.config/i3/config"
+alias con="nvim ~/.config/bspwm/bspwmrc"
+alias src="nvim ~/.config/sxhkd/sxhkdrc"
 alias brc="nvim ~/.config/i3/i3blocks.conf"
 
 alias c="clear -x"

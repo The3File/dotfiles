@@ -14,7 +14,7 @@
 ##		General			##
 	set $mod Mod4
 	set $browser --no-startup-id qutebrowser
-	#set $browser2 chromium
+	set $browser2 --no-startup-id firefox
 	set $term --no-startup-id st
 	floating_modifier $mod
 	workspace_auto_back_and_forth yes
@@ -26,11 +26,13 @@
 
 ## Gaps
 #smart_gaps on
-#gaps inner 9
-#gaps outer 3
+#gaps inner 16
+#gaps outer 9
 
-bindsym 	$mod+e 		gaps inner current set 9; gaps outer current set 3
-bindsym 	$mod+Shift+e 	gaps inner current set 0; gaps outer current set 0
+#bindsym 	$mod+Shift+e 		gaps inner current set 9; gaps outer current set 3
+#bindsym 	$mod+e 	gaps inner current set 0; gaps outer current set 0
+bindsym 	$mod+Shift+e 		gaps inner all set 30
+bindsym 	$mod+e 	gaps inner all set 0; gaps outer all set 0
 #bindsym	$mod+g		gaps outer current plus 1; gaps inner current plus 3
 #bindsym	$mod+Shift+g	gaps outer current minus 1; gaps inner current minus 3
 
@@ -78,7 +80,7 @@ bar {
 	height 25
 	mode dock
 	#border		#9FBC00
-	#modifier none
+	modifier none
 	#separator_symbol " "
 	colors {
 		background 	$back
@@ -112,13 +114,13 @@ for_window [instance="math"] floating enable
 for_window [instance="math"] resize set 800 300
 for_window [instance="math"] move scratchpad
 #for_window [instance="math"] border pixel 4
-#exec $term -n math -e qalc
+exec sleep 10 && $term -n math -e qalc
 
 # dropdown
 for_window [instance="term"] floating enable
 for_window [instance="term"] resize set 800 435
 for_window [instance="term"] move scratchpad
-#exec $term -n term -e tmux
+exec sleep 10 && $term -n term -e tmux
 
 # float new term
 for_window [instance="float"] floating enable
@@ -130,26 +132,28 @@ bindsym 	$mod+Shift+a 	exec $term -n math -e qalc
 bindsym 	$mod+a		[instance="math"] scratchpad show; move position 540 410
 
 # terminal
-bindsym		$mod+Shift+p	exec $term -n term
+bindsym		$mod+Shift+p	exec $term -n term -e tmux
 bindsym		$mod+p 		[instance="term"] scratchpad show; move position 30 30
 
 ## App Bindings
 
-bindsym		$mod+w 			exec $browser
+bindsym		$mod+w			exec $browser
+bindsym		$mod+Shift+w		exec $browser2
 bindsym		$mod+c	 		exec --no-startup-id networkmanager_dmenu
 
 bindsym		$mod+Shift+y 		exec $term -e mpsyt
 
 bindsym		$mod+r 			exec $term -e ranger
-bindsym		$mod+v			exec $term -e neomutt
-bindsym		$mod+Shift+t			exec $term -e vtop
+#bindsym	$mod+v			exec $term -e neomutt
+bindsym		$mod+v			exec $term -e vmail
+bindsym		$mod+Shift+t		exec $term -e gotop
 
 bindsym 	$mod+Return 		exec $term
 bindsym 	$mod+Shift+Return 	exec $term -n float
 bindsym 	$mod+Mod1+Return 	exec $term -n float -e fetch
 
 bindsym 	$mod+s			exec --no-startup-id search
-bindsym 	$mod+d 			exec --no-startup-id rofi -show run -disable-history
+bindsym 	$mod+d 			exec --no-startup-id rofi -show drun
 bindsym		$mod+Insert		exec --no-startup-id rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
 
 ##	Other Bindings
@@ -239,7 +243,7 @@ bindsym XF86AudioMute 		exec --no-startup-id "pactl set-sink-mute 0 toggle # mut
 bindsym XF86MonBrightnessUp 	exec --no-startup-id xbacklight -inc 10 && pkill -SIGRTMIN+11 i3blocks
 bindsym XF86MonBrightnessDown 	exec --no-startup-id xbacklight -dec 10 && pkill -SIGRTMIN+11 i3blocks
 
-bindsym $mod+n 			exec --no-startup-id redshift -P -O 4000
+bindsym $mod+n 			exec --no-startup-id redshift -P -O 3200
 bindsym $mod+Shift+n 		exec --no-startup-id xbacklight -time 400 -set 1 && pkill -SIGRTMIN+11 i3blocks
 
 bindsym $mod+m 			exec --no-startup-id redshift -x

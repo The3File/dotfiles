@@ -7,5 +7,5 @@ inf="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/
 [[ $inf = wlp3s0 ]] && inf=''
 [[ $inf = enp0s25 ]] && inf=''
 
-[[ $status = routable ]] && echo " $inf $ssid " || echo -e "<span color='red'>   $status </span>"
-#[[ $status = routable ]] && echo " $inf $ssid " || echo -e "%{F#f00}  $status %{F-}"
+#[[ $status = routable ]] && echo " $inf $ssid " || echo -e "<span color='red'>   $status </span>"
+[[ $status = routable ]] && echo "$inf $ssid " || echo -e "%{F#f00}  $status %{F-}"

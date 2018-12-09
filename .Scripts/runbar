@@ -8,12 +8,18 @@ main(){
 }
 
 togglebar(){ 
-    [[ -z $(pgrep -x polybar) ]] && restartbar || killall -q polybar 
+    if [[ -z $(pgrep -x polybar) ]];then
+	restartbar 
+    else
+	killall -q polybar 
+	bspc config bottom_padding 0
+    fi
 }
 
 restartbar(){
     killall -q polybar
     while pgrep -u $UID -x polybar >/dev/null; do sleep 0.001; done
+    bspc config bottom_padding 25
     polybar hvadend &
 }
 main

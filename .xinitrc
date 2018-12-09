@@ -11,11 +11,14 @@ usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
 
-exec setxkbmap -layout dk -variant nodeadkeys -option caps:escape &
+exec setxkbmap -layout dk -variant nodeadkeys -option caps:escape &&
+exec xmodmap -e "keycode 135 = Super_R" &
 exec feh --bg-fill $HOME/.config/wall.png &
 exec wal -Rtn &
 exec greenclip daemon &
 exec dunst &
 exec networkd-dispatcher &
 #exec xmodmap -e "keycode 135 = Super_R" &
-exec i3
+exec sxhkd &
+exec bspwm
+#exec i3
