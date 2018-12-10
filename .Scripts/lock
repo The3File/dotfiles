@@ -3,10 +3,10 @@
 main(){
     #killall compton
     #scrot -e 'mv $f ~/scrot2.png' && compare scrot.png scrot2.png -compose src diff.png
-    #scrot -z ~/.wall.png
-    #convert ~/.wall.png -scale 25% -scale 400% ~/.wall.png
     #compton --dbus -b
-    xwobf -s 2 -f ~/.wall.png
+    #xwobf -s 2 -f ~/.wall.png
+    scrot -z ~/.wall.png
+    convert ~/.wall.png -scale 25% -scale 400% ~/.wall.png
     sleep .1
     lock_
 }

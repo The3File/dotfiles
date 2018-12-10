@@ -6,14 +6,13 @@
 
 qutewal &
 
-ln -sf "${HOME}/.cache/wal/dunstrc" "${HOME}/.config/dunst/dunstrc" &
+ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &
 
 ln -sf "$HOME/.cache/wal/colors.css" "$HOME/.config/qutebrowser/colors.css" &
 
 #[[ $(pgrep -cx autogap) -gt 1 ]] && killall autogap || autogap
 
-killall autogap
-autogap &
+#autogap &
 
 runbar &
 

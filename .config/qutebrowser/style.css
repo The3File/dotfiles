@@ -1,11 +1,11 @@
 @import "colors.css";
 *,div,pre,textarea,body,input,td,tr,p {
-    background-color: --color0 !important;
-    background-image: none !important;
+    background-color: #000000 !important;
+    /*background-image: none !important;*/
     color: #bbbbbb !important;
 }
 h1,h2,h3,h4 {
-    background-color: --color0 !important;
+    background-color: #000000 !important;
     color: #b8ddea !important;
 }
 a {
