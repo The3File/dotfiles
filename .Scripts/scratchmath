@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+id=$(xdotool search --class scratchmath)
+[[ "$id" != "" ]] && bspc node "$id" --flag hidden -f
