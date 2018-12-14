@@ -43,6 +43,12 @@ lock_(){
 	    --timecolor="$fore" --datecolor="$fore" --noinputtext='empty'\
 	    --greetercolor=$fore --indpos="20:50" --greeterpos="80:50"\
 	    --layout-align=1 --verif-align=1  --wrong-align=1
+	sleep .4
+	bright=$(xbacklight -get)
+	xbacklight -set .1 -time 300
+	systemctl suspend
+	sleep .3
+	xbacklight -set $bright -time 300
 	while pgrep -x i3lock;do sleep .1;done
 	sleep .4
     fade end
