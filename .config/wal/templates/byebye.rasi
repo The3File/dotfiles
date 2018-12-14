@@ -28,8 +28,8 @@
     location:			center;
     orientation: vertical;
     width: 40%;
-    height: 40%;
-    y-offset:			165;
+    height: 22%;
+    y-offset:			235;
     x-offset:			-370;
 }}
 

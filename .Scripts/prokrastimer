@@ -61,7 +61,7 @@ bar() {
 completed() {
     [[ $((count*work/60/60)) > 0 ]] && hour="%2d hours and" || hour=""
 
-    printf "\e[10;0H\e[J\e[1;33mTotal work:$hour%2d min.\n\e[1A"\
+    printf "\e[10;0H\e[J\e[1;33mTotal work:$hour%2d min.\n"\
     "$((count*work/60/60))" "$((count*work/60%60))"
     exit 0
 }

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+current=$(cat $HOME/.Scripts/.favwal/current)
+
+if [ $current = "$(tail -1 $HOME/.Scripts/.favwal/files)" ];then
+    next=$(head -1 $HOME/.Scripts/.favwal/files)
+else
+    next=$(cat $HOME/.Scripts/.favwal/files | awk "/$current/{getline; print}")
+fi
+
+$HOME/Billeder/favoritter/$next &
+echo $next > $HOME/.Scripts/.favwal/current

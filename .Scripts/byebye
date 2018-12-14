@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-ask=$( echo -e "shutdown\nreboot\nlogout" | rofi -dmenu -i -p " power")
+ask=$( printf " Exit\n Reboot\n Shutdown" | rofi -dmenu -i -p " Power" -config ~/.cache/wal/byebye.rasi)
 
-[[ $ask = "logout" ]] && bspc quit
-[[ $ask = "shutdown" ]] && shutdown now
-[[ $ask = "reboot" ]] && reboot
+[[ $ask = " Exit" ]] && bspc quit
+[[ $ask = " Reboot" ]] && reboot
+[[ $ask = " Shutdown" ]] && shutdown now

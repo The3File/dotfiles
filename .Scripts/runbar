@@ -19,7 +19,7 @@ togglebar(){
 restartbar(){
     killall -q polybar
     while pgrep -u $UID -x polybar >/dev/null; do sleep 0.001; done
-    bspc config bottom_padding 25
-    polybar hvadend &
+    bspc config bottom_padding 28
+    polybar hvadend 2>/dev/null &
 }
 main
