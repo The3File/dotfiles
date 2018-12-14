@@ -24,7 +24,6 @@ prompt() {
 
 timer() {
     ((sec=1,start_time=$SECONDS))
-    [[ $state = work ]] && ((count++))
 
     while [[ $sec > 0 ]]; do
 	((sec=(state-(SECONDS-start_time))))
@@ -39,6 +38,7 @@ timer_done() {
     play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
     notify-send "$state completed" -a Prokrastimer
 
+    [[ $state = work ]] && ((count++))
     [[ $count == $sess ]] && exit 0
 
     printf "\e[10;17H\e[1;39m - $state completed"

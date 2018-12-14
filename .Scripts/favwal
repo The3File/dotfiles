@@ -30,4 +30,3 @@ printf "\
     $HOME/Billeder/favoritter/$file.sh
 
 sudo chmod a+x ~/Billeder/favoritter/$file.sh
-ls $HOME/Billeder/favoritter > $HOME/.Scripts/.favwal/files

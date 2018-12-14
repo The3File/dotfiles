@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-current=$(cat $HOME/.Scripts/.favwal/current)
+current=$(awk -F/ 'NF>1{print $NF}' $HOME/.cache/wal/wal)
+files=$(ls $HOME/Billeder/favoritter)
 
-if [ $current = "$(tail -1 $HOME/.Scripts/.favwal/files)" ];then
-    next=$(head -1 $HOME/.Scripts/.favwal/files)
+if [ $(echo "$files" | tail -1) = "${current}.sh" ]
+then
+    next="$(printf $files | head -1)"
 else
-    next=$(cat $HOME/.Scripts/.favwal/files | awk "/$current/{getline; print}")
+    next=$(echo "$files" | awk "/$current/{getline; print}")
 fi
 
 $HOME/Billeder/favoritter/$next &
-echo $next > $HOME/.Scripts/.favwal/current
