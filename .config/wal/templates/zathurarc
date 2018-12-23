@@ -1,0 +1,5 @@
+set recolor true
+set guioptions n
+set recolor-keephue
+set recolor-darkcolor "{color7}"
+set recolor-lightcolor "{color0}"
