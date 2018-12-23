@@ -6,34 +6,34 @@
 # Uncomment this to still load settings configured via autoconfig.yml
 # config.load_autoconfig()
 #
-c.colors.statusbar.url.fg = '#080708'
-c.colors.statusbar.url.error.fg = '#080708'
-c.colors.statusbar.url.hover.fg = '#080708'
-c.colors.statusbar.url.warn.fg = '#080708'
-c.colors.statusbar.url.success.http.fg = '#080708'
-c.colors.statusbar.url.success.https.fg = '#080708'
+c.colors.statusbar.url.fg = '#080a08'
+c.colors.statusbar.url.error.fg = '#080a08'
+c.colors.statusbar.url.hover.fg = '#080a08'
+c.colors.statusbar.url.warn.fg = '#080a08'
+c.colors.statusbar.url.success.http.fg = '#080a08'
+c.colors.statusbar.url.success.https.fg = '#080a08'
 
-c.colors.statusbar.normal.bg = '#a45c2a'
-c.colors.statusbar.normal.bg = '#a45c2a'
-c.colors.statusbar.normal.fg = '#080708'
+c.colors.statusbar.normal.bg = '#548672'
+c.colors.statusbar.normal.bg = '#548672'
+c.colors.statusbar.normal.fg = '#080a08'
 c.colors.tabs.bar.bg = 'black'
 c.colors.tabs.odd.bg = 'black'
 c.colors.tabs.even.bg = 'black'
-c.colors.tabs.selected.odd.bg = '#a45c2a'
-c.colors.tabs.selected.odd.bg = '#a45c2a'
-c.colors.tabs.selected.even.bg = '#a45c2a'
-c.colors.tabs.selected.even.bg = '#a45c2a'
-c.colors.tabs.selected.odd.fg = '#080708'
-c.colors.tabs.selected.even.fg = '#080708'
+c.colors.tabs.selected.odd.bg = '#548672'
+c.colors.tabs.selected.odd.bg = '#548672'
+c.colors.tabs.selected.even.bg = '#548672'
+c.colors.tabs.selected.even.bg = '#548672'
+c.colors.tabs.selected.odd.fg = '#080a08'
+c.colors.tabs.selected.even.fg = '#080a08'
 
-c.colors.tabs.indicator.start = '#a45c2a'
-c.colors.tabs.indicator.start = '#a45c2a'
-c.colors.tabs.indicator.stop = '#a45c2a'
-c.colors.tabs.indicator.stop = '#a45c2a'
-#c.colors.tabs.indicator.error = '#a45c2a'
-#c.colors.tabs.indicator.error = '#a45c2a'
-#c.colors.tabs.indicator.system = '#a45c2a'
-#c.colors.tabs.indicator.system = '#a45c2a'
+c.colors.tabs.indicator.start = '#548672'
+c.colors.tabs.indicator.start = '#548672'
+c.colors.tabs.indicator.stop = '#548672'
+c.colors.tabs.indicator.stop = '#548672'
+#c.colors.tabs.indicator.error = '#548672'
+#c.colors.tabs.indicator.error = '#548672'
+#c.colors.tabs.indicator.system = '#548672'
+#c.colors.tabs.indicator.system = '#548672'
 
 # Aliases for commands. The keys of the given dictionary are the
 # aliases, while the values are the commands they map to.
@@ -68,19 +68,14 @@ config.set('content.javascript.enabled', True, 'qute://*/*')
 
 # List of user stylesheet filenames to use.
 # Type: List of File, or File
-c.content.user_stylesheets = ['style.css']
+c.content.user_stylesheets = ['style.scss']
 
 # Duration (in milliseconds) to wait before removing finished downloads.
 # If set to -1, downloads are never removed.
-# Type: Int
 c.downloads.remove_finished = 2000
 
 # Hide the statusbar unless a message is shown.
-# Type: Bool
-c.statusbar.hide = True
-
-# Padding (in pixels) for the statusbar.
-# Type: Padding
+c.statusbar.hide = False
 c.statusbar.padding = {'top': 0, 'bottom': 0, 'left': 0, 'right': 0}
 
 # Position of the status bar.
@@ -104,25 +99,16 @@ c.statusbar.widgets = ['keypress', 'progress', 'url']
 
 # Padding (in pixels) around text for tabs.
 # Type: Padding
-c.tabs.padding = {'top': 2, 'bottom': 2, 'left': 0, 'right': 0}
+c.tabs.padding = {'top': 3, 'bottom': 3, 'left': 0, 'right': 0}
 
 # Position of the tab bar.
-# Type: Position
-# Valid values:
-#   - top
-#   - bottom
-#   - left
-#   - right
-c.tabs.position = 'bottom'
+c.tabs.position = 'top'
+c.tabs.max_width = 200
 
 # When to show the tab bar.
 # Type: String
 # Valid values:
-#   - always: Always show the tab bar.
-#   - never: Always hide the tab bar.
-#   - multiple: Hide the tab bar if only one tab is open.
-#   - switching: Show the tab bar when switching tabs.
-c.tabs.show = 'multiple'
+c.tabs.show = 'always'
 
 # Duration (in milliseconds) to show the tab bar before hiding it when
 # tabs.show is set to 'switching'.
@@ -180,5 +166,5 @@ c.fonts.web.size.default = 15
 c.fonts.web.size.default_fixed = 12
 
 # Bindings for normal mode
-config.bind(',n', 'config-cycle content.user_stylesheets style.css "" ')
+config.bind(',n', 'config-cycle content.user_stylesheets style.scss "" ')
 config.bind('tg', 'tab-give')

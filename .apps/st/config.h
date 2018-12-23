@@ -3,8 +3,7 @@
 /*
  * appearance
  *
- * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
- */
+ * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html */
 static char *font = "SF Mono:style=Light:pixelsize=13:antialias=true:autohint=true";
 static int borderpx = 10;
 
@@ -83,7 +82,7 @@ char *termname = "st-256color";
 unsigned int tabspaces = 4;
 
 /* bg opacity */
-unsigned int alpha = 0xff;
+unsigned int alpha = 0xFF;
 
 static const char *colorname[] = {
 	"#000000",  /*  0: black    */
@@ -181,6 +180,7 @@ ResourcePref resources[] = {
 		{ "tabspaces",    INTEGER, &tabspaces },
 		{ "cwscale",      FLOAT,   &cwscale },
 		{ "chscale",      FLOAT,   &chscale },
+		{ "alpha",        INTEGER, &alpha },
 };
 
 /*

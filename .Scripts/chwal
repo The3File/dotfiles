@@ -3,11 +3,13 @@
 current=$(awk -F/ 'NF>1{print $NF}' $HOME/.cache/wal/wal)
 files=$(ls $HOME/Billeder/favoritter)
 
-if [ $(echo "$files" | tail -1) = "${current}.sh" ]
-then
+if [[ $(printf "$files\n" | tail -1) = ${current}.sh || -z $(echo $files | grep $current) ]];then
     next="$(printf $files | head -1)"
 else
     next=$(echo "$files" | awk "/$current/{getline; print}")
 fi
 
-$HOME/Billeder/favoritter/$next &
+$HOME/Billeder/favoritter/$next
+ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc"
+pkill dunst
+dunst &

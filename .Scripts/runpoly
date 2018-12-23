@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+op="$1"
+
+main(){
+    [[ -z $op ]] && restartbar
+    [[ $op == "toggle" ]] && togglebar
+}
+
+togglebar(){ 
+    if [[ -z $(pgrep -x polybar) ]];then
+	restartbar 
+    else
+	killall -q polybar 
+	bspc config top_padding 0
+	bspc config bottom_padding 0
+    fi
+}
+
+restartbar(){
+    killall -q polybar
+    while pgrep -u $UID -x polybar >/dev/null; do sleep 0.001; done
+    polybar hvadend 2>/dev/null &
+    bspc config top_padding 23
+}
+main

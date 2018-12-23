@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+app="$1"
+check=$(which $1 2>/dev/null)
+proc=$(ps -aux | sed -n "/ukill/d;/\<$app\>$/p" | awk '{print $2}')
+
+if [[ ! -z $proc ]];then
+    for app in $proc
+    do
+	kill -9 $app
+    done
+else
+    echo "Not a running script"
+fi

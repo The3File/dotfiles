@@ -58,5 +58,7 @@
 *color14:      base0F
 *color15:      base07
 
+!*.alpha:	250
+
 *bg: color0
 *fg: color2

@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-status="$( networkctl status | grep State: | awk '{print $3}')"
+status="$(networkctl status | grep State: | awk '{print $3}')"
 ssid="$(iwgetid -r)"
-inf="$( networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}' )"
+inf="$(networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}')"
 
 [[ $inf = wlp3s0 ]] && inf=''
 [[ $inf = enp0s25 ]] && inf=''
 
-#[[ $status = routable ]] && echo " $inf $ssid " || echo -e "<span color='red'>   $status </span>"
-[[ $status = routable ]] && echo "$inf $ssid " || echo -e "%{F#f00}  $status %{F-}"
+[[ $status = routable ]] && echo "$inf $ssid " || echo -e " $status"
