@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-trap 'tput cvvis' EXIT
+trap 'tput cnorm' EXIT
 printf '\e[H\e[2J\n\n'
 neofetch
 tput civis

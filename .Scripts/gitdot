@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 main(){
     rsync -ai --delete --dry-run --exclude='.git/' $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
     rsync -ai --delete --dry-run --exclude='.git/' $HOME/.Scripts $HOME/dotfiles/

@@ -4,7 +4,7 @@ if [[ $1 == open ]];then
     zathura ${2%.md}.pdf &
 else
     out="${1%.md}.pdf"
-    [[ -z $1 ]] && echo "Missing filename." && exit
+    [[ -z $1 ]] && echo "Ingen fil." && exit
     if [[ -z $2 ]];then 
 	pandoc -V geometry:margin=1in -t latex $1 -o $out 
     else

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 id=$(xdotool search --class scratchterm)
 [[ "$id" != "" ]] && bspc node "$id" --flag hidden -f
 [[ "$id" = "" ]] && st -c scratchterm -g 88x25+10+10 -e tmux

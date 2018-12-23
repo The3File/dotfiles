@@ -1,5 +1,5 @@
 alias timer="((s=$SECONDS)); while :; do echo $(($SECONDS-s)); sleep 1; done"
-alias wthr="curl wttr.in/svendborg --silent | sed '1d;7q'; echo"
+alias wthr="echo;curl --silent wttr.in/svendborg | sed -n 's/.*:/  /;1s/\,.*$//g;1,7p';echo"
 alias weather="curl wttr.in/svendborg --silent | sed '1d;38q'"
 
 alias vim="nvim"

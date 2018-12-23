@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Prokrastimer
-# Over-engineered pomodoro timer written in bash
+# Over-engineered pomodoro timer
 
 main() {
     logo=$(figlet -f big prokrastimer); count=0; state="work"
 
-    trap 'tput cvvis && completed' EXIT; trap 'clean' SIGWINCH
+    trap 'tput cnorm && completed' EXIT; trap 'clean' SIGWINCH
 
     clean; prompt; tput civis; stty -echo
     printf "\e[3A\r\e[J\e[1;35mpress ENTER to start $state"; read 2>/dev/null
@@ -61,7 +61,7 @@ bar() {
 completed() {
     [[ $((count*work/60/60)) > 0 ]] && hour="%2d hours and" || hour=""
 
-    printf "\e[10;0H\e[J\e[1;33mTotal work:$hour%2d min.\n"\
+    printf "\e[10;0H\e[J\e[1;33mcombined time worked:$hour%2d min."\
     "$((count*work/60/60))" "$((count*work/60%60))"
     exit 0
 }

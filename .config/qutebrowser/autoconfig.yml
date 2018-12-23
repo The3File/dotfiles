@@ -3,19 +3,5 @@
 
 config_version: 2
 settings:
-  colors.tabs.even.fg:
-    global: '#888888'
-  colors.tabs.odd.fg:
-    global: '#888888'
-  colors.tabs.selected.even.bg:
-    global: black
-  colors.tabs.selected.even.fg:
-    global: white
-  colors.tabs.selected.odd.bg:
-    global: black
-  colors.tabs.selected.odd.fg:
-    global: white
   content.user_stylesheets:
-    global: style.scss
-  statusbar.hide:
-    global: true
+    global: null
