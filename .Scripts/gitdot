@@ -2,7 +2,7 @@
 main(){
     rsync -ai --delete --dry-run --exclude='.git/' $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
     rsync -ai --delete --dry-run --exclude='.git/' $HOME/.Scripts $HOME/dotfiles/
-    rsync -ai --delete --dry-run --exclude='.git/' $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.X.old,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
+    rsync -ai --delete --dry-run --exclude='.git/' $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.zsh_aliases,.zshrc} $HOME/dotfiles/
     stty -echo
     printf "Push? (y/N)"
     read -rsn1 a
