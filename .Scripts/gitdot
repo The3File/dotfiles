@@ -7,7 +7,7 @@ main(){
     stty -echo
     printf "Push? (y/N)"
     read -rsn1 a
-    [[ $a == y ]] && copy || printf "\n" && exit
+    [[ $a == y ]] && copy || printf "\nNo changes made.\n" && exit 0
 }
 
 copy(){
@@ -22,7 +22,7 @@ copy(){
 push(){
     cd ~/dotfiles/
     git add .
-    git commit -a -m "I'm lazy"
+    git commit -a -m "$(read -p 'Commit meassage: ';echo $a)"
     git push -u origin master
     exit 0
 }
