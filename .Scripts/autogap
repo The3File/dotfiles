@@ -11,6 +11,6 @@ bspc subscribe | while read line; do
     bspc config left_padding $P
     bspc config right_padding $P
 
-    [ $G -le 0 ] && G=0
+    [ $G -le 5 ] && G=5
     bspc config --desktop focused window_gap $G
 done
