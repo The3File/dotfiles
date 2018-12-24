@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Uninstall Data Studio
+Exec=env WINEPREFIX="/home/ringdal/.wine" wine C:\\\\windows\\\\command\\\\start.exe /Unix /home/ringdal/.wine/dosdevices/c:/users/ringdal/Start\\ Menu/Programs/PASCO\\ scientific/Tools/Uninstall\\ Data\\ Studio.lnk
+Type=Application
+StartupNotify=true
+Comment=Remove PASCO Capstone product from your computer
+Icon=F36D_UninstallShortcut_0C53DD52A1094A3B8F922D641A989F31.0
+StartupWMClass=msiexec.exe

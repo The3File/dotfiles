@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=PASCO Capstone
+Exec=env WINEPREFIX="/home/ringdal/.wine" wine C:\\\\windows\\\\command\\\\start.exe /Unix /home/ringdal/.wine/dosdevices/c:/users/ringdal/Start\\ Menu/Programs/PASCO\\ scientific/PASCO\\ Capstone.lnk
+Type=Application
+StartupNotify=true
+Comment=PASCO scientific Capstone application
+Path=/home/ringdal/.wine/dosdevices/c:/Program Files (x86)/PASCO scientific/Capstone/
+Icon=3AAB_ApplicationShortcu_2A1D43E280F94A24A685BB2B90EE46F7.0
+StartupWMClass=capstone.exe

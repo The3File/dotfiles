@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Microsoft Mathematics (64-bit)
+Exec=env WINEPREFIX="/home/ringdal/.wine" wine C:\\\\windows\\\\command\\\\start.exe /Unix /home/ringdal/.wine/dosdevices/c:/users/ringdal/Start\\ Menu/Programs/Microsoft\\ Mathematics\\ \\(64-bit\\)/Microsoft\\ Mathematics\\ \\(64-bit\\).lnk
+Type=Application
+StartupNotify=true
+Path=/home/ringdal/.wine/dosdevices/c:/Program Files/Microsoft Mathematics/
+Icon=6CFA_MathApp.0
+StartupWMClass=mathapp.exe

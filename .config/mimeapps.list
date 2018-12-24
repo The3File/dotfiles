@@ -1,0 +1,14 @@
+[Added Associations]
+application/pdf=zathura.desktop;
+application/x-compressed-tar=obconf.desktop;
+application/x-raw-disk-image-xz-compressed=org.gnome.FileRoller.desktop;
+application/zip=org.gnome.FileRoller.desktop;
+x-scheme-handler/magnet=transmission-remote.desktop;
+x-scheme-handler/mailto=mutt.desktop;
+
+[Default Applications]
+image/png=feh.desktop
+image/jpg=feh.desktop
+image/jpeg=feh.desktop
+image/gif=gif.desktop
+text/plain=nvim.desktop

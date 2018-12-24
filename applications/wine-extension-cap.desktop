@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=PASCO scientific Capstone application
+MimeType=application/vnd.tcpdump.pcap;
+Exec=env WINEPREFIX="/home/ringdal/.wine" wine start /ProgIDOpen PASCOCapstone %f
+NoDisplay=true
+StartupNotify=true
+Icon=C6E6_Capstone.0
