@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#===============#
+#==  bspwmrc  ==#
+#===============#
+
+bspc monitor -d 1 2 3 4 5 6 7 8 9 10
+
+source /home/ringdal/.cache/wal/colors.sh
+
+bspc config focused_border_color $color4
+bspc config border_width         2
+bspc config window_gap           15
+bspc config split_ratio          0.51
+bspc config gapless_monocle true
+#bspc config borderless_monocle true
+#bspc desktop 10 -l monocle
+
+bspc rule -r Zathura
+bspc rule -a Zathura state=tiled
+
+bspc rule -r float
+bspc rule -a float sticky=off state=floating 
+
+bspc rule -r scratchterm
+bspc rule -a scratchterm sticky=on state=floating hidden=on
+
+bspc rule -r scratchmath
+bspc rule -a scratchmath sticky=on state=floating hidden=on
+
+# Compton
+pkill compton
+compton --dbus -b &
+
+# dunst
+pkill dunst
+dunst &
+
+# dunst workspaces
+ukill curws
+curws &
+
+# autogap
+ukill autogap
+autogap &
+
+# wal
+ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &
+ln -sf "$HOME/.cache/wal/colors.scss" "$HOME/.config/qutebrowser/_colors.scss" &
+ln -sf "$HOME/.cache/wal/zathurarc" "$HOME/.config/zathura/zathurarc"
+qutewal &
+
+exec xmodmap -e "keycode 135 = Super_R" &

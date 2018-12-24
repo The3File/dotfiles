@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 dryrun(){
-    rsync -ai --delete --dry-run --exclude='.git/' $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
+    rsync -ai --delete --dry-run --exclude='.git/' $HOME/.config/{bspwm,sxhkd,dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
     rsync -ai --delete --dry-run --exclude='.git/' $HOME/.Scripts $HOME/dotfiles/
-    rsync -ai --delete --dry-run --exclude='.git/' $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.aliases,.zshrc} $HOME/dotfiles/
+    rsync -ai --delete --dry-run --exclude='.git/' $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.aliases,.zshrc,.bashrc,.bash_profile,.bash_prompt} $HOME/dotfiles/
     stty -echo
     printf "Push? (y/N)"
     read -rsn1 a
@@ -14,9 +14,9 @@ dryrun(){
 copy(){
     printf "\n"
     stty echo
-    rsync --delete -a --exclude='.git/' $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
+    rsync --delete -a --exclude='.git/' $HOME/.config/{bspwm,sxhkd,dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
     rsync --delete -a --exclude='.git/' $HOME/.Scripts $HOME/dotfiles
-    rsync --delete -a --exclude='.git/' $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.aliases,.zshrc} $HOME/dotfiles/
+    rsync --delete -a --exclude='.git/' $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.aliases,.zshrc,.bashrc,.bash_profile,.bash_prompt} $HOME/dotfiles/
     push
 }
 
