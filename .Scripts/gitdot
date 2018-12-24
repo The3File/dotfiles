@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-main(){
+dryrun(){
     rsync -ai --delete --dry-run --exclude='.git/' $HOME/.config/{dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
     rsync -ai --delete --dry-run --exclude='.git/' $HOME/.Scripts $HOME/dotfiles/
     rsync -ai --delete --dry-run --exclude='.git/' $HOME/{.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.aliases,.zshrc} $HOME/dotfiles/
     stty -echo
     printf "Push? (y/N)"
     read -rsn1 a
+    stty echo
     [[ $a == y ]] && copy || printf "\nNo changes made.\n" && exit 0
 }
 
@@ -27,4 +28,4 @@ push(){
     exit 0
 }
 [[ $1 == push ]] && push
-[[ -z $1 ]] && main || printf "Unknown option: '$1'\n" && exit
+[[ -z $1 ]] && dryrun || printf "Unknown option: '$1'\n" && exit 1
