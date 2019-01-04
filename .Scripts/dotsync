@@ -6,14 +6,12 @@ get_dots() {
    op=( -ai --delete ${o[@]} --exclude='.git/' --exclude='plugged/')
    case $1 in
       1) fs="bspwm sxhkd dunst i3 nvim qutebrowser polybar ranger wal mimeapps.list compton.conf"
-	 ot="$HOME/.dotfiles/.config"; d="$HOME/.config" 
-	 ;;
+	 ot="$HOME/.dotfiles/.config"; d="$HOME/.config" ;;
       2) fs=".Scripts .local/share/applications .apps .latexmkrc\
-	 .nvimrc .profile .searched .oh-my-zsh .vimrc .xinitrc .Xmodmap .Xresources\
+	 .nvimrc .profile .oh-my-zsh .vimrc .xinitrc .Xmodmap .Xresources\
 	 .xsessionrc .zprofile .aliases .zshrc .bashrc .bash_profile .bash_prompt"
 	 ot="$HOME/.dotfiles"; d="$HOME"
    esac
-
    for f in $fs; do
       [[ -f "$d/$f" || -d "$d/$f" ]] && rsync ${op[@]} "$d/$f" $ot
    done
@@ -34,7 +32,7 @@ push() {
 }
 
 main() { 
-   o=( --dry-run )
+   o=( --dry-run)
    sync; prompt
 }
 main
