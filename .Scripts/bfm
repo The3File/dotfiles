@@ -5,12 +5,12 @@
 
 short() {
     case "${1: -1}" in
-        g) l=0; refresh ;;
-	h) cd "$HOME" ;;
-	S) cd "$HOME/.Scripts" ;;
-	w) cd "$HOME/Billeder/wallpapers" ;;
-	c) cd "$HOME/.config" ;;
-	/) cd "/" ;;
+        g) l=0 ;;
+	h) l=0; cd "$HOME" ;;
+	S) l=0; cd "$HOME/.Scripts" ;;
+	w) l=0; cd "$HOME/Billeder/wallpapers" ;;
+	c) l=0; cd "$HOME/.config" ;;
+	/) l=0; cd "/" ;;
     esac
     refresh; get_dir
 }
@@ -70,7 +70,7 @@ open() {
                 nohup "${FFF_OPENER:-${oc:-xdg-open}}" "$1" &>/dev/null & disown
             ;;
 
-            *) "${FFF_EDITOR:-${EDITOR:-vi}}" "$1"; printf '\e[?25l' ;;
+            *) printf '\e[2J'; "${FFF_EDITOR:-${EDITOR:-vi}}" "$1"; printf '\e[?25l' ;;
         esac
     }; shopt -u nocasematch
 }
@@ -98,7 +98,7 @@ key() {
              [[ $g ]] || ((l=${l2[n]/:*},k=${l2[n--]/*:}))
              [[ $PWD == / ]] && l=0; g=; refresh ;;
 
-        g) read -rsn 1; short "$REPLY" ;;
+        g) read -rsn 1; short "$REPLY"; refresh ;;
 	S) cd "$PWD/."; printf "\e[?25h\e[2J"; bash; refresh ;;
         G) ((l=c-1)); refresh; ((k=k<0?0:k)) ;;
         .) a=(u s); shopt -"${a[((h=h>0?0:++h))]}" dotglob

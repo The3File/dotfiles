@@ -1,27 +1,30 @@
 #!/usr/bin/env bash
-
+config=""
 dryrun(){
-    rsync -ai --delete --dry-run --exclude='.git/' $HOME/.config/{mimeapps.list,bspwm,sxhkd,dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
-    rsync -ai --delete --dry-run --exclude='.git/' $HOME/.Scripts $HOME/dotfiles/
-    rsync -ai --delete --dry-run --exclude='.git/' $HOME/{.local/share/applications,.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.aliases,.zshrc,.bashrc,.bash_profile,.bash_prompt} $HOME/dotfiles/
+    rsync -ai --delete --dry-run --exclude='.git/'\
+	$HOME/.config/{mimeapps.list,bspwm,sxhkd,dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} $HOME/dotfiles/.config/
+    rsync -ai --delete --dry-run --exclude='.git/'\
+	$HOME/.Scripts $HOME/dotfiles/
+    rsync -ai --delete --dry-run --exclude='.git/'\
+	$HOME/{.local/share/applications,.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.aliases,.zshrc,.bashrc,.bash_profile,.bash_prompt} $HOME/dotfiles/
     stty -echo
     printf "Push? (y/N)"
     read -rsn1
     stty echo
-    [[ $REPLY == y || Y ]] && copy || printf "\nNo changes made.\n" && exit 0
+    [[ $REPLY == y ]] && copy || printf "\nNo changes made.\n" && exit 0
 }
 
 copy(){
     printf "\n"
     stty echo
-    rsync --delete -a --exclude='.git/' $HOME/.config/{mimeapps.list,bspwm,sxhkd,dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} ~/dotfiles/.config/
+    rsync --delete -a --exclude='.git/' $HOME/.config/{mimeapps.list,bspwm,sxhkd,dunst,i3,nvim,qutebrowser,polybar,ranger,wal,compton.conf} $HOME/dotfiles/.config/
     rsync --delete -a --exclude='.git/' $HOME/.Scripts $HOME/dotfiles
     rsync --delete -a --exclude='.git/' $HOME/{.local/share/applications,.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.aliases,.zshrc,.bashrc,.bash_profile,.bash_prompt} $HOME/dotfiles/
     push
 }
 
 push(){
-    cd ~/dotfiles/
+    cd $HOME/dotfiles/
     git add .
     read -p 'Commit message: '
     git commit -a -m "$REPLY"
