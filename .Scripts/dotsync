@@ -29,10 +29,9 @@ prompt() {
 
 push() {
    cd $HOME/.dotfiles/
-   git add .
+   #git add .
    printf '\e[34m%s\e[0m' "Commit message: ";read
-   git commit -a -m "$REPLY"
-   git push -u origin master
+   git commit -a -m "$REPLY" && git push -u origin master
 }
 
 main() { 
@@ -41,5 +40,4 @@ main() {
    sync; prompt
    exit 0
 }
-
 main
