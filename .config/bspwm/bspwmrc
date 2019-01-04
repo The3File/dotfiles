@@ -25,12 +25,12 @@ bspc rule -r fff
 bspc rule -a fff sticky=off state=floating 
 
 bspc rule -r scratchterm
-bspc rule -a scratchterm sticky=on state=floating hidden=on
+bspc rule -a scratchterm locked=on sticky=on state=floating hidden=on
 
 bspc rule -r scratchmath
-bspc rule -a scratchmath sticky=on state=floating hidden=on
+bspc rule -a scratchmath locked=on sticky=on state=floating hidden=on
 
-# Compton
+# compton
 pkill compton
 compton --dbus -b &
 
@@ -45,6 +45,13 @@ curws &
 # autogap
 ukill autogap
 autogap &
+
+# unclutter
+#pkill unclutter
+#unclutter &
+
+killall xbanish
+xbanish -i Mod1 -i Mod4 &
 
 # wal
 ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &

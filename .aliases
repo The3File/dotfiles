@@ -4,9 +4,12 @@ alias weather="curl wttr.in/svendborg --silent | sed '1d;38q'"
 alias vim="nvim"
 
 alias r="ranger"
-alias f="fff"
+alias f="bfm"
+alias n="nnn"
 
-alias za="nvim ~/.zsh_aliases"
+alias za="nvim ~/.aliases"
+
+alias cast="castnow"
 
 alias zrc="nvim ~/.zshrc"
 alias rrc="nvim ~/.config/ranger/rc.conf"
@@ -32,6 +35,7 @@ alias y="yaourt"
 alias p="sudo pacman"
 
 alias la="ls -a"
+alias ll="ls -l"
 alias lla="ls -la"
 
 alias fastboot="sudo fastboot"

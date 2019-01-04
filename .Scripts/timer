@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 
-trap 'tput cnorm' EXIT
+trap "tput cnorm;clear" EXIT
 tput civis; printf '\e[1;34m'; clear
-while :;do
-    ((width=($(tput cols)-20)/2,rows=($(tput lines)-4)/2))
-    out=$(figlet -f big\
-	$(printf '%02d:%02d' "$((SECONDS/60))" "$((SECONDS%60))"))
 
-    for line in $out
-    do
-	(($rows += $line))
-	printf '\n\e['$rows'H\e['$width'C\e[2J%s' "$out"
-    done
+while :;do
+
+    ((width=($(tput cols)-20)/2,rows=($(tput lines)-4)/2))
+
+    out=$(figlet -cw $(tput cols) -f big $(printf '%02d:%02d' "$((SECONDS/60))" "$((SECONDS%60))"))
+
+    printf '\e['$rows';0H\e[2J\r%s' "$out"
     sleep 1
 done

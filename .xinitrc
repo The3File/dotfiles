@@ -19,4 +19,5 @@ exec networkd-dispatcher &
 exec wal -Rtn &
 exec feh --bg-fill $HOME/.config/wall.png &
 exec sxhkd &
+exec dunstify "$($HOME/.Scripts/i3network)" -t 7000 -r 90210 &
 exec bspwm

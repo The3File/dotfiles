@@ -23,7 +23,7 @@ esac
 printf "\
     #\!/bin/sh\n\
     cp $dir ~/.config/wall.png\n\
-    wal -tqi $dir --backend $backend\n\
+    wal -tgqi $dir --backend $backend\n\
     source /home/ringdal/.cache/wal/colors.sh\n\
     bspc config focused_border_color \$color4" >\
     $HOME/Billeder/favoritter/$file.sh

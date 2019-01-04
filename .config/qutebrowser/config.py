@@ -6,34 +6,34 @@
 # Uncomment this to still load settings configured via autoconfig.yml
 # config.load_autoconfig()
 #
-c.colors.statusbar.url.fg = '#060606'
-c.colors.statusbar.url.error.fg = '#060606'
-c.colors.statusbar.url.hover.fg = '#060606'
-c.colors.statusbar.url.warn.fg = '#060606'
-c.colors.statusbar.url.success.http.fg = '#060606'
-c.colors.statusbar.url.success.https.fg = '#060606'
+c.colors.statusbar.url.fg = '#0a0a09'
+c.colors.statusbar.url.error.fg = '#0a0a09'
+c.colors.statusbar.url.hover.fg = '#0a0a09'
+c.colors.statusbar.url.warn.fg = '#0a0a09'
+c.colors.statusbar.url.success.http.fg = '#0a0a09'
+c.colors.statusbar.url.success.https.fg = '#0a0a09'
 
-c.colors.statusbar.normal.bg = '#7d6d6b'
-c.colors.statusbar.normal.bg = '#7d6d6b'
-c.colors.statusbar.normal.fg = '#060606'
+c.colors.statusbar.normal.bg = '#904A23'
+c.colors.statusbar.normal.bg = '#904A23'
+c.colors.statusbar.normal.fg = '#0a0a09'
 c.colors.tabs.bar.bg = 'black'
 c.colors.tabs.odd.bg = 'black'
 c.colors.tabs.even.bg = 'black'
-c.colors.tabs.selected.odd.bg = '#7d6d6b'
-c.colors.tabs.selected.odd.bg = '#7d6d6b'
-c.colors.tabs.selected.even.bg = '#7d6d6b'
-c.colors.tabs.selected.even.bg = '#7d6d6b'
-c.colors.tabs.selected.odd.fg = '#060606'
-c.colors.tabs.selected.even.fg = '#060606'
+c.colors.tabs.selected.odd.bg = '#904A23'
+c.colors.tabs.selected.odd.bg = '#904A23'
+c.colors.tabs.selected.even.bg = '#904A23'
+c.colors.tabs.selected.even.bg = '#904A23'
+c.colors.tabs.selected.odd.fg = '#0a0a09'
+c.colors.tabs.selected.even.fg = '#0a0a09'
 
-c.colors.tabs.indicator.start = '#7d6d6b'
-c.colors.tabs.indicator.start = '#7d6d6b'
-c.colors.tabs.indicator.stop = '#7d6d6b'
-c.colors.tabs.indicator.stop = '#7d6d6b'
-#c.colors.tabs.indicator.error = '#7d6d6b'
-#c.colors.tabs.indicator.error = '#7d6d6b'
-#c.colors.tabs.indicator.system = '#7d6d6b'
-#c.colors.tabs.indicator.system = '#7d6d6b'
+c.colors.tabs.indicator.start = '#904A23'
+c.colors.tabs.indicator.start = '#904A23'
+c.colors.tabs.indicator.stop = '#904A23'
+c.colors.tabs.indicator.stop = '#904A23'
+#c.colors.tabs.indicator.error = '#904A23'
+#c.colors.tabs.indicator.error = '#904A23'
+#c.colors.tabs.indicator.system = '#904A23'
+#c.colors.tabs.indicator.system = '#904A23'
 
 # Aliases for commands. The keys of the given dictionary are the
 # aliases, while the values are the commands they map to.
@@ -68,7 +68,7 @@ config.set('content.javascript.enabled', True, 'qute://*/*')
 
 # List of user stylesheet filenames to use.
 # Type: List of File, or File
-c.content.user_stylesheets = ['style.scss']
+#c.content.user_stylesheets = ['style.scss']
 
 # Duration (in milliseconds) to wait before removing finished downloads.
 # If set to -1, downloads are never removed.
@@ -159,12 +159,13 @@ c.fonts.tabs = '9pt monospace'
 
 # Default font size (in pixels) for regular text.
 # Type: Int
-c.fonts.web.size.default = 15
+c.fonts.web.size.default = 17
 
 # Default font size (in pixels) for fixed-pitch text.
 # Type: Int
-c.fonts.web.size.default_fixed = 12
+c.fonts.web.size.default_fixed = 14
 
 # Bindings for normal mode
 config.bind(',n', 'config-cycle content.user_stylesheets style.scss "" ')
+config.bind('td', 'hint links spawn transmission-remote -a {hint-url}')
 config.bind('tg', 'tab-give')

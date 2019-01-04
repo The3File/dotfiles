@@ -8,6 +8,7 @@ if [[ ! -z $proc ]];then
     for app in $proc
     do
 	kill -9 $app
+	echo "Killed \"$1\""
     done
 else
     echo "Not a running script"

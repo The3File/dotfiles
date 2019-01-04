@@ -5,3 +5,5 @@ source $HOME/.cache/wal/colors.sh
 sed 's/{color4}/'$color4'/p;s/{color7}/'$color7'/g;s/{color0}/'$color0'/g'\
     $HOME/.config/wal/qute >\
     $HOME/.config/qutebrowser/config.py
+
+[[ ! -z $(pgrep -x qutebrowser) ]] && qutebrowser :config-source

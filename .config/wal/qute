@@ -61,7 +61,7 @@ config.set('content.javascript.enabled', True, 'qute://*/*')
 
 # List of user stylesheet filenames to use.
 # Type: List of File, or File
-c.content.user_stylesheets = ['style.scss']
+#c.content.user_stylesheets = ['style.scss']
 
 # Duration (in milliseconds) to wait before removing finished downloads.
 # If set to -1, downloads are never removed.
@@ -152,12 +152,13 @@ c.fonts.tabs = '9pt monospace'
 
 # Default font size (in pixels) for regular text.
 # Type: Int
-c.fonts.web.size.default = 15
+c.fonts.web.size.default = 17
 
 # Default font size (in pixels) for fixed-pitch text.
 # Type: Int
-c.fonts.web.size.default_fixed = 12
+c.fonts.web.size.default_fixed = 14
 
 # Bindings for normal mode
 config.bind(',n', 'config-cycle content.user_stylesheets style.scss "" ')
+config.bind('td', 'hint links spawn transmission-remote -a {hint-url}')
 config.bind('tg', 'tab-give')

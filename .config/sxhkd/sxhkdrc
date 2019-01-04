@@ -24,14 +24,14 @@ super + {_,shift +} {Return}
 super + {r,v,u}
 	st -e {ranger,neomutt,rtv -s unixporn}
 
+super + {_,shift +} e
+	st {_,-g 30x15+80+20 -c bfm} -e bfm
+
 alt + button1
 	drawterm
 
 super + {p,a}
 	scratch{term,math}
-
-super + shift + f
-	st -g 30x15+80+40 -c fff -e fff
 
 # program launcher
 super + d
@@ -63,7 +63,7 @@ super + alt + shift + w
 	chwal
 
 super + alt + shift + r
-	wal -Rtn
+	wal -Rgtn
 
 # make sxhkd reload its configuration files:
 super + Escape

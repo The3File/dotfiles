@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 #
 # Torque - minimal tui for transmission-daemon.
+# not written by me - The3File
+
+dmon() {
+[[ -z $(pgrep transmission-da) ]] && {
+    transmission-daemon; printf '\e[H\e[2J\r%s\n' "Launching daemon"; sleep 1
+};  main
+}
 
 refresh() {
     printf '\e[?7l\e[?25l\e[2J\e[H'
@@ -62,4 +69,4 @@ main() {
     for ((;;)); { get_torrents; read -rsN1 -t1 && prompt "$REPLY"; }
 }
 
-main
+dmon
