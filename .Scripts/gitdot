@@ -8,8 +8,7 @@ dryrun(){
     rsync -ai --delete --dry-run --exclude='.git/'\
 	$HOME/{.local/share/applications,.apps,.latexmkrc,.nvimrc,.profile,.searched,.oh-my-zsh,.vimrc,.xinitrc,.Xmodmap,.Xresources,.xsessionrc,.zprofile,.aliases,.zshrc,.bashrc,.bash_profile,.bash_prompt} $HOME/.dotfiles/
     stty -echo
-    printf "Push? (y/N)"
-    read -rsn1
+    read -rsn1 -p "Push? (y/N)"
     stty echo
     [[ $REPLY == y ]] && copy || printf "\nNo changes made.\n" && exit 0
 }

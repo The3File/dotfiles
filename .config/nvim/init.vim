@@ -17,7 +17,7 @@ set relativenumber
 
 set smartindent
 set autoindent
-set shiftwidth=4
+set shiftwidth=3
 
 colorscheme wal
 
