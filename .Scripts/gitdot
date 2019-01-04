@@ -23,7 +23,8 @@ copy(){
 push(){
     cd ~/dotfiles/
     git add .
-    git commit -a -m "$(read -p 'Commit message: ';echo $a)"
+    read -p 'Commit message: '
+    git commit -a -m "$REPLY"
     git push -u origin master
     exit 0
 }
