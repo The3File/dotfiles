@@ -3,40 +3,38 @@
 sync() { for i in 1 2; do get_dots $i; done }
 
 get_dots() {
-   opts=( -ai --delete ${opt[@]} --exclude='.git/' --exclude='plugged/')
+   op=( -ai --delete ${o[@]} --exclude='.git/' --exclude='plugged/')
    case $1 in
-      1) files="bspwm sxhkd dunst i3 nvim qutebrowser polybar ranger wal mimeapps.list compton.conf"
-	 out="$HOME/.dotfiles/.config"; dir="$HOME/.config" ;;
-
-      2) files=".Scripts .local/share/applications .apps .latexmkrc\
+      1) fs="bspwm sxhkd dunst i3 nvim qutebrowser polybar ranger wal mimeapps.list compton.conf"
+	 ot="$HOME/.dotfiles/.config"; d="$HOME/.config" 
+	 ;;
+      2) fs=".Scripts .local/share/applications .apps .latexmkrc\
 	 .nvimrc .profile .searched .oh-my-zsh .vimrc .xinitrc .Xmodmap .Xresources\
 	 .xsessionrc .zprofile .aliases .zshrc .bashrc .bash_profile .bash_prompt"
-	 out="$HOME/.dotfiles"; dir="$HOME"
+	 ot="$HOME/.dotfiles"; d="$HOME"
    esac
 
-   for f in $files; do
-      [[ -f "$dir/$f" || -d "$dir/$f" ]] && rsync ${opts[@]} "$dir/$f" $out
+   for f in $fs; do
+      [[ -f "$d/$f" || -d "$d/$f" ]] && rsync ${op[@]} "$d/$f" $ot
    done
 }
 
 prompt() {
-   printf '\e[33m%s\e[0m\n' "Push? [y/N]";read -rsn1
+   printf '\e[33m%s\e[0m\n' "Push? [y/N]"; read -rsn1
    case $REPLY in 
-      y) opt=""; (:;:); sync; push ;; 
+      y) o=""; (:;:); sync; push ;; 
       *) printf 'No changes made..\n'; exit 0
    esac
 }
 
 push() {
    cd $HOME/.dotfiles/; git add . 
-   printf '\e[34m%s\e[0m' "Commit message: ";read
+   printf '\e[34m%s\e[0m' "Commit message: "; read
    git commit -a -m "$REPLY" && git push -u origin master
 }
 
 main() { 
-   trap "printf '\e[?25h'" EXIT
-   opt=( --dry-run )
+   o=( --dry-run )
    sync; prompt
-   exit 0
 }
 main
