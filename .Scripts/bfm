@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
-# fork of fff
 #
 # bfm - bash filemanager
+# fork of fff
 
 short() {
     case "${1: -1}" in
-        g) l=0 ;;
+	/) l=0; cd "/" ;;
 	h) l=0; cd "$HOME" ;;
 	S) l=0; cd "$HOME/.Scripts" ;;
-	w) l=0; cd "$HOME/Billeder/wallpapers" ;;
+	d) l=0; cd "$HOME/.dotfiles" ;;
 	c) l=0; cd "$HOME/.config" ;;
-	/) l=0; cd "/" ;;
+	w) l=0; cd "$HOME/Billeder/wallpapers" ;;
+
+        g) l=0
     esac
     refresh; get_dir
 }
@@ -66,7 +68,6 @@ open() {
             wbmp|wdp|weba|webm|webp|whl|wim|wm|wma|wmv|wmx|woff|woff2|wrm|wvx|\
             xbm|xif|xla|xlam|xls|xlsb|xlsm|xlsx|xlt|xltm|xltx|xm|xmind|xpi|xpm|\
             xwd|xz|z|zip|zipx)
-                [[ "$OSTYPE" == darwin* ]] && oc="open"
                 nohup "${FFF_OPENER:-${oc:-xdg-open}}" "$1" &>/dev/null & disown
             ;;
 
@@ -81,9 +82,15 @@ prompt() {
         r) read -rp "rename ${f[l]##*/}: "; [[ $REPLY ]] && \
            mv "${f[l]}" "$PWD/$REPLY" ;;
         D) read -n 1 -rp "trash ${f[l]##*/}? [y/N]: " y; [[ $y == y ]] && {
-           mv "${f[l]}" ~/.cache/fff/trash/; ((l>0?l--:l)); } ;;
+	   mv "${f[l]}" ~/.cache/fff/trash/; ((l>0?l--:l)); } ;;
+
+	B) read -rp "New bash script: "; [[ $REPLY ]] && {
+	   [[ ! -f $REPLY ]] && printf "#!/usr/bin/env bash\n\n" > "$REPLY" && chmod a+x $REPLY
+	   nvim + $REPLY 
+	} ;;
+	V) read -rp "nvim: "; 	 [[ $REPLY ]] && $EDITOR "$PWD/$REPLY" ;;
 	c) read -rp "chdir: ";   [[ $REPLY ]] && cd "$PWD/$REPLY" ;;
-        n) read -rp "mkdir: ";   [[ $REPLY ]] && mkdir -p "$PWD/$REPLY" ;;
+        d) read -rp "mkdir: ";   [[ $REPLY ]] && mkdir -p "$PWD/$REPLY" ;;
         f) read -rp "mkfile: ";  [[ $REPLY ]] && : > "$PWD/$REPLY" ;;
         /) g="$PWD"; read -rp /; [[ $REPLY ]] && f=("$PWD"/*"$REPLY"*)
            l=0; refresh; f_print; return
@@ -98,8 +105,11 @@ key() {
              [[ $g ]] || ((l=${l2[n]/:*},k=${l2[n--]/*:}))
              [[ $PWD == / ]] && l=0; g=; refresh ;;
 
-        g) read -rsn 1; short "$REPLY"; refresh ;;
 	S) cd "$PWD/."; printf "\e[?25h\e[2J"; bash; refresh ;;
+	O) [[ -f ${f[l]} ]] && {
+	    nohup "xdg-open" "${f[l]}" &>/dev/null & disown
+	} ;;
+
         G) ((l=c-1)); refresh; ((k=k<0?0:k)) ;;
         .) a=(u s); shopt -"${a[((h=h>0?0:++h))]}" dotglob
            l=0; refresh; get_dir ;;
@@ -108,7 +118,9 @@ key() {
         m) [[ $co != "${f[l]}" ]] && { co="${f[l]}"; pr=(mv); } || co= ;;
         p) [[ $co ]] && "${pr[@]}" "$co" "$PWD" && { refresh; get_dir; co=; } ;;
 
-        r|D|c|n|f|/) prompt "$1" ;;
+        g) read -rsn 1; short "$REPLY"; refresh ;;
+
+        r|D|V|B|c|d|f|/) prompt "$1" ;;
         \~) g="$PWD"; hist; open ~ ;;
         t)  g="$PWD"; hist; open ~/.cache/fff/trash ;;
 
@@ -117,8 +129,8 @@ key() {
 
         q) exit ;;
 
-        B|j) ((l=l==c-1?l:++l,j!=c&&l==j-m/2+1))&&((k=k>=j?k:++k,j=j<c?++j:j)) ;;
-        A|k) ((l=l<1?l:--l,k>0&&l==k+m/2-2))&&((k=k<=j?k>0?--k:0:j,j=j>0?--j:j))
+        j) ((l=l==c-1?l:++l,j!=c&&l==j-m/2+1))&&((k=k>=j?k:++k,j=j<c?++j:j)) ;;
+        k) ((l=l<1?l:--l,k>0&&l==k+m/2-2))&&((k=k<=j?k>0?--k:0:j,j=j>0?--j:j))
     esac
 }
 

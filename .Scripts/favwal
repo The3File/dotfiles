@@ -11,12 +11,9 @@ h: haishoku\nt: colorthief\n\n\e[1;32mchoose > \e[0m"
 read -rsn1 backend
 
 case $backend in
-    w) backend=wal 
-	;;
-    c) backend=colorz
-	;;
-    h) backend=haishoku
-	;;
+    w) backend=wal ;;
+    c) backend=colorz ;;
+    h) backend=haishoku ;;
     t) backend=colorthief
 esac
 

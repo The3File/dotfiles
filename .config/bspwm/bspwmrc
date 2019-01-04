@@ -21,8 +21,8 @@ bspc rule -a Zathura state=tiled
 bspc rule -r float
 bspc rule -a float sticky=off state=floating 
 
-bspc rule -r fff
-bspc rule -a fff sticky=off state=floating 
+bspc rule -r bfm
+bspc rule -a bfm sticky=on state=floating 
 
 bspc rule -r scratchterm
 bspc rule -a scratchterm locked=on sticky=on state=floating hidden=on

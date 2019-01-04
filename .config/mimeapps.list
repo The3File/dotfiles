@@ -12,3 +12,4 @@ image/jpg=sxiv.desktop
 image/jpeg=sxiv.desktop
 image/gif=gif.desktop
 text/plain=nvim.desktop
+text/x-shellscript=nvim.desktop
