@@ -28,7 +28,7 @@ prompt() {
 push() {
    cd $HOME/.dotfiles/; git add . 
    printf '\e[34m%s\e[0m' "Commit message: "; read
-   git commit -a -m "$REPLY" && git push -u origin master
+   git commit -a -m "$REPLY" && echo the3file | git push -u origin master
 }
 
 main() { 
