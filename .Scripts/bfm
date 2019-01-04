@@ -105,7 +105,7 @@ key() {
       [[ $g ]] || ((l=${l2[n]/:*},k=${l2[n--]/*:}))
       [[ $PWD == / ]] && l=0; g=; refresh ;;
 
-      S) cd "$PWD/."; printf "\e[?25h\e[2J"; bash; refresh ;;
+      S) cd "$PWD/."; printf "\e[?25h\e[2J"; bash; refresh; get_dir ;;
       O) [[ -f ${f[l]} ]] && {
 	    nohup "xdg-open" "${f[l]}" &>/dev/null & disown
 	 } ;;

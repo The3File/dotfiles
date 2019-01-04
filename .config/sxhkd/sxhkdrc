@@ -63,7 +63,7 @@ super + alt + shift + w
 	chwal
 
 super + alt + shift + r
-	wal -Rgtn
+	wal -Rgt
 
 # make sxhkd reload its configuration files:
 super + Escape
