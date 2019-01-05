@@ -28,5 +28,4 @@ push() {
 sync() { for i in 1 2; do get_dots $i; done }
 
 main() { o=( -n ); sync; prompt; }
-
 main
