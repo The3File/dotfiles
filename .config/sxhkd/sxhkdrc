@@ -8,14 +8,11 @@
 
 # bar replacement
 
-super + c
-	dunstify "$(date '+%d/%m')  |  <b>$(date '+%R')</b>" -t 7000 -r 90210
-
-super + shift + c
-	dunstify "$(i3cpu)  |  $(i3temp)" -t 7000 -r 90210
+super + {_,shift +} c
+	dunstify {"$(date '+%d/%m')  |  <b>$(date '+%R')</b>","$(i3cpu)  |  $(i3temp)"} -t 7000 -r 90210
 
 super + b
-	dunstify "$(i3network) | $(i3batt)" -t 7000 -r 90210
+	dunstify "$(date '+%d/%m'),<b> $(date '+%R')</b>  |  $(i3network) | $(i3batt)" -t 7000 -r 90210
 
 # terminal emulator
 super + {_,shift +} {Return}

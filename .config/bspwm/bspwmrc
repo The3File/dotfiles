@@ -46,10 +46,7 @@ curws &
 ukill autogap
 autogap &
 
-# unclutter
-#pkill unclutter
-#unclutter &
-
+# Hide mouse on keypress
 killall xbanish
 xbanish -i Mod1 -i Mod4 &
 

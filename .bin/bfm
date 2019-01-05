@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+#
+# bfm - bash filemanager
+# fork of fff
+
+short() {
+   case "${1: -1}" in
+      /) l=0; open / ;;
+      h) l=0; open $HOME ;;
+      b) l=0; open $HOME/.bin ;;
+      S) l=0; open $HOME/.Scripts ;;
+      d) l=0; open $HOME/.dotfiles ;;
+      c) l=0; open $HOME/.config ;;
+      w) l=0; open $HOME/Billeder/wallpapers ;;
+
+      g) l=0
+   esac
+   refresh; get_dir
+}
+
+refresh() {
+   printf '\e[?7l\e[?25l\e[2J\e[H'
+   (:;:); ((LINES==0)) && read -r LINES _ < <(stty size)
+   ((m=LINES-3,j=l>m/2?l>=c-m/2?c+1:l+m/2+1:m,k=k>=0?j-m>=0?j-m:k:k,l=l>c?k:l))
+}
+
+get_dir() {
+   d=(); f=()
+   for p in "$PWD"/*; do [[ -d $p ]] && d+=("$p") || f+=("$p"); done
+   f=("${d[@]}" "${f[@]}"); ((${#f[@]}==0)) && f[0]=$'\e[27mempty'
+}
+
+f_print() {
+   ((c=${#f[@]},j=j>c?c:j))
+
+   for((i=${k:=0};i<j;i++)); {
+      ((c<=0)) && { get_dir; f_print; return; } || path="${f[i]##*/}"
+      [[ -d ${f[i]} ]] && { fo+='\e[1m\e[3'"${FFF_COL1:-2}m"; path+=/; }
+      [[ ${co[i]} == "${f[i]}" ]] && fo+='\e[7m\e[1m\e[3'"${FFF_COL4:-1}m"
+      [[ ${f[i]} == "${f[l]}" ]]  && fo+='\e[7m\e[1m\e[3'"${FFF_COL3:-6}m"
+      printf '\e[K%b%s\e[m\n' "$fo" "$path"; fo=
+   }
+   printf '\e[3%sm\e[%s;H\e[K\n\e[K%s\e[m\e[H' "${FFF_COL2:-7}" "$((LINES-2))" \
+	 "${PWD/\/\///} (${l:-1}/$((c-1))) ${co[*]:+${pr[*]}: ${#co[@]}^ [p]}"
+}
+
+hist() { l2[((n=n<0?0:++n))]="$l:$k"; }
+
+mark() {
+   [[ "$PWD" != "$copwd" ]] && co=()
+   [[ ${co[l]} == "${f[l]}" ]] && unset 'co[l]' || co[l]="${f[l]}"; copwd="$PWD"
+}
+
+open() {
+   [[ -d $1/ ]] && { l=0; refresh; PWD="${1:-/}"; get_dir; f_print; }
+   [[ -f $1  ]] && {
+      case "$(file "-${fa:-biL}" "$1")" in
+	 text/*) "${FFF_EDITOR:-${EDITOR:-vi}}" "$1"; printf '\e[?25l' ;;
+	 *) nohup "${FFF_OPENER:-${oc:-xdg-open}}" "$1" &>/dev/null & disown
+      esac
+   }
+}
+
+prompt() {
+   printf '\e[999B\e[?25h'
+   case "${1: -1}" in
+      r) read -rp "rename ${f[l]##*/}: "; [[ $REPLY ]] && \
+	 mv "${f[l]}" "$PWD/$REPLY" ;;
+      D) read -n 1 -rp "trash ${f[l]##*/}? [y/N]: " y; [[ $y == y ]] && {
+	 mv "${f[l]}" ~/.cache/fff/trash/; ((l>0?l--:l)); } ;;
+
+      B) read -rp "New bash script: "; [[ $REPLY ]] && {
+	    [[ ! -f $REPLY ]] && printf "#!/usr/bin/env bash\n\n" > "$REPLY" 
+		  chmod a+x $REPLY && nvim + $REPLY 
+	 } ;;
+      V) read -rp "nvim: "; 	 [[ $REPLY ]] && $EDITOR "$PWD/$REPLY" ;;
+      d) read -rp "mkdir: ";   [[ $REPLY ]] && mkdir -p "$PWD/$REPLY" ;;
+      f) read -rp "mkfile: ";  [[ $REPLY ]] && : > "$PWD/$REPLY" ;;
+      /) g="$PWD"; read -rp /; [[ $REPLY ]] && f=("$PWD"/*"$REPLY"*)
+	 l=0; refresh; f_print; return
+   esac
+   refresh; get_dir
+}
+
+key() {
+   case "${1: -1}" in
+      l|"") [[ -d "${f[l]}" ]] && hist; open "${f[l]}"; g= ;;
+      h) open "${g:-${PWD%/*}}";
+	 [[ $g ]] || ((l=${l2[n]/:*},k=${l2[n--]/*:}))
+	 [[ $PWD == / ]] && l=0; g=; refresh ;;
+
+      g) read -rsn 1; short "$REPLY"; refresh ;;
+      G) ((l=c-1)); refresh; ((k=k<0?0:k)) ;;
+      .) a=(u s); shopt -"${a[((h=h>0?0:++h))]}" dotglob
+	 l=0; refresh; get_dir ;;
+
+      y|m) mark; [[ $1 == y ]] && pr=(cp -rt) || pr=(mv -t) ;;
+      p) [[ ${co[*]} ]] && "${pr[@]}" "$PWD" "${co[@]}" && {
+           refresh; get_dir; co=(); copwd=; } ;;
+      c) co=() ;;
+
+      r|D|V|B|d|f|/) prompt "$1" ;;
+      t)  g="$PWD"; hist; open ~/.cache/fff/trash ;;
+
+      [1-9]) fa="FFF_FAV${1}"; fa="${!fa}"
+	 [[ $fa ]] && { g="$PWD"; hist; open "${fa%/}"; } ;;
+
+      S) printf "\e[?25h\e[2J"; cd "$PWD"; $SHELL; refresh ;;
+      O) [[ -f ${f[l]} ]] && nohup "xdg-open" "${f[l]}" &>/dev/null & disown ;;
+
+      q) exit ;;
+
+      j) ((l=l==c-1?l:++l,j!=c&&l==j-m/2+1))&&((k=k>=j?k:++k,j=j<c?++j:j)) ;;
+      k) ((l=l<1?l:--l,k>0&&l==k+m/2-2))&&((k=k<=j?k>0?--k:0:j,j=j>0?--j:j))
+   esac
+}
+
+main() {
+   shopt -s nocaseglob nullglob checkwinsize
+   mkdir -p ~/.cache/fff/trash/
+   pushd "$1" &>/dev/null ||:; refresh; get_dir; f_print
+
+   trap "refresh; printf '\\e[m\\e[?25h\\e[?7h'" EXIT
+   trap 'refresh; f_print' SIGWINCH
+
+   for ((;;)); { read -rsn 1; key "$REPLY"; f_print; }
+}
+
+main "$@"

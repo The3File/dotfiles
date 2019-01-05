@@ -1,28 +1,22 @@
 #!/usr/bin/env bash
 
-sync() { for i in 1 2; do get_dots $i; done }
-
 get_dots() {
    op=( -ai --delete ${o[@]} --exclude='.git/' --exclude='plugged/')
    case $1 in
-      1) fs="bspwm sxhkd dunst i3 nvim qutebrowser polybar ranger wal mimeapps.list compton.conf"
-	 ot="$HOME/.dotfiles/.config"; d="$HOME/.config" ;;
-      2) fs=".Scripts .local/share/applications .apps .latexmkrc\
+      1) d="$HOME/.config"; ot="$HOME/.dotfiles/.config"
+         fs="bspwm sxhkd dunst i3 nvim qutebrowser polybar ranger wal mimeapps.list compton.conf" ;;
+
+      2) d="$HOME"; ot="$HOME/.dotfiles"
+	 fs=".Scripts .bin .local/share/applications .apps .latexmkrc\
 	 .nvimrc .profile .oh-my-zsh .vimrc .xinitrc .Xmodmap .Xresources\
 	 .xsessionrc .zprofile .aliases .zshrc .bashrc .bash_profile .bash_prompt"
-	 ot="$HOME/.dotfiles"; d="$HOME"
    esac
-   for f in $fs; do
-      [[ -f "$d/$f" || -d "$d/$f" ]] && rsync ${op[@]} "$d/$f" $ot
-   done
+   for f in $fs; do [[ -f "$d/$f" || -d "$d/$f" ]] && rsync ${op[@]} "$d/$f" $ot; done
 }
 
 prompt() {
    printf '\e[33m%s\e[0m\n' "Push? [y/N]"; read -rsn1
-   case $REPLY in 
-      y) o=""; (:;:); sync; push ;; 
-      *) printf 'No changes made..\n'; exit 0
-   esac
+   case $REPLY in y) o=(-q); sync; push ;; *) exit 0; esac
 }
 
 push() {
@@ -31,8 +25,7 @@ push() {
    git commit -a -m "$REPLY" && git push -u origin master
 }
 
-main() { 
-   o=( --dry-run)
-   sync; prompt
-}
+sync() { for i in 1 2; do get_dots $i; done }
+
+main() { o=(-n); sync; prompt; }
 main

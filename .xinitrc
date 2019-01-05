@@ -1,5 +1,5 @@
 #!/bin/sh
-export PATH=$HOME/bin:/usr/local/bin:$HOME/.Scripts/:$PATH
+export PATH=$HOME/.bin:/usr/local/bin:$HOME/.Scripts/:$PATH
 export VISUAL=nvim
 export EDITOR=nvim
 
@@ -14,7 +14,6 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 exec xsetroot -cursor_name left_ptr &
 exec setxkbmap -layout dk -variant nodeadkeys -option caps:escape &
 exec greenclip daemon &
-exec dunst &
 exec networkd-dispatcher &
 exec wal -Rtn &
 exec feh --bg-fill $HOME/.config/wall.png &
