@@ -16,7 +16,7 @@ get_dots() {
 
 prompt() {
    printf '\e[33m%s\e[0m\n' "Push? [y/N]"; read -rsn1
-   case $REPLY in y) o=(-q); sync; push ;; *) exit 0; esac
+   case $REPLY in y) o=( -q ); sync; push ;; *) exit 0; esac
 }
 
 push() {
@@ -27,5 +27,5 @@ push() {
 
 sync() { for i in 1 2; do get_dots $i; done }
 
-main() { o=(-n); sync; prompt; }
+main() { o=( -n ); sync; prompt; }
 main
