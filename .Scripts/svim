@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+[[ -f $(which $1 2>/dev/null) ]] && {
+   nvim $(which $1)
+} || echo "not in path"

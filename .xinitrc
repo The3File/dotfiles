@@ -1,7 +1,4 @@
 #!/bin/sh
-export PATH=$HOME/.bin:/usr/local/bin:$HOME/.Scripts/:$PATH
-export VISUAL=nvim
-export EDITOR=nvim
 
 xset +fp /usr/share/fonts/TTF
 xset +fp /usr/share/fonts/OTF

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+sync() { for i in 1 2; do get_dots $i; done }
+
 get_dots() {
    op=( -ai --delete ${o[@]} --exclude='.git/' --exclude='plugged/')
    case $1 in
@@ -24,8 +26,6 @@ push() {
    printf '\e[34m%s\e[0m' "Commit message: "; read
    git commit -a -m "$REPLY" && git push -u origin master
 }
-
-sync() { for i in 1 2; do get_dots $i; done }
 
 main() { o=( -n ); sync; prompt; }
 main

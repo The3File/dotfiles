@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
 id=$(xdotool search --class scratchmath)
-[[ "$id" != "" ]] && bspc node "$id" --flag hidden -f
-[[ "$id" = "" ]] && st -c scratchmath -g 88x15-30-20 -e qalc
+
+[[ ! -z "$id" ]] && bspc node "$id" --flag hidden -f
+[[ -z "$id" ]] && st -c scratchmath -g 88x15-30-20 -e qalc

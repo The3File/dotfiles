@@ -2,70 +2,56 @@
 # Prokrastimer
 # Over-engineered pomodoro timer
 
-main() {
-    logo=$(figlet -f big prokrastimer); count=0; state="work"
-
-    trap 'tput cnorm && completed' EXIT; trap 'clean' SIGWINCH
-
-    clean; prompt; tput civis; stty -echo
-    printf "\e[3A\r\e[J\e[1;35mpress ENTER to start $state"; read 2>/dev/null
-    clean; timer
-}
+clean() { [[ ${FUNCNAME[1]} != "prompt" ]] && printf '\e[2J\e[H\e[1;34m%s' "$logo"; }
 
 prompt() {
-    printf "\e[10;0H\e[1;37mlenght of work in min. (25): \e[1;35m\e[s"; read work
-    printf "\e[1;37mlength of breaks in min. (5): \e[1;33m\e[s"; read break
-    printf "\e[1;37mnumber of sessions (2): \e[s"; read sess
+   printf '\e[10;0H\e[1;37m%s\e[m' "work in min. (25): "; read -r work
+   printf '\e[1;37m%s\e[m' "breaks in min. (5): "; read -r break
+   printf '\e[1;37m%s\e[m' "number of sions (2): "; read -r s
 
-    [[ ! -n $work ]] && ((work=25*60)) || ((work*=60))
-    [[ ! -n $break ]] && ((break=5*60)) || ((break*=60))
-    [[ -z "$sess" ]] && sess=2
+   [[ -n $work ]] && ((work*=1)) || ((work=1500))
+   [[ -n $break ]] && ((break*=1)) || ((break=300))
+   [[ -n $s ]] && ((s*=2)) || ((s=4))
 }
 
 timer() {
-    ((sec=1,start_time=$SECONDS))
+   ((sec=1,start_time=SECONDS))
 
-    while [[ $sec > 0 ]]; do
-	((sec=(state-(SECONDS-start_time))))
-	printf "\e[10;0H\e[1;35m$state left: %02d:%02d" "$((sec/60))" "$((sec%60))"
-	bar $((SECONDS-start_time)) $state
-    done
+   while [[ $sec -gt 0 ]]; do
+      ((sec=(state-(SECONDS-start_time))))
+      printf '\e[?25l\e[10;0H\e[1;35m%s%02d:%02d'\
+	 "$state left: " "$((sec/60))" "$((sec%60))"
+      bar $((SECONDS-start_time)) "$state"; sleep 1
+   done
 
-    timer_done
-}
-
-timer_done() {
-    play ~/.Scripts/.prokrastimer/gong.wav 2>/dev/null &
-    notify-send "$state completed" -a Prokrastimer
-
-    [[ $state = work ]] && ((count++))
-    [[ $count == $sess ]] && exit 0
-
-    printf "\e[10;17H\e[1;39m - $state completed"
-    [[ $state = work ]] && state="break" || state="work"
-    printf "\n\e[1;33mpress ENTER to start $state"; read 2>/dev/null
-    printf "\e[1A\r\e[J"
-
-    timer
+   play ~/.bin/.prokrastimer/gong.wav 2>/dev/null &
+   notify-send "$state completed" -a Prokrastimer
 }
 
 bar() {
-    ((width=$(tput cols)-2,rows=$(tput lines)))
-
-    printf -v elaps "%$(($1*width/$2))s"
-    printf -v total "%$((width-($1*width/$2)))s"
-    printf '\e[J\e['$rows';0H%s\r' "[${elaps// /\#}${total// /-}]"
-    sleep 1
+   printf -v elaps "%$(($1*$(tput cols)/$2))s"
+   printf -v total "%$(($(tput cols)-($1*$(tput cols)/$2)))s"
+   printf '\e[J\e['$(tput lines)';0H%s\r' "[${elaps// /\#}${total// /-}]"
 }
 
-completed() {
-    [[ $((count*work/60/60)) > 0 ]] && hour="%2d hours and" || hour=""
+_done() {
+   printf '\e[10;0H\e[J\e[1;39m%s' "$state completed"
+   case $state in work) state="break" ;; *) state="work"; esac
 
-    printf "\e[10;0H\e[J\e[1;33mcombined time worked:$hour%2d min."\
-    "$((count*work/60/60))" "$((count*work/60%60))"
-    exit 0
+   printf '\n\e[11;0H\e[1;33m%s\r' "press ENTER to start $state"; read -r 2>/dev/null
 }
 
-clean() { [[ ${FUNCNAME[1]} != prompt ]] && printf "\e[2J\e[H\e[1;34m$logo"; }
+complet() {
+   printf '\e[10;0H\e[J\e[1;33m%s%2dh%2dm\e[?25h\n' "combined time worked:"\
+      "$((i*work/60/60))" "$((i*work/60%60))"
+}
+
+main() {
+   logo=$(figlet -f big prokrastimer); state=work
+   trap "complet" EXIT; trap 'clean' SIGWINCH
+
+   clean; prompt; clean
+   for ((i=2;i<=s;i++)); { timer; [[ $i -lt $s ]] && _done || complet; }
+}
 
 main

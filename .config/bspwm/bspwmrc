@@ -31,29 +31,29 @@ bspc rule -r scratchmath
 bspc rule -a scratchmath locked=on sticky=on state=floating hidden=on
 
 # compton
-pkill compton
+pkill compton 2>/dev/null
 compton --dbus -b &
 
 # dunst
-pkill dunst
+pkill dunst 2>/dev/null
 dunst &
 
 # dunst workspaces
-ukill curws
+ukill curws 2>/dev/null
 curws &
 
 # autogap
-ukill autogap
+ukill autogap 2>/dev/null
 autogap &
 
 # Hide mouse on keypress
-killall xbanish
+killall xbanish 2>/dev/null
 xbanish -i Mod1 -i Mod4 &
 
 # wal
 ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &
 ln -sf "$HOME/.cache/wal/colors.scss" "$HOME/.config/qutebrowser/_colors.scss" &
 ln -sf "$HOME/.cache/wal/zathurarc" "$HOME/.config/zathura/zathurarc"
-qutewal &
+qutewal &>/dev/null
 
 exec xmodmap -e "keycode 135 = Super_R" &

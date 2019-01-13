@@ -1,37 +1,30 @@
+# ~/.aliases
+
 alias wthr="echo;curl --silent wttr.in/svendborg | sed -n 's/.*:/  /;1s/\,.*$//g;1,7p';echo"
 alias weather="curl wttr.in/svendborg --silent | sed '1d;38q'"
 
 alias vim="nvim"
-
 alias r="ranger"
 alias f="bfm"
 alias n="nnn"
 
-alias za="nvim ~/.aliases"
-
-alias cast="castnow"
-
-alias zrc="nvim ~/.zshrc"
+alias as="nvim ~/.aliases"
+alias brc="nvim ~/.bashrc"
 alias rrc="nvim ~/.config/ranger/rc.conf"
 alias vrc="nvim ~/.config/nvim/init.vim"
 alias crc="nvim ~/.config/compton.conf"
+alias prc="nvim ~/.config/polybar/config"
+alias src="nvim ~/.config/sxhkd/sxhkdrc"
 
 alias xrc="nvim ~/.Xresources"
 alias xr="xrdb ~/.Xresources"
 
-alias prc="nvim ~/.config/polybar/config"
-
-#alias con="nvim ~/.config/i3/config"
 alias con="nvim ~/.config/bspwm/bspwmrc"
 alias bsp="~/.config/bspwm/bspwmrc"
-
-alias src="nvim ~/.config/sxhkd/sxhkdrc"
-alias brc="nvim ~/.config/i3/i3blocks.conf"
 
 alias c="clear -x"
 alias nf="clear -x && echo -e \ && neofetch"
 alias uf="ufetch"
-alias y="yaourt"
 alias p="sudo pacman"
 
 alias la="ls -a"
@@ -43,5 +36,3 @@ alias fr="fastboot reboot"
 alias ff="fastboot flash"
 alias ap="adb push"
 alias rr="adb reboot recovery"
-
-alias capstone="setsid wine ~/.wine/drive_c/Program\ Files\ \(x86\)/PASCO\ scientific/Capstone/Capstone.exe"

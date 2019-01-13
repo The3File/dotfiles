@@ -2,6 +2,9 @@
 #==    sxhkdrc    ==#
 #===================#
 
+alt + shift + Pause
+      starwars
+
 ##########################
 # wm independent hotkeys #
 ##########################
