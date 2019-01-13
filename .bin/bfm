@@ -4,7 +4,7 @@
 short() {
    case "${1: -1}" in
       /) open / ;;
-      h) open "$HOME" ;;
+      h) open "$HOME/Hentet" ;;
       b) open "$HOME/.bin" ;;
       S) open "$HOME/.Scripts" ;;
       d) open "$HOME/.dotfiles" ;;
@@ -107,13 +107,14 @@ key() {
            refresh; get_dir; co=(); copwd=; } ;;
       c) refresh; get_dir; co=() ;;
 
+      "~") hist; open ~; refresh ;;
+
       r|d|V|B|n|f|:|/) prompt "$1" ;;
       $'\x1b') echo -n "Hej " ;;
       $'\x01') gotop; refresh ;;
 
       [1-9]) fa="FFF_FAV${1}"; fa="${!fa}"
 	 [[ $fa ]] && { g="$PWD"; hist; open "${fa%/}"; } ;;
-
 
       s) printf "\\e[?25h\\e[2J"; cd "$PWD" && $SHELL; refresh ;;
       o) [[ -f ${f[l]} ]] && nohup "xdg-open" "${f[l]}" &>/dev/null & disown ;;
