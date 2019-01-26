@@ -7,6 +7,8 @@ bspc monitor -d 1 2 3 4 5 6 7 8 9 10
 
 source /home/ringdal/.cache/wal/colors.sh
 
+bspc config right_padding 0
+bspc config left_padding 0
 bspc config focused_border_color $color4
 bspc config border_width         2
 bspc config window_gap           15
@@ -32,23 +34,27 @@ bspc rule -a scratchmath locked=on sticky=on state=floating hidden=on
 
 # compton
 pkill compton 2>/dev/null
-compton --dbus -b &
+compton --dbus -b & disown
 
 # dunst
 pkill dunst 2>/dev/null
-dunst &
+dunst & disown
+
+# dunst bar
+ukill dunstbar 2>/dev/null
+dunstbar & disown
 
 # dunst workspaces
 ukill curws 2>/dev/null
-curws &
+curws & disown
 
 # autogap
 ukill autogap 2>/dev/null
-autogap &
+autogap & disown
 
 # Hide mouse on keypress
 killall xbanish 2>/dev/null
-xbanish -i Mod1 -i Mod4 &
+xbanish -i Mod1 -i Mod4 & disown
 
 # wal
 ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &
@@ -57,3 +63,4 @@ ln -sf "$HOME/.cache/wal/zathurarc" "$HOME/.config/zathura/zathurarc"
 qutewal &>/dev/null
 
 exec xmodmap -e "keycode 135 = Super_R" &
+#exec greenclip daemon &

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+opts() {
+   case $1 in
+      -l) 
+	 trap "printf '\e[?25h'" EXIT
+	 while :;do 
+	    printf '\e[H\e[2J\e[?25l%s' "$wthr"
+	    sleep 10
+	 done ;;
+      -f) printf '\e[H\e[2J%s\n' "$wthr" | head -38 ;;
+      *) printf '%s\n' "ERROR"; exit 1
+   esac
+}
+
+main() {
+   wthr=$(curl --silent wttr.in/svendborg)
+   [[ -z $1 ]] && {
+      printf '\n%s' "$wthr" | sed -n 's/.*:/  /;2s/\,.*$//g;1,8p'; echo
+   } || opts $1
+}
+
+main "$@"

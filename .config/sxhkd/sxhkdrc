@@ -15,7 +15,9 @@ super + {_,shift +} c
 	dunstify {"$(date '+%d/%m')  |  <b>$(date '+%R')</b>","$(i3cpu)  |  $(i3temp)"} -t 7000 -r 90210
 
 super + b
-	dunstify "$(date '+%d/%m'),<b> $(date '+%R')</b>  |  $(i3network) | $(i3batt)" -t 7000 -r 90210
+	dunstify "<b>$(date '+%R')</b>  |  $(i3network) | $(i3batt)" -t 7000 -r 90211
+
+#super + shift + y
 
 # terminal emulator
 super + {_,shift +} {Return}

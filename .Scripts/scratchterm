@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 id=$(xdotool search --class scratchterm)
-st="st -c scratchterm -g 88x25+30+20 -e"
+st="st -c scratchterm -g 100x28+30+20 -e"
 
 [[ ! -z "$id" ]] && bspc node "$id" --flag hidden -f
 [[ -z "$id" ]] && {

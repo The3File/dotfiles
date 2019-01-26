@@ -32,6 +32,7 @@
 #define base0E #ad00a1
 #define base0F #cc6633
 
+
 *foreground:   base05
 #ifdef background_opacity
 *background:   [20]base00
@@ -58,7 +59,7 @@
 *color14:      base0F
 *color15:      base07
 
-*.alpha:	250
+!*.alpha:	250
 
 *bg: color0
 *fg: color2

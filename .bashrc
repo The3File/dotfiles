@@ -1,5 +1,5 @@
 # ~/.bashrc
 
-set -o vi
+#set -o vi
 source $HOME/.aliases
 source $HOME/.bash_prompt

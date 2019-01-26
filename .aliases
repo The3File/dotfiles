@@ -1,6 +1,5 @@
 # ~/.aliases
 
-alias wthr="echo;curl --silent wttr.in/svendborg | sed -n 's/.*:/  /;1s/\,.*$//g;1,7p';echo"
 alias weather="curl wttr.in/svendborg --silent | sed '1d;38q'"
 
 alias vim="nvim"
@@ -22,11 +21,12 @@ alias xr="xrdb ~/.Xresources"
 alias con="nvim ~/.config/bspwm/bspwmrc"
 alias bsp="~/.config/bspwm/bspwmrc"
 
-alias c="clear -x"
+alias c="printf '\e[H\e[2J'"
 alias nf="clear -x && echo -e \ && neofetch"
 alias uf="ufetch"
 alias p="sudo pacman"
 
+alias ls="ls --color=auto"
 alias la="ls -a"
 alias ll="ls -l"
 alias lla="ls -la"

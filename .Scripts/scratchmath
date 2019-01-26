@@ -3,4 +3,4 @@
 id=$(xdotool search --class scratchmath)
 
 [[ ! -z "$id" ]] && bspc node "$id" --flag hidden -f
-[[ -z "$id" ]] && st -c scratchmath -g 88x15-30-20 -e qalc
+[[ -z "$id" ]] && st -c scratchmath -g 100x17-30-20 -e qalc
