@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sync() { for i in 1 2; do get_dots $i; done }
+sync() { for i in {1..2}; do get_dots $i; done }
 
 get_dots() {
    op=( -ai --delete ${o[@]} --exclude='.git/' --exclude='plugged/')
@@ -17,8 +17,8 @@ get_dots() {
 }
 
 prompt() {
-   printf '\e[33m%s\e[0m\n' "Push? [y/N]"; read -rsn1
-   case $REPLY in y) o=( -q ); sync; push ;; *) exit 0; esac
+   printf '\e[33m%s\e[0m' "Push? [y/N]"; read -rsn1; printf '\n'
+   case $REPLY in y) o=("-q"); sync; push ;; *) exit 0; esac
 }
 
 push() {
@@ -27,5 +27,5 @@ push() {
    git commit -a -m "$REPLY" && git push -u origin master
 }
 
-main() { o=( -n ); sync; prompt; }
+main() { o=("-n"); sync; prompt; }
 main
