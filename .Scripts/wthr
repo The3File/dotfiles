@@ -2,22 +2,18 @@
 
 opts() {
    case $1 in
-      -l) 
-	 trap "printf '\e[?25h'" EXIT
-	 while :;do 
-	    printf '\e[H\e[2J\e[?25l%s' "$wthr"
-	    sleep 10
-	 done ;;
-      -f) printf '\e[H\e[2J%s\n' "$wthr" | head -38 ;;
-      *) printf '%s\n' "ERROR"; exit 1
+      -l) trap "printf '\e[?25h'; stty echo" EXIT; stty -echo
+	 for ((;;)) { printf '\e[?25l\e[H\e[2J%s'; wthr | head -8; sleep 60;} ;;
+      -f) printf '%s\n' "$wthr" | head -38 ;;
+      *) printf '%s\n' "\"$1\" is not an option"; exit 1
    esac
 }
 
+wthr() { printf '\n%s' "$wthr" | sed -n 's/.*:/  /;2s/\,.*$//g;1,8p'; echo; }
+
 main() {
    wthr=$(curl --silent wttr.in/svendborg)
-   [[ -z $1 ]] && {
-      printf '\n%s' "$wthr" | sed -n 's/.*:/  /;2s/\,.*$//g;1,8p'; echo
-   } || opts $1
+   [[ -z $1 ]] && wthr || opts $1
 }
 
 main "$@"

@@ -3,9 +3,7 @@
 app="$1"
 proc=$(ps -aux | sed -n "/ukill/d;/\<$app\>$/p" | awk '{print $2}')
 
-if [[ ! -z $proc ]]; then
+[[ $proc ]] && {
    for app in $proc; do kill -9 $app; done
    echo "$app: Process killed"
-else
-   echo "$app: Not a running script"
-fi
+} || echo "$app: Not a running script"

@@ -1,21 +1,21 @@
 @import "files/colors.css";
 *,div,pre,textarea,body,input,td,tr,p {
-    background-color: #000000 !important;
+    background-color: #000 !important;
     /*background-image: none !important;*/
-    color: #bbbbbb !important;
+    color: #bbb !important;
 }
-h1,h2,h3,h4 {
-    background-color: #000000 !important;
+h1,h2,h3,h4,h5,h6 {
+    background-color: #000 !important;
     color: #b8ddea !important;
 }
 a {
-    color: #70e070 !important;
+    color: #7e7 !important;
 }
 a:hover,a:focus {
-    color: #7070e0 !important;
+    color: #77e !important;
 }
 a:visited {
-    color: #e07070 !important;
+    color: #e77 !important;
 }
 img {
     opacity: 1;

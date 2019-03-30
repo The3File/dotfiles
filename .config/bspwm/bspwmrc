@@ -1,18 +1,48 @@
 #!/usr/bin/env bash
+source /home/ringdal/.cache/wal/colors.sh
+
 #===============#
 #==  bspwmrc  ==#
 #===============#
 
-bspc monitor -d 1 2 3 4 5 6 7 8 9 10
-
-source /home/ringdal/.cache/wal/colors.sh
+# CONFIGS
 
 bspc config focused_border_color $color4
 bspc config border_width         2
 bspc config split_ratio          0.5
 bspc config gapless_monocle true
-#bspc config borderless_monocle true
-#bspc desktop 10 -l monocle
+bspc config left_padding 0
+bspc config right_padding 0
+
+bspc monitor -d 1 2 3 4 5 6 7 8 9 10
+
+# APPS
+
+# compton
+pkill compton &>/dev/null
+compton --dbus -b & disown
+
+# dunst
+pkill dunst &>/dev/null
+dunst & disown
+
+# dunst bar
+ukill dunstbar &>/dev/null
+dunstbar & disown
+
+# dunst workspaces
+ukill curws &>/dev/null
+curws & disown
+
+# autogap
+ukill autogap &>/dev/null
+autogap & disown
+
+# Hide mouse on keypress
+killall xbanish 2>/dev/null
+xbanish -i Mod1 -i Mod4 & disown
+
+## RULES
 
 bspc rule -r Zathura
 bspc rule -a Zathura state=tiled
@@ -29,35 +59,12 @@ bspc rule -a scratchterm locked=on sticky=on state=floating hidden=on
 bspc rule -r scratchmath
 bspc rule -a scratchmath locked=on sticky=on state=floating hidden=on
 
-# compton
-pkill compton 2>/dev/null
-compton --dbus -b & disown
-
-# dunst
-pkill dunst 2>/dev/null
-dunst & disown
-
-# dunst bar
-ukill dunstbar 2>/dev/null
-dunstbar & disown
-
-# dunst workspaces
-ukill curws 2>/dev/null
-curws & disown
-
-# autogap
-ukill autogap 2>/dev/null
-autogap & disown
-
-# Hide mouse on keypress
-killall xbanish 2>/dev/null
-xbanish -i Mod1 -i Mod4 & disown
-
 # wal
 ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &
 ln -sf "$HOME/.cache/wal/colors.scss" "$HOME/.config/qutebrowser/_colors.scss" &
-ln -sf "$HOME/.cache/wal/zathurarc" "$HOME/.config/zathura/zathurarc"
+ln -sf "$HOME/.cache/wal/zathurarc" "$HOME/.config/zathura/zathurarc" &
 qutewal &>/dev/null
 
+# SYSTEM
+
 exec xmodmap -e "keycode 135 = Super_R" &
-#exec greenclip daemon &

@@ -2,5 +2,4 @@
 
 temp="$(acpi -t | sed 's/Thermal 0: ok,//g' | awk -F . '{print $1}')"
 
-echo " $temp°C"
-#[[ $temp -gt 75 ]] && echo -en "%{F#f00} $temp°C%{F-}" || echo " $temp°C"
+printf " $temp°C"

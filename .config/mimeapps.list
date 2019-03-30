@@ -15,3 +15,6 @@ text/plain=nvim.desktop
 text/x-shellscript=nvim.desktop
 audio/wav=mpv.desktop
 audio/x-wav=mpv.desktop
+text/html=qutebrowser.desktop
+application/pdf=zathura.desktop
+inode/directory=bfm.desktop

@@ -3,6 +3,9 @@
 #   qute://help/configuring.html
 #   qute://help/settings.html
 
+c.url.start_pages = 'file:///home/ringdal/Projekter/startskærm/index.html'
+c.url.default_page = 'file:///home/ringdal/Projekter/startskærm/index.html'
+
 # Uncomment this to still load settings configured via autoconfig.yml
 # config.load_autoconfig()
 #

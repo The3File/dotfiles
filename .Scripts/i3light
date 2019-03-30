@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 brigns="$(light | awk -F"." '{print $1}')"
-echo " $brigns%"
+printf '%s' " $brigns%"

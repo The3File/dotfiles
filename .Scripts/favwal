@@ -3,14 +3,12 @@
 dir="$1"
 file="$2"
 
-clear
-
-printf "\e[1;34mbackends:\n\e[0;34mw: wal\nc: colorz\n\
+printf "\e[H\e[2J\e[1;34mbackends:\n\e[0;34mw: wal\nc: colorz\n\
 h: haishoku\nt: colorthief\n\n\e[1;32mchoose > \e[0m"
 
-read -rsn1 backend
+read -rsn1
 
-case $backend in
+case $REPLY in
     w) backend=wal ;;
     c) backend=colorz ;;
     h) backend=haishoku ;;
@@ -20,7 +18,7 @@ esac
 printf "\
     #\!/bin/sh\n\
     cp "$dir" ~/.config/wall.png\n\
-    wal -tgqi $dir --backend $backend\n\
+    wal -tqi $dir --backend $backend\n\
     source /home/ringdal/.cache/wal/colors.sh\n\
     bspc config focused_border_color \$color4" >\
     $HOME/Billeder/favoritter/$file.sh

@@ -14,71 +14,51 @@ clear_screen() {
 get_term_size() {
    read -r LINES COLUMNS < <(stty size)
    ((max_items=LINES-3))
- }
+}
 
 status_line() {
-   # Status_line to print when files are marked for operation.
    local mark_ui="[${#marked_files[@]}] selected (${file_program[*]}) [p] ->"
 
-    # Escape the directory string.
-    # Remove all non-printable characters.
-    PWD_escaped="${PWD//[^[:print:]]/^[}"
+   PWD_escaped="${PWD//[^[:print:]]/^[}"
 
-    # '\e7':       Save cursor position.
-    # '\e[?6l':    Unrestrict cursor movement (full window).
-    # '\e[%sH':    Move cursor to bottom of the terminal.
-    # '\e[30;41m': Set foreground and background colors.
-    # '%*s':       Insert enough spaces to fill the screen width.
-    #              This sets the background color to the whole line
-    #              and fixes issues in 'screen' where '\e[K' doesn't work.
-    # '\r':        Move cursor back to column 0 (was at EOL due to above).
-    # '\e[m':      Reset text formatting.
-    # '\n\e[K':    Also clear the line below the status_line.
-    # '\e[?6h':    Restrict cursor to scrolling area.
-    # '\e8':       Restore cursor position.
-    printf '\e7\e[?6l\e[%sH\e[30;4%sm%*s\r%s %s%s\e[m\n\e[K\e[?6h\e8' \
-       "$((LINES-1))" \
-       "${FFF_COL2:-1}" \
-       "$COLUMNS" "" \
-       "($((scroll+1))/$((list_total+1)))" \
-       "${marked_files[*]:+${mark_ui}}" \
-       "${PWD_escaped:-/}"
-    }
+   printf '\e7\e[?6l\e[%sH\e[30;4%sm%*s\r%s %s%s\e[m\n\e[K\e[?6h\e8' \
+      "$((LINES-1))" \
+      "${FFF_COL2:-1}" \
+      "$COLUMNS" "" \
+      "($((scroll+1))/$((list_total+1)))" \
+      "${marked_files[*]:+${mark_ui}}" \
+      "${PWD_escaped:-/}"
+   }
 
- read_dir() {
-    # Read a directory to an array and sort it directories first.
-    local dirs=()
-    local files=()
-    local item_index
-
-    # If '$PWD' is '/', unset it to avoid '//'.
-    [[ $PWD == / ]] && PWD=
-
-    for item in "$PWD"/*; do
-       if [[ -d $item ]]; then
-	  dirs+=("$item")
-	  ((item_index++))
-
-	    # Find the position of the child directory in the
-	    # parent directory list.
-	    [[ $item == "$previous_dir" ]] &&
-	       ((previous_index=item_index))
-			else
-			   files+=("$item")
-			fi
-		     done
-
-		     list=("${dirs[@]}" "${files[@]}")
-
-    # Indicate that the directory is empty.
-    [[ -z ${list[0]} ]] &&
-       list[0]="empty"
-
-    ((list_total=${#list[@]}-1))
-
-    # Save the original dir in a second list as a backup.
-    cur_list=("${list[@]}")
- }
+read_dir() {
+   local dirs=()
+   local files=()
+   local item_index
+   
+   # If '$PWD' is '/', unset it to avoid '//'.
+   [[ $PWD == / ]] && PWD=
+   
+   for item in "$PWD"/*; do
+      if [[ -d $item ]]; then
+	 dirs+=("$item")
+      	 ((item_index++))
+      	 
+      	 [[ $item == "$previous_dir" ]] &&
+      	 ((previous_index=item_index))
+      else
+	 files+=("$item")
+      fi
+   done
+   
+   list=("${dirs[@]}" "${files[@]}")
+   
+   [[ -z ${list[0]} ]] &&
+      list[0]="empty"
+   
+   ((list_total=${#list[@]}-1))
+   
+   cur_list=("${list[@]}")
+}
 
 print_line() {
    # Format the list item and print it.
@@ -86,199 +66,159 @@ print_line() {
    local file_ext="${file_name##*.}"
    local format
    local suffix
+   
+   # If the dir item doesn't exist, end here.
+   if [[ -z ${list[$1]} ]]; then
+      return
+      
+      # Directory.
+   elif [[ -d ${list[$1]} ]]; then
+      format+="\\e[${di:-1;3${FFF_COL1:-2}}m"
+      suffix+='/'
+      
+      # Block special file.
+   elif [[ -b ${list[$1]} ]]; then
+      format+="\\e[${bd:-40;33;01}m"
+      
+      # Character special file.
+   elif [[ -c ${list[$1]} ]]; then
+      format+="\\e[${cd:-40;33;01}m"
+      
+      # Executable file.
+   elif [[ -x ${list[$1]} ]]; then
+      format+="\\e[${ex:-01;32}m"
+      
+      # Symbolic Link (broken).
+   elif [[ -h ${list[$1]} && ! -e ${list[$1]} ]]; then
+      format+="\\e[${mi:-01;31;7}m"
+      
+      # Symbolic Link.
+   elif [[ -h ${list[$1]} ]]; then
+      format+="\\e[${ln:-01;36}m"
+      
+      # Fifo file.
+   elif [[ -p ${list[$1]} ]]; then
+      format+="\\e[${pi:-40;33}m"
+      
+      # Socket file.
+   elif [[ -S ${list[$1]} ]]; then
+      format+="\\e[${so:-01;35}m"
+      
+   elif [[ $FFF_LS_COLORS == 1 &&
+      $ls_patterns &&
+      $file_name =~ ($ls_patterns)$ ]]; then
+      match="${BASH_REMATCH[0]}"
+      file_ext="ls_${match//[^a-zA-Z0-9=\\;]/_}"
+      format+="\\e[${!file_ext:-${fi:-37}}m"
 
-    # If the dir item doesn't exist, end here.
-    if [[ -z ${list[$1]} ]]; then
-       return
+   elif [[ $FFF_LS_COLORS == 1 &&
+      $file_ext != "$file_name" &&
+      $file_ext =~ ^[a-zA-Z0-9_]*$ ]]; then
+      file_ext="ls_${file_ext}"
+      format+="\\e[${!file_ext:-${fi:-37}}m"
 
-    # Directory.
- elif [[ -d ${list[$1]} ]]; then
-    format+="\\e[${di:-1;3${FFF_COL1:-2}}m"
-    suffix+='/'
+   else
+      format+="\\e[${fi:-37}m"
+   fi
 
-    # Block special file.
- elif [[ -b ${list[$1]} ]]; then
-    format+="\\e[${bd:-40;33;01}m"
+   (($1 == scroll)) &&
+      format+="\\e[1;3${FFF_COL4:-6};7m"
+   
+   [[ ${marked_files[$1]} == "${list[$1]:-null}" ]] && {
+      format+="\\e[3${FFF_COL3:-1}m "
+      suffix+='*'
+   }
 
-    # Character special file.
- elif [[ -c ${list[$1]} ]]; then
-    format+="\\e[${cd:-40;33;01}m"
+   file_name="${file_name//[^[:print:]]/^[}"
 
-    # Executable file.
- elif [[ -x ${list[$1]} ]]; then
-    format+="\\e[${ex:-01;32}m"
-
-    # Symbolic Link (broken).
- elif [[ -h ${list[$1]} && ! -e ${list[$1]} ]]; then
-    format+="\\e[${mi:-01;31;7}m"
-
-    # Symbolic Link.
- elif [[ -h ${list[$1]} ]]; then
-    format+="\\e[${ln:-01;36}m"
-
-    # Fifo file.
- elif [[ -p ${list[$1]} ]]; then
-    format+="\\e[${pi:-40;33}m"
-
-    # Socket file.
- elif [[ -S ${list[$1]} ]]; then
-    format+="\\e[${so:-01;35}m"
-
-    # Color files that end in a pattern as defined in LS_COLORS.
-    # 'BASH_REMATCH' is an array that stores each REGEX match.
- elif [[ $FFF_LS_COLORS == 1 &&
-    $ls_patterns &&
-    $file_name =~ ($ls_patterns)$ ]]; then
-     match="${BASH_REMATCH[0]}"
-     file_ext="ls_${match//[^a-zA-Z0-9=\\;]/_}"
-     format+="\\e[${!file_ext:-${fi:-37}}m"
-
-    # Color files based on file extension and LS_COLORS.
-    # Check if file extension adheres to POSIX naming
-    # stardard before checking if it's a variable.
- elif [[ $FFF_LS_COLORS == 1 &&
-    $file_ext != "$file_name" &&
-    $file_ext =~ ^[a-zA-Z0-9_]*$ ]]; then
-     file_ext="ls_${file_ext}"
-     format+="\\e[${!file_ext:-${fi:-37}}m"
-
-  else
-     format+="\\e[${fi:-37}m"
-  fi
-
-    # If the list item is under the cursor.
-    (($1 == scroll)) &&
-       format+="\\e[1;3${FFF_COL4:-6};7m"
-
-    # If the list item is marked for operation.
-    [[ ${marked_files[$1]} == "${list[$1]:-null}" ]] && {
-       format+="\\e[3${FFF_COL3:-1}m "
-	   suffix+='*'
-	}
-
-    # Escape the directory string.
-    # Remove all non-printable characters.
-    file_name="${file_name//[^[:print:]]/^[}"
-
-    printf '\r%b%s\e[m\r' "$format" "${file_name}${suffix}"
- }
+   printf '\r%b%s\e[m\r' "$format" "${file_name}${suffix}"
+}
 
 draw_dir() {
-   # Print the max directory items that fit in the scroll area.
    local scroll_start="$scroll"
    local scroll_new_pos
    local scroll_end
 
-    # When going up the directory tree, place the cursor on the position
-    # of the previous directory.
-    ((find_previous == 1)) && {
-       ((scroll_start=previous_index-1))
-	   ((scroll=scroll_start))
+   ((find_previous == 1)) && {
+      ((scroll_start=previous_index-1))
+	 ((scroll=scroll_start))
 
-	# Clear the directory history. We're here now.
-	find_previous=
-     }
-
-    # If current dir is near the top of the list, keep scroll position.
-    if ((list_total < max_items || scroll < max_items/2)); then
-       ((scroll_start=0))
-       ((scroll_end=max_items))
-       ((scroll_new_pos=scroll + 1))
-
-    # If curent dir is near the end of the list, keep scroll position.
- elif ((list_total - scroll < max_items/2)); then
-    ((scroll_start=list_total - max_items + 1))
-    ((scroll_new_pos=max_items - (list_total-scroll)))
-    ((scroll_end=list_total+1))
-
-    # If current dir is somewhere in the middle, center scroll position.
- else
-    ((scroll_start=scroll-max_items/2))
-    ((scroll_end=scroll_start+max_items))
-    ((scroll_new_pos=max_items/2+1))
- fi
-
- for ((i=scroll_start;i<scroll_end;i++)); {
-    # Don't print one too many newlines.
-    ((i > scroll_start)) &&
-       printf '\n'
-
-    print_line "$i"
- }
-
-    # Move the cursor to its new position if it changed.
-    # If the variable 'scroll_new_pos' is empty, the cursor
-    # is moved to line '0'.
-    printf '\e[%sH' "$scroll_new_pos"
-    ((y=scroll_new_pos))
- }
-
-redraw() {
-   # Redraw the current window.
-   # If 'full' is passed, re-fetch the directory list.
-   [[ $1 == full ]] && {
-      read_dir
-	 scroll=0
+	 find_previous=
       }
 
-   clear_screen
-   draw_dir
-   status_line
+   if ((list_total < max_items || scroll < max_items/2)); then
+      ((scroll_start=0))
+      ((scroll_end=max_items))
+      ((scroll_new_pos=scroll + 1))
+
+   elif ((list_total - scroll < max_items/2)); then
+      ((scroll_start=list_total - max_items + 1))
+      ((scroll_new_pos=max_items - (list_total-scroll)))
+      ((scroll_end=list_total+1))
+
+   else
+      ((scroll_start=scroll-max_items/2))
+      ((scroll_end=scroll_start+max_items))
+      ((scroll_new_pos=max_items/2+1))
+   fi
+
+   for ((i=scroll_start;i<scroll_end;i++)); {
+      # Don't print one too many newlines.
+      ((i > scroll_start)) &&
+	 printf '\n'
+
+      print_line "$i"
+   }
+
+   printf '\e[%sH' "$scroll_new_pos"
+   ((y=scroll_new_pos))
+}
+
+redraw() {
+   [[ $1 == full ]] && { read_dir; scroll=0; }
+   clear_screen; draw_dir; status_line
 }
 
 mark() {
-   # Mark file for operation.
-   # If an item is marked in a second directory,
-   # clear the marked files.
    [[ $PWD != "$mark_dir" ]] &&
       marked_files=()
 
    if [[ ${marked_files[$1]} == "${list[$1]}" ]]; then
       unset 'marked_files[scroll]'
-
    else
       marked_files[$1]="${list[$1]}"
       mark_dir="$PWD"
    fi
 
-    # Clear line before changing it.
-    printf '\e[K'
-    print_line "$1"
+   printf '\e[K'
+   print_line "$1"
 
-    # Find the program to use.
-    case "$2" in
-       y) file_program=(cp -R) ;;
-       m) file_program=(mv) ;;
+   case "$2" in
+      y) file_program=(cp -R) ;;
+      m) file_program=(mv) ;;
+      d) file_program=(trash) ;;
+   esac
 
-	# Trash is an 'fff' function.
-	d) file_program=(trash) ;;
-     esac
-
-     key "j"; status_line
-  }
+   key "j"; status_line
+}
 
 trash() {
-   # 'trash' a file.
    cmd_line "trash [${#marked_files[@]}] items? [y/n]: " y n
 
    [[ $cmd_reply != y ]] &&
       return
 
    if [[ $FFF_TRASH_CMD ]]; then
-      # Pass all but the last argument to the user's
-      # custom script.
       "$FFF_TRASH_CMD" "${@:1:$#-1}"
 
    else
       cd "$FFF_TRASH" && "mv" "$@"
 
-	# Go back to where we were.
-	cd - &>/dev/null ||:
-     fi
-  }
+      cd - &>/dev/null ||:
+   fi
+}
 
 open() {
-   # Open directories and files.
    if [[ -d $1/ ]]; then
       search=
       search_end_early=
@@ -306,262 +246,270 @@ open() {
 cmd_line() {
    cmd_reply=
    printf '\e7\e[?6l\e[%sH\e[?25h' "$LINES"
-
+   
    while IFS= read -rsn 1 -p $'\r\e[K'"${1}${cmd_reply}" read_reply; do
-      case "$read_reply" in
-	 $'\177'|$'\b') cmd_reply="${cmd_reply%?}"; unset comp c ;;
+   case "$read_reply" in
+      $'\177'|$'\b') cmd_reply="${cmd_reply%?}"; unset comp c ;;
+      
+      $'\t') comp_glob="$cmd_reply*"
+      
+      [[ $2 == dirs ]] &&
+	 comp_glob="$cmd_reply*/"
+      
+      [[ -z ${comp[0]} ]] &&
+	 IFS=$'\n' read -d "" -ra comp < <(compgen -G "$comp_glob")
+      
+      [[ -n ${comp[c]} ]] && {
+	 cmd_reply="${comp[c]}"
+	 ((c=c >= ${#comp[@]}-1 ? 0 : ++c))
+      }
+      ;;
+   
+      $'\e'|"${3:-null}")
+      cmd_reply=
+      break
+      ;;
+   
+      "")
+      [[ $2 == search && -d ${list[0]} ]] && ((list_total == 0)) && {
+	 printf '\e[?25l\e[?6h'
+	 open "${list[0]}"
+	 search_end_early=1
+   
+	 unset comp c
+	 return
+      }
+      break
+      ;;
+   
+      "${2:-null}") cmd_reply="$read_reply"; break ;;
+   
+      "~") cmd_reply+="$HOME" ;;
+      " "|*) cmd_reply+="$read_reply"; unset comp c ;;
+   esac
 
-	 $'\t') comp_glob="$cmd_reply*"
+   [[ $2 == search ]] && {
+      printf '\e[?25l\e[?6h'
+      list=("$PWD"/*"$cmd_reply"*)
+      ((list_total=${#list[@]}-1,scroll=0))
+      redraw
+      printf '\e[?6l\e[%sH\e[?25h' "$LINES"
+   }
+   done
 
-		# Pass the argument dirs to limit completion to directories.
-		[[ $2 == dirs ]] &&
-		   comp_glob="$cmd_reply*/"
+   unset comp c
+   printf '\e[2K\e[?6h\e[?25l\e8'
+}
 
-		# Generate a completion list once.
-		[[ -z ${comp[0]} ]] &&
-		   IFS=$'\n' read -d "" -ra comp < <(compgen -G "$comp_glob")
+short() {
+   case "${1: -1}" in
+      /) open "/" ;;
+      a) open "$HOME/.apps" ;;
+      h) open "$HOME/Hentet" ;;
+      b) open "$HOME/.bin" ;;
+      S) open "$HOME/.Scripts" ;;
+      p) open "$HOME/Projekter" ;;
+      d) open "$HOME/.dotfiles" ;;
+      c) open "$HOME/.config" ;;
+      l) open "$HOME/.local" ;;
+      w) open "$HOME/Billeder/wallpapers" ;;
+      t) open "$HOME/.cache/fff/trash" ;;
 
-		# On each tab press, cycle through the completion list.
-		[[ -n ${comp[c]} ]] && {
-		   cmd_reply="${comp[c]}"
-				   ((c=c >= ${#comp[@]}-1 ? 0 : ++c))
-				}
-			     ;;
+      g) ((scroll != 0)) && ((scroll=0)) ;;
+   esac
+   marked_files=(); redraw
+}
 
-	    # Escape / Custom 'no' value (used as a replacement for '-n 1').
-	    $'\e'|"${3:-null}")
-	    cmd_reply=
-	    break
-	    ;;
+key() {
+   case "$1" in
+      l|"") open "${list[scroll]}" ;;
 
-	    # Enter/Return.
-	    "")
-	    # If there's only one search result and its a directory,
-	    # enter it on one enter keypress.
-	    [[ $2 == search && -d ${list[0]} ]] && ((list_total == 0)) && {
-	       # Hide te cursor and restrict cursor position.
-			   printf '\e[?25l\e[?6h'
+      h) 
+	 ((search == 1 && search_end_early != 1)) && open "$PWD"
+	 [[ $PWD && $PWD != / ]] && { 
+	    find_previous=1; open "${PWD%/*}"
+	 }
+      ;;
 
-			   open "${list[0]}"
-			   search_end_early=1
+      j) ((scroll < list_total)) && {
+	    ((scroll++)); ((y < max_items )) && ((y++))
+	    print_line "$((scroll-1))"
+	    printf '\n'
+	    print_line "$scroll"
+	    status_line
+	 }
+      ;;
 
-		    # Unset tab completion variables since we're done.
-		    unset comp c
-		    return
-		 }
+      k)
+	 ((scroll > 0)) && {
+	    ((scroll--))
+	    print_line "$((scroll+1))"
+	    ((y < 2)) && printf '\e[1L' || printf '\e[A' || ((y--))
+	    print_line "$scroll"
+	    status_line
+	 }
+      ;;
 
-	      break
-	      ;;
+      g) read -rsn 1; short "$REPLY" ;;
+      G) ((scroll != list_total)) && ((scroll=list_total)) && redraw ;;
+      O) xdg-open "${list[scroll]}" 2>/dev/null & disown ;;
 
-	   "${2:-null}") cmd_reply="$read_reply"; break ;;
+      R) [[ -x "${list[scroll]}" ]] && {
+	    reset_terminal
+      	    "${list[scroll]}"
+      	    read &>/dev/null
+      	    redraw full
+      	 }
+      ;;
 
-	   "~") cmd_reply+="$HOME" ;;
-	   " "|*) cmd_reply+="$read_reply"; unset comp c ;;
-	esac
+      .) shopt_flags=(u s)
+	 shopt -"${shopt_flags[((a=a>0?0:++a))]}" dotglob
+      	 redraw full
+      ;;
 
-	[[ $2 == search ]] && {
-	   printf '\e[?25l\e[?6h'
-		   list=("$PWD"/*"$cmd_reply"*)
-		   ((list_total=${#list[@]}-1,scroll=0))
-		   redraw
-		   printf '\e[?6l\e[%sH\e[?25h' "$LINES"
-		}
-	  done
+      /) 
+	    cmd_line "/" "search"
+	    if [[ -z ${list[*]} || -z $cmd_reply ]]; then
+	       list=("${cur_list[@]}")
+      	       ((list_total=${#list[@]}-1))
+      	       redraw
+      	       search=
+      	    else
+	       search=1
+      	    fi
+      ;;
 
-	  unset comp c
-	  printf '\e[2K\e[?6h\e[?25l\e8'
-       }
+      S) reset_terminal; cd "$PWD" && "$SHELL"
+	 setup_terminal; redraw 
+      ;;
 
-    short() {
-       case "${1: -1}" in
-	  /) open "/" ;;
-	  a) open "$HOME/.apps" ;;
-	  h) open "$HOME/Hentet" ;;
-	  b) open "$HOME/.bin" ;;
-	  S) open "$HOME/.Scripts" ;;
-	  d) open "$HOME/.dotfiles" ;;
-	  c) open "$HOME/.config" ;;
-	  l) open "$HOME/.local" ;;
-	  w) open "$HOME/Billeder/wallpapers" ;;
-	  t) open "$HOME/.cache/fff/trash" ;;
+      y|m|d) mark "$scroll" "$1" ;;
 
-	  g) ((scroll != 0)) && ((scroll=0)) ;;
-       esac
-       marked_files=(); redraw
-    }
+      p) 
+	 [[ ${marked_files[*]} ]] && {
+	    if [[ ! -w $PWD ]]; then
+	       cmd_line "warn: no write access to dir."
+      	    elif "${file_program[@]}" "${marked_files[@]}" .; then
+	       redraw full
+      	    else
+	       cmd_line "warn: '${file_program[0]}' failed."
+      	    fi
+      	    marked_files=()
+      	    redraw
+	 }
+      ;;
 
- key() {
-    case "$1" in
-       l|"") open "${list[scroll]}" ;;
-       h) ((search == 1 && search_end_early != 1)) && open "$PWD"
-	  [[ $PWD && $PWD != / ]] && { find_previous=1; open "${PWD%/*}"; }
-	  ;;
+      V) 
+	 cmd_line ": nvim "
+	 [[ $cmd_reply ]] && {
+	    reset_terminal
+	    nvim "$cmd_reply"
+	    redraw full
+	 }
+      ;;
 
-       j) ((scroll < list_total)) && {
-	  ((scroll++))
-		 ((y < max_items )) && ((y++))
+      B)
+	 cmd_line "new bash script: "
+	 [[ ! -f $cmd_reply ]] && { 
+	    printf "#!/usr/bin/env bash\n\n" > "$cmd_reply" 
+      	    chmod a+x $cmd_reply
+      	    reset_terminal
+      	 }
+      	 nvim + $cmd_reply
+      	 redraw full
+      ;;
 
-		 print_line "$((scroll-1))"
-		 printf '\n'
-		 print_line "$scroll"
-		 status_line; } ;;
+      r) cmd_line "rename ${list[scroll]##*/}: "
+	 [[ $cmd_reply ]] &&
+	    if [[ -e $cmd_reply ]]; then
+	       cmd_line "warn: '$cmd_reply' already exists."
+	    elif [[ -w ${list[scroll]} ]]; then
+	       mv "${list[scroll]}" "${PWD}/${cmd_reply}"
+	       redraw full
+	    else
+	       cmd_line "warn: no write access to file."
+	    fi
+      ;;
 
-       k)
-	 ((scroll > 0)) && { ((scroll--))
-	 print_line "$((scroll+1))"
-	 ((y < 2)) && printf '\e[1L' || printf '\e[A' || ((y--))
-	 print_line "$scroll"
-	 status_line
-	 } ;;
-
-	g) read -rsn 1; short "$REPLY" ;;
-	G) ((scroll != list_total)) && ((scroll=list_total)) && redraw ;;
-
-	.) shopt_flags=(u s)
-	   shopt -"${shopt_flags[((a=a>0?0:++a))]}" dotglob
-	   redraw full ;;
-
-	/) cmd_line "/" "search"
-
-	   if [[ -z ${list[*]} || -z $cmd_reply ]]; then
-	      list=("${cur_list[@]}")
-	      ((list_total=${#list[@]}-1))
-	      redraw
-	      search=
-	   else
-	      search=1
-	   fi ;;
-
-	S) reset_terminal; cd "$PWD" && "$SHELL"
-	setup_terminal; redraw ;;
-
-     y|m|d) mark "$scroll" "$1" ;;
-
-	p) [[ ${marked_files[*]} ]] && {
-	   if [[ ! -w $PWD ]]; then
-	      cmd_line "warn: no write access to dir."
-	   elif "${file_program[@]}" "${marked_files[@]}" .; then
-	      redraw full
-	   else
-	      cmd_line "warn: '${file_program[0]}' failed."
-	   fi
-	   marked_files=()
-	   redraw
-	}
-     ;;
-
-  R) marked_files=(); redraw ;;
-
-  r) cmd_line "rename ${list[scroll]##*/}: "
-
-     [[ $cmd_reply ]] &&
-	if [[ -e $cmd_reply ]]; then
-	   cmd_line "warn: '$cmd_reply' already exists."
-
-	elif [[ -w ${list[scroll]} ]]; then
-	   mv "${list[scroll]}" "${PWD}/${cmd_reply}"
-	   redraw full
-
-	else
-	   cmd_line "warn: no write access to file."
-	fi ;;
-
-	n) cmd_line "mkdir: " "dirs"
-
-	[[ $cmd_reply ]] &&
-	   if [[ -e $cmd_reply ]]; then
-	      cmd_line "warn: '$cmd_reply' already exists."
-
-	   elif [[ -w $PWD ]]; then
-	      mkdir -p "${PWD}/${cmd_reply}"
-	      redraw full
-
-	   else
-	      cmd_line "warn: no write access to dir."
-	   fi
-	   ;;
-
-	# Create a file.
-	f) cmd_line "mkfile: "
-
-	[[ $cmd_reply ]] &&
-	   if [[ -e $cmd_reply ]]; then
-	      cmd_line "warn: '$cmd_reply' already exists."
-
-	   elif [[ -w $PWD ]]; then
-	      : > "${PWD}/${cmd_reply}"
-	      redraw full
-
-	   else
-	      cmd_line "warn: no write access to dir."
-	   fi ;;
-
-	x) clear_screen; stat "${list[scroll]}"; read -rn 1; redraw ;;
-
-	c) read -rsn 1; [[ $REPLY = "d" ]] && {
-	cmd_line "go to dir: " "dirs"
-
-	    # Let 'pushd' know about the current directory.
-	    pushd "$PWD" &>/dev/null ||:
-
-	    [[ $cmd_reply ]] &&
-	       pushd "${cmd_reply/\~/$HOME}" &>/dev/null &&
-	       open "$PWD"
-	    }
-			   ;;
-
-	# Go to '$HOME'.
-	"${FFF_KEY_GO_HOME:=~}")
-	open ~
-	;;
-
-	# Go to trash.
-	"${FFF_KEY_GO_TRASH:=t}")
-	open "$FFF_TRASH"
-	;;
-
-	# Go to previous dir.
-	"${FFF_KEY_PREVIOUS:=-}")
-	open "$previous_dir"
-	;;
-
-	# Directory favourites.
-	[1-9])
-	favourite="FFF_FAV${1}"
-	favourite="${!favourite}"
-
-	[[ $favourite ]] &&
-	   open "$favourite"
-		   ;;
-
-	# Quit and store current directory in a file for CD on exit.
-	# Don't allow user to redefine 'q' so a bad keybinding doesn't
-	# remove the option to quit.
-	q)
-	: "${FFF_CD_FILE:=${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d}"
-	printf '%s\n' "$PWD" > "$FFF_CD_FILE"
-	exit
-	;;
-  esac
+      n) cmd_line "mkdir: " "dirs"
+      [[ $cmd_reply ]] &&
+      if [[ -e $cmd_reply ]]; then
+      cmd_line "warn: '$cmd_reply' already exists."
+      elif [[ -w $PWD ]]; then
+      mkdir -p "${PWD}/${cmd_reply}"
+      redraw full
+      else
+      cmd_line "warn: no write access to dir."
+      fi
+      ;;
+      f) cmd_line "mkfile: "
+      [[ $cmd_reply ]] &&
+      if [[ -e $cmd_reply ]]; then
+      cmd_line "warn: '$cmd_reply' already exists."
+      elif [[ -w $PWD ]]; then
+      : > "${PWD}/${cmd_reply}"
+      redraw full
+      else
+      cmd_line "warn: no write access to dir."
+      fi ;;
+      x) clear_screen; stat "${list[scroll]}"; read -rn 1; redraw ;;
+      c) read -rsn 1
+      case $REPLY in
+      d) cmd_line "go to dir: " "dirs"
+      pushd "$PWD" &>/dev/null ||:
+      [[ $cmd_reply ]] && pushd "${cmd_reply/\~/$HOME}" &>/dev/null && open "$PWD"
+      ;;
+      c) marked_files=(); redraw
+      esac
+      ;;
+      	# Go to '$HOME'.
+      "${FFF_KEY_GO_HOME:=~}")
+      open ~
+      ;;
+      # Go to trash.
+      "${FFF_KEY_GO_TRASH:=t}")
+      open "$FFF_TRASH"
+      ;;
+      # Go to previous dir.
+      "${FFF_KEY_PREVIOUS:=-}")
+      open "$previous_dir"
+      ;;
+      # Directory favourites.
+      [1-9])
+      favourite="FFF_FAV${1}"
+      favourite="${!favourite}"
+      
+      [[ $favourite ]] &&
+      open "$favourite"
+      ;;
+      # Quit and store current directory in a file for CD on exit.
+      # Don't allow user to redefine 'q' so a bad keybinding doesn't
+      # remove the option to quit.
+      q)
+      : "${FFF_CD_FILE:=${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d}"
+      printf '%s\n' "$PWD" > "$FFF_CD_FILE"
+      exit
+      ;;
+   esac
 }
 
 main() {
    pushd "$1" &>/dev/null ||:
 
-    ((BASH_VERSINFO[0] > 3)) &&
-       read_flags=(-t 0.05)
+   ((BASH_VERSINFO[0] > 3)) &&
+      read_flags=(-t 0.05)
 
-    get_term_size
-    setup_terminal
-    shopt -s nocaseglob nullglob
-    mkdir -p "${FFF_TRASH:=${XDG_CACHE_HOME:=${HOME}/.cache}/fff/trash}"
-    trap 'reset_terminal; printf "\e[?1049l"' EXIT
-    trap 'key q' INT
-    trap 'sleep .1 && get_term_size && redraw' WINCH
+   get_term_size
+   setup_terminal
+   shopt -s nocaseglob nullglob
+   mkdir -p "${FFF_TRASH:=${XDG_CACHE_HOME:=${HOME}/.cache}/fff/trash}"
+   trap 'reset_terminal; printf "\e[?1049l"' EXIT
+   trap 'key q' INT
+   trap 'sleep .1 && get_term_size && redraw' WINCH
 
-    redraw full
+   redraw full
 
-    for ((;;)); { read "${read_flags[@]}" -srn 1 && key "$REPLY";}
-}
+   for ((;;)); { read "${read_flags[@]}" -srn 1 && key "$REPLY";}
+   }
 
 main "$@"

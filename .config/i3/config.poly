@@ -111,7 +111,7 @@ bindsym		$mod+Shift+y 		exec $term -e mpsyt
 
 bindsym		$mod+r 			exec $term -e ranger
 bindsym		$mod+v			exec $term -e neomutt
-bindsym		$mod+Shift+t			exec $term -e vtop
+bindsym		$mod+Shift+t		exec $term -e vtop
 
 bindsym 	$mod+Return 		exec $term
 bindsym 	$mod+Shift+Return 	exec $term -n float

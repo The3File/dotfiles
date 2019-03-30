@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=MathApp
-MimeType=application/gcw;
-Exec=env WINEPREFIX="/home/ringdal/.wine" wine start /ProgIDOpen GCW_Extension %f
-NoDisplay=true
-StartupNotify=true
-Icon=6CFA_MathApp.0

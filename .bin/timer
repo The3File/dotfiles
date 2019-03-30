@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 
+loop() { for ((;;)){ timer; printf '%s\e[1A' "[press ENTER]"; read;};}
+
+usage() { printf '\e[0;34m%s%s\n' "Usage: $(basename $0) "\
+      "[-l <opt>] [<number>m|s] [<min>:<sec>]"; }
+
 check() {
    case $1 in
-      [0-9][0-9]':'[0-9][0-9]) IFS=':' read -r -a k <<< "$1"
-	 ((m=${k[0]},s=${k[1]},l=(m*60)+s)) ;;
+      *[0-9]':'[0-9][0-9]) IFS=':' read -r -a k <<< "$1"
+	 ((m=${k[0]},s=${k[1]},l=(m*60)+s))
+	 ;;
       *[0-9]'m') ((l=${1%m}*60)) ;;
       *[0-9]'s') ((l=${1%s})) ;;
-      *) printf '\e[0;34m%s%s\n' "Usage: $(basename $0) "\
-	 "[-l <opt>] [<number>m|s] [<min>:<sec>]"; exit 1
+      *) usage
    esac
 
    [[ $l ]] && l="$l-"
@@ -18,17 +23,14 @@ timer() {
 
    for ((;;)){ c=$(date +%s); ((s=$l(c-st)))
       printf '\e[?25l\e[1;34m\r\e[J%02d:%02d' "$((s/60))" "$((s%60))"
-      ((s<1)) && printf '\r%s\n' "times up!" && break; sleep 1; }
+      ((s<0)) && printf '\r%s\n' "times up!" && break; sleep 1; }
 
    [[ -x $(which beep) ]] && for ((i=0;i<3;i++)){ beep -D 20 -l 80;}
 }
 
-loop() { for ((;;)){ timer; printf '%s\e[1A' "[press ENTER]"; read;};}
-
 main() {
    trap "stty echo; printf '\e[J\e[?25h'" EXIT
-
-   case $1 in "")timer;; -l)check $2;loop;; *)check $1;timer;; esac
+   case $1 in "") timer ;; -l) check $2; loop ;; *) check $1; timer; esac
 }
 
 main "$@"

@@ -3,37 +3,40 @@
 #   qute://help/configuring.html
 #   qute://help/settings.html
 
+c.url.start_pages = 'file:///home/ringdal/Projekter/startskærm/index.html'
+c.url.default_page = 'file:///home/ringdal/Projekter/startskærm/index.html'
+
 # Uncomment this to still load settings configured via autoconfig.yml
 # config.load_autoconfig()
 #
-c.colors.statusbar.url.fg = '#060606'
-c.colors.statusbar.url.error.fg = '#060606'
-c.colors.statusbar.url.hover.fg = '#060606'
-c.colors.statusbar.url.warn.fg = '#060606'
-c.colors.statusbar.url.success.http.fg = '#060606'
-c.colors.statusbar.url.success.https.fg = '#060606'
+c.colors.statusbar.url.fg = '#000102'
+c.colors.statusbar.url.error.fg = '#000102'
+c.colors.statusbar.url.hover.fg = '#000102'
+c.colors.statusbar.url.warn.fg = '#000102'
+c.colors.statusbar.url.success.http.fg = '#000102'
+c.colors.statusbar.url.success.https.fg = '#000102'
 
-c.colors.statusbar.normal.bg = '#7d6d6b'
-c.colors.statusbar.normal.bg = '#7d6d6b'
-c.colors.statusbar.normal.fg = '#060606'
+c.colors.statusbar.normal.bg = '#545352'
+c.colors.statusbar.normal.bg = '#545352'
+c.colors.statusbar.normal.fg = '#000102'
 c.colors.tabs.bar.bg = 'black'
 c.colors.tabs.odd.bg = 'black'
 c.colors.tabs.even.bg = 'black'
-c.colors.tabs.selected.odd.bg = '#7d6d6b'
-c.colors.tabs.selected.odd.bg = '#7d6d6b'
-c.colors.tabs.selected.even.bg = '#7d6d6b'
-c.colors.tabs.selected.even.bg = '#7d6d6b'
-c.colors.tabs.selected.odd.fg = '#060606'
-c.colors.tabs.selected.even.fg = '#060606'
+c.colors.tabs.selected.odd.bg = '#545352'
+c.colors.tabs.selected.odd.bg = '#545352'
+c.colors.tabs.selected.even.bg = '#545352'
+c.colors.tabs.selected.even.bg = '#545352'
+c.colors.tabs.selected.odd.fg = '#000102'
+c.colors.tabs.selected.even.fg = '#000102'
 
-c.colors.tabs.indicator.start = '#7d6d6b'
-c.colors.tabs.indicator.start = '#7d6d6b'
-c.colors.tabs.indicator.stop = '#7d6d6b'
-c.colors.tabs.indicator.stop = '#7d6d6b'
-#c.colors.tabs.indicator.error = '#7d6d6b'
-#c.colors.tabs.indicator.error = '#7d6d6b'
-#c.colors.tabs.indicator.system = '#7d6d6b'
-#c.colors.tabs.indicator.system = '#7d6d6b'
+c.colors.tabs.indicator.start = '#545352'
+c.colors.tabs.indicator.start = '#545352'
+c.colors.tabs.indicator.stop = '#545352'
+c.colors.tabs.indicator.stop = '#545352'
+#c.colors.tabs.indicator.error = '#545352'
+#c.colors.tabs.indicator.error = '#545352'
+#c.colors.tabs.indicator.system = '#545352'
+#c.colors.tabs.indicator.system = '#545352'
 
 # Aliases for commands. The keys of the given dictionary are the
 # aliases, while the values are the commands they map to.

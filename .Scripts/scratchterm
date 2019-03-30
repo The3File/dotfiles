@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 id=$(xdotool search --class scratchterm)
-st="st -c scratchterm -g 100x28+30+20 -e"
+opts=( -c scratchterm -g 100x28+30+20 -e )
 
-[[ ! -z "$id" ]] && bspc node "$id" --flag hidden -f
 [[ -z "$id" ]] && {
-   $st tmux new -s 'scratch' || $st tmux a -t '=scratch' 
-}
+   st ${opts[@]} tmux new -s 'scratch' || st ${opts[@]} tmux a -t '=scratch' 
+} || bspc node "$id" --flag hidden -f

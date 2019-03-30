@@ -2,18 +2,22 @@
 
 case $1 in
    on)
-    bspc config focused_border_color \#337cff
-    killall compton
-    feh --bg-fill /home/ringdal/Billeder/wallpapers/arch/black.jpg
-    ukill autogap
-    bspc config left_padding 0
-    bspc config right_padding 0
-    bspc config window_gap 1
-    bspc config border_width 1
-    xrdb $HOME/.Xresources
-    ;;
- off)
-    wal -Rq
-    $HOME/.config/bspwm/bspwmrc &>/dev/null
-    ;;
+      for i in {1..10}; do
+	 bspc config -d $i left_padding 0
+	 bspc config -d $i right_padding 0
+      done
+      bspc config focused_border_color "#337cff"
+      killall compton
+      feh --bg-fill "$HOME/Billeder/wallpapers/arch/black.jpg"
+      ukill autogap
+      bspc config window_gap 1
+      bspc config border_width 1
+      xrdb $HOME/.Xresources
+      stmessage
+      ;;
+
+   off)
+      wal -Rq
+      ~/.config/bspwm/bspwmrc &>/dev/null
+      ;;
 esac

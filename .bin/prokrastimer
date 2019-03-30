@@ -7,51 +7,53 @@ clean() { [[ ${FUNCNAME[1]} != "prompt" ]] && printf '\e[2J\e[H\e[1;34m%s' "$log
 prompt() {
    printf '\e[10;0H\e[1;37m%s\e[m' "work in min. (25): "; read -r work
    printf '\e[1;37m%s\e[m' "breaks in min. (5): "; read -r break
-   printf '\e[1;37m%s\e[m' "number of sions (2): "; read -r s
+   printf '\e[1;37m%s\e[m' "number of sessions (2): "; read -r s
 
-   [[ -n $work ]] && ((work*=1)) || ((work=1500))
-   [[ -n $break ]] && ((break*=1)) || ((break=300))
+   [[ -n $work ]] && ((work*=60)) || ((work=1500))
+   [[ -n $break ]] && ((break*=60)) || ((break=300))
    [[ -n $s ]] && ((s*=2)) || ((s=4))
 }
 
 timer() {
    ((sec=1,start_time=SECONDS))
 
-   while [[ $sec -gt 0 ]]; do
+   while ((sec>0)); do
       ((sec=(state-(SECONDS-start_time))))
       printf '\e[?25l\e[10;0H\e[1;35m%s%02d:%02d'\
 	 "$state left: " "$((sec/60))" "$((sec%60))"
       bar $((SECONDS-start_time)) "$state"; sleep 1
    done
 
+   [[ $state == "work" ]] && ((count++))
    play ~/.bin/.prokrastimer/gong.wav 2>/dev/null &
    notify-send "$state completed" -a Prokrastimer
 }
 
 bar() {
-   printf -v elaps "%$(($1*$(tput cols)/$2))s"
-   printf -v total "%$(($(tput cols)-($1*$(tput cols)/$2)))s"
-   printf '\e[J\e['$(tput lines)';0H%s\r' "[${elaps// /\#}${total// /-}]"
+   width=$(tput cols); ((width-=2))
+   printf -v elaps "%$(($1*$width/$2))s"
+   printf -v total "%$(($width-($1*$width/$2)))s"
+   printf '\e[J\e[%s;0H%s\r' "$width" "[${elaps// /\#}${total// /-}]"
 }
 
 _done() {
    printf '\e[10;0H\e[J\e[1;39m%s' "$state completed"
-   case $state in work) state="break" ;; *) state="work"; esac
+   case $state in work) state="break" ;; break) state="work"; esac
 
    printf '\n\e[11;0H\e[1;33m%s\r' "press ENTER to start $state"; read -r 2>/dev/null
 }
 
 complet() {
-   printf '\e[10;0H\e[J\e[1;33m%s%2dh%2dm\e[?25h\n' "combined time worked:"\
-      "$((i*work/60/60))" "$((i*work/60%60))"
+   clean
+   printf '\e[10;0H\e[1;33m%s%2dh%2dm\e[?25h\n' "combined time worked:"\
+      "$((count*work/60/60))" "$((count*work/60%60))"
 }
 
 main() {
-   logo=$(figlet -f big prokrastimer); state=work
-   trap "complet" EXIT; trap 'clean' SIGWINCH
+   logo=$(figlet -f big prokrastimer); state=work; count=1
+   trap "((count-=1)); complet; stty echo" EXIT; trap 'clean' SIGWINCH
 
-   clean; prompt; clean
-   for ((i=2;i<=s;i++)); { timer; [[ $i -lt $s ]] && _done || complet; }
+   clean; prompt; stty -echo
+   for ((i=2;i<=s;i++)){ clean; timer; ((i==s)) || _done && complet; }
 }
-
 main
