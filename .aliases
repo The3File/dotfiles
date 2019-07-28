@@ -2,12 +2,14 @@
 
 alias weather="curl wttr.in/svendborg --silent | sed '1d;38q'"
 
+alias x="extract"
+
 alias vim="nvim"
 alias r="ranger"
 alias f="bfm"
 alias n="nnn"
 
-alias as="nvim ~/.aliases"
+alias al="nvim ~/.aliases"
 alias brc="nvim ~/.bashrc"
 alias rrc="nvim ~/.config/ranger/rc.conf"
 alias vrc="nvim ~/.config/nvim/init.vim"

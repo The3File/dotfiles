@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+getext() {
+   case ${1##*.} in
+      zip) unzip -l $1  ;;
+      xz) printf '%s\n' "\".xz\" files WIP" ;;
+      *) printf '%s\n' "\".$ext\" not supported" ;;
+   esac
+}
+
+main() {
+   if [[ -f $1 ]]; then
+      getext $1 
+   else
+      printf '%s\n' "Not a file"
+   fi
+}
+
+main "$@"

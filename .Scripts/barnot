@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+dunstify "$(i3batt) | $(i3network) | " "<b>$(date '+%R')</b>" -t 10000 -r 90211

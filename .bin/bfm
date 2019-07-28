@@ -310,6 +310,7 @@ short() {
       S) open "$HOME/.Scripts" ;;
       p) open "$HOME/Projekter" ;;
       d) open "$HOME/.dotfiles" ;;
+      D) open "$HOME/Dokumenter" ;;
       c) open "$HOME/.config" ;;
       l) open "$HOME/.local" ;;
       w) open "$HOME/Billeder/wallpapers" ;;
@@ -400,7 +401,7 @@ key() {
       ;;
 
       V) 
-	 cmd_line ": nvim "
+	 cmd_line "new text file: "
 	 [[ $cmd_reply ]] && {
 	    reset_terminal
 	    nvim "$cmd_reply"
@@ -410,6 +411,7 @@ key() {
 
       B)
 	 cmd_line "new bash script: "
+	 [[ $cmd_reply ]] && {
 	 [[ ! -f $cmd_reply ]] && { 
 	    printf "#!/usr/bin/env bash\n\n" > "$cmd_reply" 
       	    chmod a+x $cmd_reply
@@ -417,6 +419,7 @@ key() {
       	 }
       	 nvim + $cmd_reply
       	 redraw full
+      }
       ;;
 
       r) cmd_line "rename ${list[scroll]##*/}: "
@@ -429,6 +432,16 @@ key() {
 	    else
 	       cmd_line "warn: no write access to file."
 	    fi
+      ;;
+      C) cmd_line "\"castnow ${list[scroll]##*/}\" add arguments? [y/n]: " y n
+	 [[ $cmd_reply = y ]] &&
+	    cmd_line "castnow ${list[scroll]##*/} "
+	    cmd_line "\"castnow ${list[scroll]##*/} $cmd_reply\" ready to cast? [y/n]" y n
+	    [[ $cmd_reply != y ]] &&
+	       return
+	    reset_terminal
+	    castnow ${list[scroll]##*/} $cmd_reply
+	    redraw full
       ;;
 
       n) cmd_line "mkdir: " "dirs"
@@ -459,7 +472,7 @@ key() {
       pushd "$PWD" &>/dev/null ||:
       [[ $cmd_reply ]] && pushd "${cmd_reply/\~/$HOME}" &>/dev/null && open "$PWD"
       ;;
-      c) marked_files=(); redraw
+      c) marked_files=(); redraw full
       esac
       ;;
       	# Go to '$HOME'.

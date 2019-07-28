@@ -15,7 +15,7 @@ super + {_,shift +} c
 	dunstify {"$(date '+%d/%m')  |  <b>$(date '+%R')</b>","$(i3cpu)  |  $(i3temp)"} -t 7000 -r 90210
 
 super + b
-	dunstify "<b>$(date '+%R')</b>  |  $(i3network) | $(i3batt)" -t 7000 -r 90211
+	barnot
 
 #super + shift + y
 
@@ -180,13 +180,15 @@ alt + ctrl + {h,j,k,l}
 {_,alt + } {_,shift +}Print
     scrot {_,-s} {_,-d 3} '%m-%h-%H%M%S.png' -e 'mv $f ~/Billeder/screenshots/'
 
-# SOUND
-{XF86MonBrightnessUp, XF86MonBrightnessDown}
-	xbacklight -time 100 -{inc,dec} 10 && dunstify -t 3000 -r 90210 "$(i3light)"
-
 # LIGHT
-{XF86AudioRaiseVolume,XF86AudioLowerVolume}
-	pamixer {-i,-d}5 && dunstify -t 3000 -r 90210 "$(i3vol)"
+XF86MonBrightness{Up,Down}
+	xbacklight -time 100 -{inc,dec} 5;((;:;))& dunstify -t 3000 -r 90210 "$(i3light)"
+Function + h
+      dunstify hej
+
+# SOUND
+{_,super + } XF86Audio{Raise,Lower}Volume
+	pamixer {_,--allow-boost} {-i,-d}5 && dunstify -t 3000 -r 90210 "$(i3vol)"
 
 XF86AudioMute
 	pamixer -t #&& dunstify -t 3000 -r 90210 "$(i3vol)"
@@ -198,7 +200,7 @@ super + shift + n
 	xbacklight -time 400 -set 1 && dunstify -t 3000 -r 90210 "$(i3light)"
 super + n 			
 	redshift -P -O 4000
-super + shift + m 		
+super + shift + m
 	xbacklight -time 400 -set 100 && dunstify -t 3000 -r 90210 "$(i3light)"
 super + m
 	redshift -x

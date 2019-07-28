@@ -1,10 +1,25 @@
 #!/usr/bin/env bash
 
-status="$(networkctl status | grep State: | awk '{print $3}')"
-ssid="$(iwgetid -r)"
-inf="$(networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}')"
+define() {
+   case $inf in
+      enp0s25) icon='' ;;
+      wlps0) icon='' ;;
+      *) icon='?'
+   esac
 
-[[ $inf = wlp3s0 ]] && inf=''
-[[ $inf = enp0s25 ]] && inf=''
+   case $status in
+      no-carrier) name='no connection' ;;
+      routable) name="$(iwgetid -r)" ;;
+      *) name="$status"
+   esac
+}
 
-[[ $status = routable ]] && printf "$inf $ssid " || printf " $status"
+main() {
+   status="$(networkctl status | grep State: | awk '{print $3}')"
+   inf="$(networkctl status | grep Address |
+      sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}')"
+
+   define; printf '%s\n' "$icon $name"
+}
+
+main
