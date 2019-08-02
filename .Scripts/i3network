@@ -3,7 +3,7 @@
 define() {
    case $inf in
       enp0s25) icon='' ;;
-      wlps0) icon='' ;;
+      wlp3s0) icon='' ;;
       *) icon='?'
    esac
 

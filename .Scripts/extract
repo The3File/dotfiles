@@ -1,14 +1,29 @@
 #!/usr/bin/env bash
 
-getext() {
+getext(){
    case ${1##*.} in
-      zip) unzip -l $1  ;;
-      xz) printf '%s\n' "\".xz\" files WIP" ;;
-      *) printf '%s\n' "\".$ext\" not supported" ;;
+      zip) zip ;;
+      xz) xz ;;
+      *) printf '%s\n' "\".${1##*.}\" not supported" ;;
    esac
 }
 
-main() {
+zip(){
+   unzip -Z -h $1 
+   read -r -p "Unpack \"$1\" [Y/n]: "
+   case $REPLY in
+      y|'') unzip -x $1 -d ${1%.*}
+	 printf '%s\n' "done";;
+      n) printf '%s\n' "No changes made"; exit ;;
+      *) printf '%s\n%s\n' "Unknown option \"$REPLY\"" "No changes made"; exit
+   esac
+}
+
+xz(){
+   printf '%s\n' "\".xz\" files WIP"
+}
+
+main(){
    if [[ -f $1 ]]; then
       getext $1 
    else
