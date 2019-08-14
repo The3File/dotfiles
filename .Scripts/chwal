@@ -12,4 +12,4 @@ fi
 $HOME/Billeder/favoritter/$next
 ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc"
 pkill dunst
-dunst &
+dunst & disown

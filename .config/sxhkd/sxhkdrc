@@ -15,7 +15,7 @@ super + {_,shift +} c
 	dunstify {"$(date '+%d/%m')  |  <b>$(date '+%R')</b>","$(i3cpu)  |  $(i3temp)"} -t 7000 -r 90210
 
 super + b
-	barnot
+	dunstbar -o
 
 #super + shift + y
 
@@ -59,9 +59,6 @@ super + x
 
 #super + b
 #	runpoly toggle
-
-super + shift + x
-	byebye
 
 # change toggle wal colorschemes
 super + alt + shift + w
@@ -191,7 +188,7 @@ Function + h
 	pamixer {_,--allow-boost} {-i,-d}5 && dunstify -t 3000 -r 90210 "$(i3vol)"
 
 XF86AudioMute
-	pamixer -t #&& dunstify -t 3000 -r 90210 "$(i3vol)"
+	pamixer -t && dunstify -t 3000 -r 90210 "$(i3vol)"
 
 XF86AudioMicMute
 	amixer sset Capture toggle

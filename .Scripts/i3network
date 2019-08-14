@@ -1,25 +1,32 @@
 #!/usr/bin/env bash
 
-define() {
-   case $inf in
-      enp0s25) icon='' ;;
-      wlp3s0) icon='' ;;
-      *) icon='?'
-   esac
+sig(){
+   if [[ $inf = "enp0s25" ]]; then
+      icon=''
+   elif [[ $inf = "wlp3s0" ]]; then
+      signal=$(iwlist wlp3s0 scan | sed -n '5P' | awk -F'=' '{print $3}' | awk -F' ' '{print $1}')
+      #直
+      ((signal >= -30)) && icon=" ****"
+      ((signal <= -30)) && icon=" ***"
+      ((signal <= -60)) && icon=" **"
+      ((signal <= -80)) && icon=" *"
+   fi
+}
 
+stat(){
    case $status in
-      no-carrier) name='no connection' ;;
-      routable) name="$(iwgetid -r)" ;;
+      no-carrier) name="$status" ;;
+      routable) name=$(iwgetid -r); sig ;;
       *) name="$status"
    esac
 }
 
-main() {
-   status="$(networkctl status | grep State: | awk '{print $3}')"
+main(){
+   status="$(networkctl status | grep State: | awk '{print $3}')" || status="?"
    inf="$(networkctl status | grep Address |
       sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}')"
 
-   define; printf '%s\n' "$icon $name"
+   stat; printf '%s\n' "$name$icon"
 }
 
 main

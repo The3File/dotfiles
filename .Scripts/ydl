@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+dl(){
+   youtube-dl -f 'best[height <=? 720]/mp4' -o\
+      "$HOME/Movies/youtube/%(title)s.%(ext)s" "$url"
+}
+
+qute(){
+   qutebrowser ":message-info \"Opening youtube-dl in scratchterm: $url\"" &>/dev/null
+   dl && qutebrowser ":message-info \"Download done: $url\"" ||\
+      qutebrowser ":message-info \"youtube-dl interrupted\"" &>/dev/null
+}
+
+main(){
+   case $1 in qute) url=$2; qute ;; *) url=$1; dl ;; esac
+}
+
+main "$@"

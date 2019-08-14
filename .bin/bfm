@@ -315,6 +315,7 @@ short() {
       l) open "$HOME/.local" ;;
       w) open "$HOME/Billeder/wallpapers" ;;
       t) open "$HOME/.cache/fff/trash" ;;
+      y) open "$HOME/Movies/youtube" ;;
 
       g) ((scroll != 0)) && ((scroll=0)) ;;
    esac

@@ -42,6 +42,10 @@ autogap & disown
 killall xbanish 2>/dev/null
 xbanish -i Mod1 -i Mod4 & disown
 
+# acpi
+ukill acpid_events &>/dev/null
+acpid_events & disown
+
 ## RULES
 
 bspc rule -r Zathura

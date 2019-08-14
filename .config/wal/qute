@@ -161,7 +161,10 @@ c.fonts.web.size.default = 17
 # Type: Int
 c.fonts.web.size.default_fixed = 14
 
+c.messages.timeout = 5000
 # Bindings for normal mode
 config.bind(',n', 'config-cycle content.user_stylesheets style.scss "" ')
 config.bind('td', 'hint links spawn transmission-remote -a {hint-url}')
+config.bind(',hy', 'hint links spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {hint-url}"')
+config.bind(',y', 'spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {url}"')
 config.bind('tg', 'tab-give')

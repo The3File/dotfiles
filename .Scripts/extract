@@ -2,8 +2,8 @@
 
 getext(){
    case ${1##*.} in
-      zip) zip ;;
-      xz) xz ;;
+      zip) zip $1 ;;
+      xz) xz $1 ;;
       *) printf '%s\n' "\".${1##*.}\" not supported" ;;
    esac
 }
@@ -12,7 +12,7 @@ zip(){
    unzip -Z -h $1 
    read -r -p "Unpack \"$1\" [Y/n]: "
    case $REPLY in
-      y|'') unzip -x $1 -d ${1%.*}
+      y|'') unzip -x $1 -d "${1%.*}/"
 	 printf '%s\n' "done";;
       n) printf '%s\n' "No changes made"; exit ;;
       *) printf '%s\n%s\n' "Unknown option \"$REPLY\"" "No changes made"; exit
@@ -24,11 +24,10 @@ xz(){
 }
 
 main(){
-   if [[ -f $1 ]]; then
+   [[ -z $1 ]] && printf '%s\n' "Usage: extract example."
+   [[ -f $1 ]] && {
       getext $1 
-   else
-      printf '%s\n' "Not a file"
-   fi
+   } || printf '%s\n' "Not a file"
 }
 
 main "$@"

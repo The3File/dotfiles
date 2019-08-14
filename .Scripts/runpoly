@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-op="$1"
-
 main(){
-    [[ -z $op ]] && restartbar
-    [[ $op == "toggle" ]] && togglebar
+    [[ -z $1 ]] && restartbar
+    [[ $1 == "toggle" ]] && togglebar
 }
 
 togglebar(){ 
@@ -23,4 +21,5 @@ restartbar(){
     polybar hvadend 2>/dev/null &
     bspc config top_padding 23
 }
-main
+
+main "$@"

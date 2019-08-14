@@ -9,34 +9,34 @@ c.url.default_page = 'file:///home/ringdal/Projekter/startskærm/index.html'
 # Uncomment this to still load settings configured via autoconfig.yml
 # config.load_autoconfig()
 #
-c.colors.statusbar.url.fg = '#030602'
-c.colors.statusbar.url.error.fg = '#030602'
-c.colors.statusbar.url.hover.fg = '#030602'
-c.colors.statusbar.url.warn.fg = '#030602'
-c.colors.statusbar.url.success.http.fg = '#030602'
-c.colors.statusbar.url.success.https.fg = '#030602'
+c.colors.statusbar.url.fg = '#040607'
+c.colors.statusbar.url.error.fg = '#040607'
+c.colors.statusbar.url.hover.fg = '#040607'
+c.colors.statusbar.url.warn.fg = '#040607'
+c.colors.statusbar.url.success.http.fg = '#040607'
+c.colors.statusbar.url.success.https.fg = '#040607'
 
-c.colors.statusbar.normal.bg = '#975828'
-c.colors.statusbar.normal.bg = '#975828'
-c.colors.statusbar.normal.fg = '#030602'
+c.colors.statusbar.normal.bg = '#967d69'
+c.colors.statusbar.normal.bg = '#967d69'
+c.colors.statusbar.normal.fg = '#040607'
 c.colors.tabs.bar.bg = 'black'
 c.colors.tabs.odd.bg = 'black'
 c.colors.tabs.even.bg = 'black'
-c.colors.tabs.selected.odd.bg = '#975828'
-c.colors.tabs.selected.odd.bg = '#975828'
-c.colors.tabs.selected.even.bg = '#975828'
-c.colors.tabs.selected.even.bg = '#975828'
-c.colors.tabs.selected.odd.fg = '#030602'
-c.colors.tabs.selected.even.fg = '#030602'
+c.colors.tabs.selected.odd.bg = '#967d69'
+c.colors.tabs.selected.odd.bg = '#967d69'
+c.colors.tabs.selected.even.bg = '#967d69'
+c.colors.tabs.selected.even.bg = '#967d69'
+c.colors.tabs.selected.odd.fg = '#040607'
+c.colors.tabs.selected.even.fg = '#040607'
 
-c.colors.tabs.indicator.start = '#975828'
-c.colors.tabs.indicator.start = '#975828'
-c.colors.tabs.indicator.stop = '#975828'
-c.colors.tabs.indicator.stop = '#975828'
-#c.colors.tabs.indicator.error = '#975828'
-#c.colors.tabs.indicator.error = '#975828'
-#c.colors.tabs.indicator.system = '#975828'
-#c.colors.tabs.indicator.system = '#975828'
+c.colors.tabs.indicator.start = '#967d69'
+c.colors.tabs.indicator.start = '#967d69'
+c.colors.tabs.indicator.stop = '#967d69'
+c.colors.tabs.indicator.stop = '#967d69'
+#c.colors.tabs.indicator.error = '#967d69'
+#c.colors.tabs.indicator.error = '#967d69'
+#c.colors.tabs.indicator.system = '#967d69'
+#c.colors.tabs.indicator.system = '#967d69'
 
 # Aliases for commands. The keys of the given dictionary are the
 # aliases, while the values are the commands they map to.
@@ -168,7 +168,10 @@ c.fonts.web.size.default = 17
 # Type: Int
 c.fonts.web.size.default_fixed = 14
 
+c.messages.timeout = 5000
 # Bindings for normal mode
 config.bind(',n', 'config-cycle content.user_stylesheets style.scss "" ')
 config.bind('td', 'hint links spawn transmission-remote -a {hint-url}')
+config.bind(',hy', 'hint links spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {hint-url}"')
+config.bind(',y', 'spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {url}"')
 config.bind('tg', 'tab-give')
