@@ -2,7 +2,7 @@ call plug#begin()
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'lervag/vimtex'
-Plug 'scrooloose/nerdtree'
+"Plug 'scrooloose/nerdtree'
 Plug 'dylanaraps/wal.vim'
 Plug 'gioele/vim-autoswap'
 call plug#end()
@@ -31,10 +31,15 @@ nnoremap <C-Space> <ESC>/<++><Enter>"_c4l
 autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
 
 "#####################################"
-"###### 	 Latex		######"
+"###### 	Bindings	######"
 "#####################################"
 
-"NORMAL		#--------------------------------#
+" GLOBAL
+
+nnoremap ,n :next<CR>
+nnoremap ,p :previous<CR>
+
+" LATEX
 
 autocmd FileType tex nnoremap mp :w<ENTER>:! pdflatex -shell-escape %<CR><CR>
 autocmd FileType tex nnoremap mo :! texopenpdf %<CR><CR>
@@ -47,8 +52,6 @@ autocmd FileType tex nnoremap ;e i\begin{enumerate}<Enter>\item <++><ENTER>\end{
 autocmd FileType tex nnoremap ;a i\begin{enumerate}[label=\textbf{\alph*)}]<Enter>\end{enumerate}<ESC>O\item 
 autocmd FileType tex nnoremap ;t i\begin{table}[h]<Enter>\centering<Enter>\begin{tabular}{}<Enter>\end{tabular}<Enter>\end{table}<ESC>
 autocmd FileType tex inoremap ;r \ref{}<++><ESC>T{i
-
-"MATH		#--------------------------------#
 
 autocmd FileType tex inoremap ;m \[\]<ESC>hi
 autocmd FileType tex inoremap $$ $$<++><ESC>F$i
@@ -104,19 +107,19 @@ autocmd FileType html inoremap ;dl <dl><Enter><Enter></dl><enter><enter><++><esc
 "#####		Plugins		 #####"
 "#####################################"
 
-"NERDtree
-" Guess
-map <C-n> :NERDTreeToggle<CR>
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
-
-" If vim starts without a file
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-
-" If vim starts with a dir
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+""NERDtree
+"" Guess
+"map <C-n> :NERDTreeToggle<CR>
+"let g:NERDTreeDirArrowExpandable = '▸'
+"let g:NERDTreeDirArrowCollapsible = '▾'
+"
+"" If vim starts without a file
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+"
+"" If vim starts with a dir
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 
 "VimTex
 

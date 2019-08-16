@@ -1,38 +1,20 @@
 #!/usr/bin/env bash
 
 handler(){
-case "$1" in
-   button/power)
-      [[ $2 = "PBTN" ]] && "$HOME/.Scripts/byebye"
-      ;;
-   ac_adapter)
-      case "$2" in
-	 AC|ACAD|ADP0)
-	    case "$4" in
-	       00000000)
-		  dunstify "Plugged in"
-		  ;;
-	       00000001)
-		  dunstify "Unlugged"
-		  ;;
-	    esac
-	    "$HOME/.Scripts/barnot"
-	    ;;
-	 *)
-	    logger "ACPI action undefined: $2"
-	    ;;
-      esac
-      ;;
-esac
+   case "$1" in
+      button/power) [[ $2 = "PBTN" ]] && "$HOME/.Scripts/byebye" ;;
+      ac_adapter)
+	    [[ $2 = *ACPI* ]] && { sleep .1; dunstbar; } ;;
+   esac
 }
 
 main(){
-coproc acpi_listen
-trap 'kill $COPROC_PID' EXIT
+   coproc acpi_listen
+   trap 'kill $COPROC_PID' EXIT
 
-while read -u "${COPROC[0]}" -a event; do
-    handler "${event[@]}"
-done
+   while read -u "${COPROC[0]}" -a event; do
+      handler "${event[@]}"
+   done
 }
 
 main

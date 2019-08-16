@@ -11,7 +11,7 @@ get_dots() {
       2) d="$HOME"; ot="$HOME/.dotfiles"
 	 fs=".Scripts .bin .local/share/applications .apps .latexmkrc\
 	 .nvimrc .profile .oh-my-zsh .vimrc .xinitrc .Xmodmap .Xresources\
-	 .xsessionrc .zprofile .aliases .zshrc .bashrc .bash_profile .bash_prompt"
+	 .xsessionrc .zprofile .aliases .zshrc .bashrc .bash_profile .bash_prompt" ;;
    esac
    for f in $fs; do [[ -f "$d/$f" || -d "$d/$f" ]] && rsync ${op[@]} "$d/$f" $ot; done
 }
@@ -28,4 +28,5 @@ push() {
 }
 
 main() { o=("-n"); sync; prompt; }
+
 main

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
 read -r X Y W H < <(slop -f "%x %y %w %h" -b 2 -t 0 -q)
-
 (( W/=1366/192, W-=3, H/=768/49, H-- ))
 (( W>=10 && H>=1 )) && st -c "float" -g ${W}x${H}+${X}+${Y}

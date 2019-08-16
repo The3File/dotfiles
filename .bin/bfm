@@ -197,6 +197,7 @@ mark() {
       y) file_program=(cp -R) ;;
       m) file_program=(mv) ;;
       d) file_program=(trash) ;;
+      v) file_program=(nvim)
    esac
 
    key "j"; status_line
@@ -302,6 +303,7 @@ cmd_line() {
 }
 
 short() {
+   previous_dir="$PWD"
    case "${1: -1}" in
       /) open "/" ;;
       a) open "$HOME/.apps" ;;
@@ -319,7 +321,7 @@ short() {
 
       g) ((scroll != 0)) && ((scroll=0)) ;;
    esac
-   marked_files=(); redraw
+   redraw
 }
 
 key() {
@@ -385,7 +387,7 @@ key() {
 	 setup_terminal; redraw 
       ;;
 
-      y|m|d) mark "$scroll" "$1" ;;
+      y|m|d|v) mark "$scroll" "$1" ;;
 
       p) 
 	 [[ ${marked_files[*]} ]] && {
@@ -413,14 +415,24 @@ key() {
       B)
 	 cmd_line "new bash script: "
 	 [[ $cmd_reply ]] && {
-	 [[ ! -f $cmd_reply ]] && { 
-	    printf "#!/usr/bin/env bash\n\n" > "$cmd_reply" 
-      	    chmod a+x $cmd_reply
-      	    reset_terminal
+	 [[ ! -f "$cmd_reply" ]] && { 
+	    printf "#!/usr/bin/env bash\n\nmain(){\n<++>\n}\n\nmain \"\$@\"" >\
+	    "$cmd_reply" 
+      	    chmod a+x "$cmd_reply"
       	 }
-      	 nvim + $cmd_reply
+      	 reset_terminal
+      	 nvim "$cmd_reply"
       	 redraw full
       }
+      ;;
+
+      F)
+	 [[ -f ${list[scroll]} ]] && {
+	    reset_terminal
+	    setup_terminal
+	    chwal -f "${list[scroll]##*/}"
+	    redraw full
+	 }
       ;;
 
       r) cmd_line "rename ${list[scroll]##*/}: "
@@ -446,15 +458,15 @@ key() {
       ;;
 
       n) cmd_line "mkdir: " "dirs"
-      [[ $cmd_reply ]] &&
-      if [[ -e $cmd_reply ]]; then
-      cmd_line "warn: '$cmd_reply' already exists."
-      elif [[ -w $PWD ]]; then
-      mkdir -p "${PWD}/${cmd_reply}"
-      redraw full
-      else
-      cmd_line "warn: no write access to dir."
-      fi
+         [[ $cmd_reply ]] &&
+	    if [[ -e $cmd_reply ]]; then
+	       cmd_line "warn: '$cmd_reply' already exists."
+	    elif [[ -w $PWD ]]; then
+	       mkdir -p "${PWD}/${cmd_reply}"
+	       redraw full
+	    else
+	       cmd_line "warn: no write access to dir."
+	    fi
       ;;
       f) cmd_line "mkfile: "
       [[ $cmd_reply ]] &&
@@ -468,13 +480,13 @@ key() {
       fi ;;
       x) clear_screen; stat "${list[scroll]}"; read -rn 1; redraw ;;
       c) read -rsn 1
-      case $REPLY in
-      d) cmd_line "go to dir: " "dirs"
-      pushd "$PWD" &>/dev/null ||:
-      [[ $cmd_reply ]] && pushd "${cmd_reply/\~/$HOME}" &>/dev/null && open "$PWD"
-      ;;
-      c) marked_files=(); redraw full
-      esac
+	 case $REPLY in
+	    d) cmd_line "go to dir: " "dirs"
+	    pushd "$PWD" &>/dev/null ||:
+	    [[ $cmd_reply ]] && pushd "${cmd_reply/\~/$HOME}" &>/dev/null && open "$PWD"
+	    ;;
+	    c) marked_files=(); redraw full
+	 esac
       ;;
       	# Go to '$HOME'.
       "${FFF_KEY_GO_HOME:=~}")

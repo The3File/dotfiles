@@ -6,7 +6,7 @@ alias spe="speedtest"
 alias vim="nvim"
 alias r="ranger"
 alias f="bfm"
-alias n="nnn"
+alias n="nmcli"
 
 alias arc="nvim ~/.aliases"
 alias brc="nvim ~/.bashrc"

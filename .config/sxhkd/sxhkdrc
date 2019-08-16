@@ -12,7 +12,7 @@ alt + shift + Pause
 # bar replacement
 
 super + {_,shift +} c
-	dunstify {"$(date '+%d/%m')  |  <b>$(date '+%R')</b>","$(i3cpu)  |  $(i3temp)"} -t 7000 -r 90210
+        dunstbar {-d,-c}
 
 super + b
 	dunstbar -o
@@ -35,6 +35,10 @@ alt + button1
 super + {p,a}
 	scratch{term,math}
 
+# search
+super + space
+      search
+
 # program launcher
 super + d
 	rofi -show drun
@@ -53,9 +57,6 @@ super + shift + b
 
 super + shift + r
 	$HOME/.config/bspwm/bspwmrc
-
-super + x
-	lock
 
 #super + b
 #	runpoly toggle
@@ -179,25 +180,25 @@ alt + ctrl + {h,j,k,l}
 
 # LIGHT
 XF86MonBrightness{Up,Down}
-	xbacklight -time 100 -{inc,dec} 5;((;:;))& dunstify -t 3000 -r 90210 "$(i3light)"
+	xbacklight -time 100 -{inc,dec} 5;((;:;))& dunstbar -b
 Function + h
       dunstify hej
 
 # SOUND
 {_,super + } XF86Audio{Raise,Lower}Volume
-	pamixer {_,--allow-boost} {-i,-d}5 && dunstify -t 3000 -r 90210 "$(i3vol)"
+	pamixer {_,--allow-boost} {-i,-d}5 && dunstbar -v
 
 XF86AudioMute
-	pamixer -t && dunstify -t 3000 -r 90210 "$(i3vol)"
+	pamixer -t && dunstbar -v
 
 XF86AudioMicMute
 	amixer sset Capture toggle
 
 super + shift + n 		
-	xbacklight -time 400 -set 1 && dunstify -t 3000 -r 90210 "$(i3light)"
+	xbacklight -time 400 -set 1 && dunstbar -b
 super + n 			
 	redshift -P -O 4000
 super + shift + m
-	xbacklight -time 400 -set 100 && dunstify -t 3000 -r 90210 "$(i3light)"
+	xbacklight -time 400 -set 100 && dunstbar -b
 super + m
 	redshift -x

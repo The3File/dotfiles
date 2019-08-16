@@ -23,14 +23,14 @@ workspaces() {
 
 printbar (){
     while :;do
-	input=" $(workspaces)%{r}"
+	input=" $(workspaces)%{r} hej"
 	printf '%s\n' "$input"
 	sleep .1
     done | lemonbar -p\
 	-g 1366x23\
 	-o 1\
 	-B "#99000000"\
-	#-f "Font Awesome:size=12"\
-	#-f "SF Mono:size=10"
+	-f "Font Awesome:size=12"\
+	-f "SF Mono:size=10"
 }
 main

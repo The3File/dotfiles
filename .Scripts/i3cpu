@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-prc="$(mpstat | grep all | awk '{print $3}' | awk -F"," '{print $1}')"
-sep=""
-printf '%s' "$sep $prc%"

@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-tmux new-window -t 'scratch' -n:youtube-dl "ydl qute $1"

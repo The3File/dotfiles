@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 app="$1"
-proc=$(ps -aux | sed -n "/ukill/d;/\<$app\>$/p" | awk '{print $2}')
+proc=$(ps -aux | sed -n "/vim/d;/ukill/d;/\<$app\>$/p" | awk '{print $2}')
 
 [[ $proc ]] && {
    for app in $proc; do kill -9 $app; done

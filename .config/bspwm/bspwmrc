@@ -27,12 +27,8 @@ pkill dunst &>/dev/null
 dunst & disown
 
 # dunst bar
-ukill dunstbar &>/dev/null
-dunstbar & disown
-
-# dunst workspaces
-ukill curws &>/dev/null
-curws & disown
+ukill "dunstbar --boot" &>/dev/null
+dunstbar --boot & disown
 
 # autogap
 ukill autogap &>/dev/null

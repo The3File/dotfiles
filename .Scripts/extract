@@ -14,8 +14,7 @@ zip(){
    case $REPLY in
       y|'') unzip -x $1 -d "${1%.*}/"
 	 printf '%s\n' "done";;
-      n) printf '%s\n' "No changes made"; exit ;;
-      *) printf '%s\n%s\n' "Unknown option \"$REPLY\"" "No changes made"; exit
+      *) printf '%s\n' "No changes made"; exit ;;
    esac
 }
 

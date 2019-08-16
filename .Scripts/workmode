@@ -19,5 +19,6 @@ case $1 in
    off)
       wal -Rq
       ~/.config/bspwm/bspwmrc &>/dev/null
+      stmessage
       ;;
 esac

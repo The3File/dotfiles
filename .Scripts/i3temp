@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-temp="$(acpi -t | sed 's/Thermal 0: ok,//g' | awk -F . '{print $1}')"
-
-printf " $temp°C"

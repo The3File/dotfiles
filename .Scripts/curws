@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-bspc subscribe desktop_focus | while read line; do
-dunstify -C 90210
-dunstify "" "<b>$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3+1}') </b>" -t 1000 -r 90211
-done
