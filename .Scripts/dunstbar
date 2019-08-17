@@ -39,16 +39,23 @@ bat(){
 
 barnot(){
    case $1 in
-      -c) temp="$(acpi -t | sed 's/Thermal 0: ok,//g' | awk -F . '{print $1}')°C"
+      -c)
+	 temp="$(acpi -t | sed 's/Thermal 0: ok,//g' | awk -F . '{print $1}')°C"
 	 cpu=" $(mpstat | grep all | awk '{print $3}' | awk -F"," '{print $1}')%"
-	 out=("$cpu | $temp") ;;
-      -d) d=$(date +%d" "%B);dy=$(date +%A);dt=$(date +%d/%m/%y)
-	 out=("$dy, $d" "<b>($dt)</b>") ;;
-      -b) out=( $(light | awk -F"." '{print $1}')%) ;;
-      -v) volume="$(pamixer --get-volume)%"
+	 out=("$cpu | $temp")
+	 ;;
+      -d)
+	 d=$(date +%d" "%B);dy=$(date +%A);dt=$(date +%d/%m/%y)
+	 out=("$dy, $d" "<b>($dt)</b>")
+	 ;;
+      -b)
+	 out=( $(light | awk -F"." '{print $1}')%)
+	 ;;
+      -v)
+	 volume="$(pamixer --get-volume)%"
 	 [[ $(pamixer --get-mute) = "true" ]] && out=(" ($volume)") || out=(" $volume ")
 	 ;;
-      *) bat; net; out=("$bat | $net | " "<b>$(date '+%R')</b>") || exit 1 ;;
+      *) bat; net; out=("$bat | $net | " "<b>$(date '+%R')</b>") || exit 1
    esac
 
    dunstify "${out[@]}" -t 5000 -r 90211
