@@ -12,21 +12,17 @@ zip(){
    unzip -Z -h $1 
    read -r -p "Unpack \"$1\" [Y/n]: "
    case $REPLY in
-      y|'') unzip -x $1 -d "${1%.*}/"
-	 printf '%s\n' "done";;
-      *) printf '%s\n' "No changes made"; exit ;;
+      n) printf '%s\n' "No changes made"; exit ;;
+      *) unzip -x $1 -d "${1%.*}/"
+	 printf '%s\n' "done"
    esac
 }
 
-xz(){
-   printf '%s\n' "\".xz\" files WIP"
-}
+xz(){ printf '%s\n' "\".xz\" files WIP"; }
 
 main(){
-   [[ -z $1 ]] && printf '%s\n' "Usage: extract example."
-   [[ -f $1 ]] && {
-      getext $1 
-   } || printf '%s\n' "Not a file"
+   [[ -z $1 ]] && { printf '%s\n' "Usage: extract \"example.ext\""; exit; }
+   [[ -f $1 ]] && getext $1 || printf '%s\n' "Not a file"
 }
 
 main "$@"

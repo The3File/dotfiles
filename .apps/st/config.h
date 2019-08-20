@@ -84,6 +84,7 @@ unsigned int tabspaces = 4;
 
 /* bg opacity */
 unsigned int alpha = 0xe9;
+/*unsigned int alpha = 0xff;*/
 
 static const char *colorname[] = {
 	"#000000",  /*  0: black    */

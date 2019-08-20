@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
 
 net(){
-   st="$(networkctl status | grep State: | awk '{print $3}')" || status="?"
+   st="$(nmcli | sed -n "1s/.*: //p")"
    inf="$(networkctl status | grep Address |
       sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}')"
 
    case $st in
       no-carrier) n="No connection" ;;
-      routable) n=$(iwgetid -r)
+      'tilsluttet'*)
 	 [[ $inf = "wlp3s0" ]] && {
 	    sn=$(iwlist wlp3s0 scan | sed -n '5P' |
 	       awk -F'=' '{print $3}' | awk -F' ' '{print $1}')
-	    ((sn>=-20)) && i=" ****"
-	    ((sn<=-40)) && i=" ***"
+	    ((sn<=-20)) && i=" ****"
+	    ((sn<=-45)) && i=" ***"
 	    ((sn<=-60)) && i=" **"
 	    ((sn<=-75)) && i=" *"
 	 }
 	 ;;
-      *) n="$st"
+      *) 
    esac
-   net="$n$i"
+   net="$st$i"
 }
 
 bat(){
@@ -32,7 +32,8 @@ bat(){
       Discharging)
 	 ((p>80)) && l=""; ((p<80)) && l=""
 	 ((p<65)) && l=""; ((p<40)) && l=""
-	 ((p<20)) && l=""
+	 ((p<20)) && l="" ;;
+      *) l="?"
    esac
    bat="$l $p%"
 }

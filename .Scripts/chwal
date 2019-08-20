@@ -1,41 +1,44 @@
 #!/usr/bin/env bash
 
 sel(){
-   [[ $(printf "$files\n" | tail -1) = ${current}.sh || -z $(echo $files | grep $current) ]] && {
-       next="$(printf $files | head -1)"; } || next=$(echo "$files" | awk "/$current/{getline; print}")
+   current=$(awk -F/ 'NF>1{print $NF}' $HOME/.cache/wal/wal)
+   files=$(ls $HOME/Billeder/favoritter)
+
+   if [[ $(printf "$files\n" | tail -1) = ${current}.sh || -z $(echo $files | grep $current) ]]; then
+      next="$(printf $files | head -1)" 
+   else
+      next=$(echo "$files" | awk "/$current/{getline; print}")
+   fi
    $HOME/Billeder/favoritter/$next; exit
 }
 
 dun(){
-   ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" 
-   pkill dunst; dunst & disown
-}
+   ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &&
+      pkill dunst && dunst & disown
+   }
 
 fav(){
    trap 'printf "\n"' EXIT
    dir="$PWD/$1"; file="${dir##*/}"
-   
+
    printf '\e[H\e[2J\e[1;34m%s\n\e[0;34m%s\n%s\n%s\n%s\n\e[1;32m%s\e[0m'\
       "backends:" "w: wal" "c: colorz" "h: haishoku" "t: colorthief" "choose > "
 
    read -rsn1; [[ ! $REPLY ]] && exit
 
    case $REPLY in w) backend="wal" ;; c) backend="colorz" ;;
-       h) backend="haishoku" ;; t) backend="colorthief"
+      h) backend="haishoku" ;; t) backend="colorthief"
    esac
 
    printf '%s\n%s\n%s\n%s\n%s\n%s' "#\!/bin/sh" "cp \"$dir\" ~/.config/wall.png"\
       "wal -tqi $dir --backend $backend" "source /home/ringdal/.cache/wal/colors.sh"\
-      "bspc config focused_border_color \$color4" "stmessage" >\
-   $HOME/Billeder/favoritter/$file.sh
-   sudo chmod a+x ~/Billeder/favoritter/$file.sh
-}
+      "bspc config focused_border_color \$color4" >\
+      $HOME/Billeder/favoritter/$file.sh
+	 sudo chmod a+x ~/Billeder/favoritter/$file.sh
+      }
 
-main(){
-   current=$(awk -F/ 'NF>1{print $NF}' $HOME/.cache/wal/wal)
-   files=$(ls $HOME/Billeder/favoritter)
-   
-   case $1 in -f) fav $2 ;; *) sel; dun ;; esac
-}
+   main(){
+      case $1 in -f) fav $2 ;; *) sel; dun ;; esac
+   }
 
 main "$@"

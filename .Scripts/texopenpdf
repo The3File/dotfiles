@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-pdf="${1%.tex}.pdf"
-zathura $pdf & disown

@@ -4,7 +4,11 @@ handler(){
    case "$1" in
       button/power) [[ $2 = "PBTN" ]] && "$HOME/.Scripts/byebye" ;;
       ac_adapter)
-	    [[ $2 = *ACPI* ]] && { sleep .1; dunstbar; } ;;
+	 proc=$(ps -aux | sed -n "/vim/d;/ukill/d;/\<$app\>$/p" | awk '{print $2}')
+	 [[ $2 = *ACPI* ]] && {
+	    [[ ! -z $(pgrep lemonbar) && -e "/tmp/panel-fifo" ]] &&
+	    echo "bat" > "/tmp/panel-fifo" || {
+	    sleep .1; dunstbar; }; } ;;
    esac
 }
 

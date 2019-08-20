@@ -1,36 +1,69 @@
 #!/usr/bin/env bash
 
-main (){
-    trap 'bspc config top_padding 0' EXIT
-    printbar
+net(){
+   st="$(nmcli | sed -n "1s/.*: //p")"
+   inf="$(networkctl status | grep Address |
+      sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}')"
+
+   case $st in
+      no-carrier) n="No connection" ;;
+      'tilsluttet'*)
+	 [[ $inf = "wlp3s0" ]] && {
+	    sn=$(iwlist wlp3s0 scan | sed -n '5P' |
+	       awk -F'=' '{print $3}' | awk -F' ' '{print $1}')
+	    ((sn<=-20)) && i=" ****"
+	    ((sn<=-45)) && i=" ***"
+	    ((sn<=-60)) && i=" **"
+	    ((sn<=-75)) && i=" *"
+	 } ;;
+      *) 
+   esac
+   N="$st$i"
 }
 
-workspaces() {
-    spaces=($(xprop -root _NET_DESKTOP_NAMES | awk '{$1=$2=""; print $0}' | sed -e 's/,//g' -e 's/\"//g' -e 's/^[[:space:]]*//'))
-    current=$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}')
-
-    for ((i=0;i<${#spaces[*]};i++)) do
-        if [ "$i" = "$current" ]; then
-            spaces[$i]="%{F#00ff00}  ${spaces[$i]}  %{B-}%{F-}"
-        else
-            spaces[$i]="${spaces[$i]}"
-        fi
-    done
-
-    myspaces=$(sed -e 's/\(}\).?\(%\)/\1\2/' <<< "${spaces[*]}")
-    printf "%s\n" "${myspaces}"
+work() {
+   s=($(xprop -root _NET_DESKTOP_NAMES | awk '{$1=$2=""; print $0}' |\
+      sed -e 's/,//g' -e 's/\"//g' -e 's/^[[:space:]]*//'))
+   c=$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}')
+   
+   for ((i=0;i<${#s[*]};i++)){ 
+      [[ "$i" = "$c" ]] && s[$i]="%{F#0f0}[${s[$i]}]%{B-}%{F-}" ||
+	 s[$i]="${s[$i]}"; }
+   
+   W="$(sed -e 's/\(}\).?\(%\)/\1\2/' <<< "${s[*]}")"
 }
 
-printbar (){
-    while :;do
-	input=" $(workspaces)%{r} hej"
-	printf '%s\n' "$input"
-	sleep .1
-    done | lemonbar -p\
-	-g 1366x23\
-	-o 1\
-	-B "#99000000"\
-	-f "Font Awesome:size=12"\
-	-f "SF Mono:size=10"
+out(){
+   while read -r line; do
+      case $line in
+	 net) net ;;
+	 bat) B=$(acpi | sed 's/ 0//g;s/%,.*//g') ;;
+	 'desktop'*) work ;;
+      esac
+      printf '%s\n' "$W%{r} $B% | $N | $(date +%T) "
+   done
 }
+
+printb(){
+   cat "$PANELFIFO" | out |
+      lemonbar -p -g 1366x23 -o 1 -B "#99000000" -f "SF Mono:size=10" |
+      while read line; do eval "$line"; done &
+}
+
+main(){
+   trap 'bspc config top_padding 0; pkill lemonbar' SIGTERM SIGKILL EXIT
+
+   PANELFIFO="/tmp/panel-fifo"
+
+   [[ -e "$PANELFIFO" ]] && rm "$PANELFIFO"
+   mkfifo "$PANELFIFO"
+
+   bspc subscribe desktop_focus > "$PANELFIFO" &
+   for((;;)){ echo > "$PANELFIFO"; sleep 1; } &
+
+   work;net;printb
+
+   wait
+}
+
 main

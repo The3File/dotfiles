@@ -5,6 +5,8 @@ Plug 'lervag/vimtex'
 "Plug 'scrooloose/nerdtree'
 Plug 'dylanaraps/wal.vim'
 Plug 'gioele/vim-autoswap'
+Plug 'sheerun/vim-polyglot'
+"Plug 'kovetskiy/sxhkd-vim'
 call plug#end()
 
 syntax enable
@@ -41,8 +43,8 @@ nnoremap ,p :previous<CR>
 
 " LATEX
 
-autocmd FileType tex nnoremap mp :w<ENTER>:! pdflatex -shell-escape %<CR><CR>
-autocmd FileType tex nnoremap mo :! texopenpdf %<CR><CR>
+autocmd FileType tex nnoremap mp :w<ENTER>:! mdtopdf -t %<CR><CR>
+autocmd FileType tex nnoremap mo :! mdtopdf -o %<CR><CR>
 autocmd FileType tex nnoremap ;S i\section{}<ENTER><ENTER><++><ESC>2kf}i
 autocmd FileType tex nnoremap ;s i\subsection{}<ENTER><ENTER><++><ESC>2kf}i
 autocmd FileType tex inoremap ;i <ESC>o\item<Space>
@@ -75,9 +77,9 @@ autocmd FileType markdown inoremap ;f \frac{}{<++>}<++><ESC>Fcf}i
 autocmd FileType markdown inoremap ;t \times
 autocmd FileType markdown inoremap ;s \sqrt{}<++><ESC>Ftf}i
 autocmd FileType markdown inoremap $$ $$<++><ESC>F$i
-autocmd FileType markdown nnoremap mo :w<CR>:! mdtopdf open %<CR><CR>
+autocmd FileType markdown nnoremap mo :w<CR>:! mdtopdf -o %<CR><CR>
 autocmd FileType markdown nnoremap mp :w<CR>:! mdtopdf %<CR><CR>
-autocmd FileType markdown nnoremap md :w<CR>:! mdtodoc %<CR><CR>
+autocmd FileType markdown nnoremap md :w<CR>:! mdtopdf -d %<CR><CR>
 
 "" HTML
 autocmd FileType html inoremap ;html <!DOCTYPE html><ENTER><html><ENTER><head><ENTER><title><++></title><ENTER></head><ENTER><body><ENTER><++><ENTER></body><ENTER></html><ESC>gg

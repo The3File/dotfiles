@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-id=$(xdotool search --class scratchmath)
-
-[[ -z "$id" ]] && st -c scratchmath -g 100x17-30-20 -e qalc || bspc node "$id" --flag hidden -f

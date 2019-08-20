@@ -1,13 +1,31 @@
 #!/usr/bin/env bash
 
-if [[ $1 == open ]];then
-    zathura ${2%.md}.pdf &
-else
-    out="${1%.md}.pdf"
-    [[ -z $1 ]] && echo "Ingen fil." && exit
-    if [[ -z $2 ]];then 
-	pandoc -V geometry:margin=1in -t latex $1 -o $out 
-    else
-	read -p "Hvad skal filen hedde?:" a && pandoc -V geometry:margin=1in -t latex $@ -o ${a}.pdf
-    fi
-fi
+tomd(){
+   case ${1##*.} in
+      doc)
+	 lowriter --convert-to docx "$1"
+	 pandoc -t markdown "${1}x" -o "${1%.doc}.md"
+	 rm "${1}x"
+	 ;;
+      docx) pandoc -t docx "$1" -o "${1%.*}.md"
+   esac
+}
+
+tex(){
+   pdflatex -shell-escape "$1"
+   for ext in log aux; do
+      rm "${1%.*}.$ext"
+   done
+}
+
+main(){
+   case $1 in
+      -d) pandoc -t docx "$2" -o "${2%.md}.docx" ;;
+      -o) [[ -r "${2%.*}.pdf" ]] && xdg-open "${2%.*}.pdf" & disown ;;
+      -t) tex "$2" ;;
+      --to-md) tomd "$2" ;;
+      *) [[ -e $1 ]] && pandoc -V geometry:margin=1in -t latex "$1" -o "${1%.*}.pdf" ;;
+   esac
+}
+
+main "$@"

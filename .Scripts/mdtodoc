@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-out="${1%.md}.docx"
-
-[[ -z $1 ]] && echo "Ingen fil." && exit
-[[ -z $2 ]] && pandoc -t docx $1 -o $out || read -p "Hvad skal filen hedde?:" a && pandoc -t docx $@ -o ${a}.docx

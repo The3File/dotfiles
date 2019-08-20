@@ -30,56 +30,28 @@ key() {
 	 [[ $PWD && $PWD != / ]] && { find_previous=1; open "${PWD%/*}"; } ;;
       j) ((scroll < list_total)) && {
 	    ((scroll++)); ((y < max_items )) && ((y++))
-	    print_line "$((scroll-1))"
-	    printf '\n'
-	    print_line "$scroll"
-	    status_line; } ;;
+	    print_line "$((scroll-1))"; printf '\n'; print_line "$scroll"; status_line; } ;;
       k) ((scroll > 0)) && {
-	    ((scroll--))
-	    print_line "$((scroll+1))"
-	    ((y < 2)) && printf '\e[1L' || printf '\e[A' || ((y--))
-	    print_line "$scroll"
-	    status_line; } ;;
+	    ((scroll--)); print_line "$((scroll+1))"; ((y < 2)) && printf '\e[1L' || printf '\e[A' || ((y--))
+	    print_line "$scroll"; status_line; } ;;
       g) read -rsn 1; short "$REPLY" ;;
       G) ((scroll != list_total)) && ((scroll=list_total)) && redraw ;;
       O) xdg-open "${list[scroll]}" 2>/dev/null & disown ;;
-      R) [[ -x "${list[scroll]}" ]] && {
-	    reset_terminal
-      	    "${list[scroll]}"
-      	    read &>/dev/null
-      	    redraw full; } ;;
-      .) shopt_flags=(u s)
-	 shopt -"${shopt_flags[((a=a>0?0:++a))]}" dotglob
-      	 redraw full ;;
+      R) [[ -x "${list[scroll]}" ]] && { reset_terminal; $SHELL "${list[scroll]}"; redraw full; } ;;
+      .) shopt_flags=(u s); shopt -"${shopt_flags[((a=a>0?0:++a))]}" dotglob; redraw full ;;
       /) cmd_line "/" "search"
-	 if [[ -z ${list[*]} || -z $cmd_reply ]]; then
-	    list=("${cur_list[@]}")
-      	    ((list_total=${#list[@]}-1))
-      	    redraw
-      	    search=
-      	 else
-	    search=1
-      	 fi ;;
-      S) reset_terminal; cd "$PWD" && "$SHELL"
-	 setup_terminal; redraw ;;
+	 [[ -z ${list[*]} || -z $cmd_reply ]] && { list=("${cur_list[@]}")
+      	    ((list_total=${#list[@]}-1)); redraw; search= ;} || { search=1; } ;;
+      S) reset_terminal; cd "$PWD" && "$SHELL"; setup_terminal; redraw ;;
 
       y|m|d|v) mark "$scroll" "$1" ;;
 
       p) [[ ${marked_files[*]} ]] && {
-	    if [[ ! -w $PWD ]]; then
-	       cmd_line "warn: no write access to dir."
-      	    elif "${file_program[@]}" "${marked_files[@]}" .; then
-	       redraw full
-      	    else
-	       cmd_line "warn: '${file_program[0]}' failed."
-      	    fi
-      	    marked_files=()
-      	    redraw; } ;;
+	    [[ ! -w $PWD ]] && cmd_line "warn: no write access to dir."
+      	    "${file_program[@]}" "${marked_files[@]}" . && redraw full ||
+	       cmd_line "warn: '${file_program[0]}' failed."; marked_files=(); redraw; } ;;
       V) cmd_line "new text file: "
-	 [[ $cmd_reply ]] && {
-	    reset_terminal
-	    nvim "$cmd_reply"
-	    redraw full; } ;;
+	 [[ $cmd_reply ]] && { reset_terminal; nvim "$cmd_reply"; redraw full; } ;;
       B) cmd_line "new bash script: "
 	 [[ $cmd_reply ]] && {
 	 [[ ! -f "$cmd_reply" ]] && { 
@@ -91,23 +63,9 @@ key() {
 	    chwal -f "${list[scroll]##*/}"; redraw full; } ;;
       r) cmd_line "rename ${list[scroll]##*/}: "
 	 [[ $cmd_reply ]] &&
-	    if [[ -e $cmd_reply ]]; then
-	       cmd_line "warn: '$cmd_reply' already exists."
-	    elif [[ -w ${list[scroll]} ]]; then
-	       mv "${list[scroll]}" "${PWD}/${cmd_reply}"
-	       redraw full
-	    else
-	       cmd_line "warn: no write access to file."
-	    fi ;;
-      C) cmd_line "\"castnow ${list[scroll]##*/}\" add arguments? [y/n]: " y n
-	 [[ $cmd_reply = y ]] &&
-	    cmd_line "castnow ${list[scroll]##*/} "
-	    cmd_line "\"castnow ${list[scroll]##*/} $cmd_reply\" ready to cast? [y/n]" y n
-	    [[ $cmd_reply != y ]] &&
-	       return
-	    reset_terminal
-	    castnow ${list[scroll]##*/} $cmd_reply
-	    redraw full ;;
+	    [[ -e $cmd_reply ]] && cmd_line "warn: '$cmd_reply' already exists."
+	    [[ -w ${list[scroll]} ]] && { mv "${list[scroll]}" "${PWD}/${cmd_reply}"; redraw full; } ||
+	       cmd_line "warn: no write access to file." ;;
       n) cmd_line "mkdir: " "dirs"
          [[ $cmd_reply ]] &&
 	    if [[ -e $cmd_reply ]]; then
@@ -119,15 +77,10 @@ key() {
 	       cmd_line "warn: no write access to dir."
 	    fi ;;
       f) cmd_line "mkfile: "
-      [[ $cmd_reply ]] &&
-      if [[ -e $cmd_reply ]]; then
-      cmd_line "warn: '$cmd_reply' already exists."
-      elif [[ -w $PWD ]]; then
-      : > "${PWD}/${cmd_reply}"
-      redraw full
-      else
-      cmd_line "warn: no write access to dir."
-      fi ;;
+      [[ $cmd_reply ]] && {
+      [[ -e $cmd_reply ]] && cmd_line "warn: '$cmd_reply' already exists."
+      [[ -w $PWD ]] && { : > "${PWD}/${cmd_reply}"; redraw full; } ||
+	 cmd_line "warn: no write access to dir."; } ;;
       x) clear_screen; stat "${list[scroll]}"; read -rn 1; redraw ;;
       c) read -rsn 1
 	 case $REPLY in
@@ -353,9 +306,6 @@ reset_terminal() { printf '\e[?6l\e[?7h\e[?25h\e[2J\e[;r'; }
 
 main() {
    pushd "$1" &>/dev/null ||:
-
-   ((BASH_VERSINFO[0] > 3)) &&
-      read_flags=(-t 0.05)
 
    get_term_size
    setup_terminal

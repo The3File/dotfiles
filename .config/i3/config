@@ -8,21 +8,21 @@
 #	                                             |___/
 
 ##		Startup			##
-	exec_always	--no-startup-id awrstrt
-	exec xmodmap -e "keycode 135 = Super_R"
+      exec_always	--no-startup-id awrstrt
+      exec xmodmap -e "keycode 135 = Super_R"
 
 ##		General			##
-	set $mod Mod4
-	set $browser --no-startup-id qutebrowser
-	set $browser2 --no-startup-id firefox
-	set $term --no-startup-id st
-	floating_modifier $mod
-	workspace_auto_back_and_forth yes
+      set $mod Mod4
+      set $browser --no-startup-id qutebrowser
+      set $browser2 --no-startup-id firefox
+      set $term --no-startup-id st
+      floating_modifier $mod
+      workspace_auto_back_and_forth yes
 
 ## Theme
 
-	font pango:SFNS Display 11
-	#new_window none
+      font pango:SFNS Display 11
+#new_window none
 
 ## Gaps
 #smart_gaps on
@@ -73,26 +73,26 @@ set $mdark			#55555555
 
 ## Bar
 bar {
-    i3bar_command i3bar -t
-	font pango:SF Mono 9
-	position bottom
-	status_command i3blocks -c ~/.config/i3/i3blocks.conf 
-	height 25
-	mode dock
-	#border		#9FBC00
-	modifier none
-	#separator_symbol " "
-	colors {
-		background 	$back
-		statusline 	$color7
-		separator  	#888888
+   i3bar_command i3bar -t
+      font pango:SF Mono 9
+      position bottom
+      status_command i3blocks -c ~/.config/i3/i3blocks.conf 
+      height 25
+      mode dock
+#border		#9FBC00
+      modifier none
+#separator_symbol " "
+      colors {
+	 background 	$back
+	    statusline 	$color7
+	    separator  	#888888
 
-					#border		#backgr.	#text
-		focused_workspace  	$color7		$back		$color7
-		active_workspace   	$back		$back	 	$color7
-		inactive_workspace 	$back	 	$back	 	$color7
-		urgent_workspace   	$back 		$back	 	$color7
-	}
+#border		#backgr.	#text
+	    focused_workspace  	$color7		$back		$color7
+	    active_workspace   	$back		$back	 	$color7
+	    inactive_workspace 	$back	 	$back	 	$color7
+	    urgent_workspace   	$back 		$back	 	$color7
+      }
 }
 bindsym $mod+b bar mode toggle
 

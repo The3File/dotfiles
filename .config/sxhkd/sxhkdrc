@@ -12,65 +12,65 @@ alt + shift + Pause
 # bar replacement
 
 super + {_,shift +} c
-        dunstbar {-d,-c}
+   dunstbar {-d,-c}
 
 super + b
-	dunstbar -o
+   dunstbar -o
 
 #super + shift + y
 
 # terminal emulator
 super + {_,shift +} {Return}
-	st {_,-c float -g 88x25}
+   st {_,-c float -g 88x25}
 
 super + {r,v,u}
-	st -e {ranger,neomutt,rtv -s unixporn}
+   st -e {ranger,neomutt,rtv -s unixporn}
 
 super + {_,shift +} e
-	st {_,-g 30x15+80+20 -c bfm} -e bfm
+   {st -e bfm, scratch files}
 
 alt + button1
-	drawterm
+   drawterm
 
 super + {p,a}
-	scratch{term,math}
+   scratch {term,math}
 
 # search
 super + space
-      search
+   search
 
 # program launcher
 super + d
-	rofi -show drun
+   rofi -show drun
 
 super + shift + w
-	networkmanager_dmenu
+   networkmanager_dmenu
 
 super + Insert
-	rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
+   rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
 
 super + w
-	qutebrowser
+   qutebrowser
 
 super + shift + b
-	electron /usr/lib/android-messages-desktop/resources/app.asar
+   electron /usr/lib/android-messages-desktop/resources/app.asar
 
 super + shift + r
-	$HOME/.config/bspwm/bspwmrc
+   $HOME/.config/bspwm/bspwmrc
 
 #super + b
 #	runpoly toggle
 
 # change toggle wal colorschemes
 super + alt + shift + w
-	chwal
+   chwal
 
 super + alt + shift + r
-	wal -Rgt
+   wal -Rgt
 
 # make sxhkd reload its configuration files:
 super + Escape
-	pkill -USR1 -x sxhkd
+   pkill -USR1 -x sxhkd
 
 #################
 # bspwm hotkeys #
@@ -78,30 +78,31 @@ super + Escape
 
 # close and kill
 super + {_,shift + }q
-	bspc node -{c,k}
+   bspc node -{c,k}
 
 # alternate between the tiled and monocle layout
 super + End
-	bspc desktop -l next
+   bspc desktop -l next
 
 # send the newest marked node to the newest preselected node
 super + y
-	bspc node newest.marked.local -n newest.!automatic.local
+   bspc node newest.marked.local -n newest.!automatic.local
 
 # swap the current node and the biggest node
 super + g
-	bspc node -s biggest
+   bspc node -s biggest
+
 ###############
 # state/flags #
 ###############
 
 # set the window state
 super + {t,shift + t,s,f}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+   bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 # set the node flags
-super + ctrl + {m,x,y,z}
-	bspc node -g {marked,locked,sticky,private}
+super + ctrl + {m,q,s,p}
+   bspc node -g {marked,locked,sticky,private}
 
 ###############
 # move/resize #
@@ -109,15 +110,15 @@ super + ctrl + {m,x,y,z}
 
 # expand a window by moving one of its side outward
 super + alt + {h,j,k,l}
-	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+   bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 
 # contract a window by moving one of its side inward
 super + alt + shift + {h,j,k,l}
-	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+   bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
 
 # move a floating window
 alt + shift + {h,j,k,l}
-	bspc node -v {-20 0,0 20,0 -20,20 0}
+   bspc node -v {-20 0,0 20,0 -20,20 0}
 
 ##############
 # focus/swap #
@@ -125,29 +126,29 @@ alt + shift + {h,j,k,l}
 
 # focus the node in the given direction
 super + {_,shift + }{h,j,k,l}
-	bspc node -{f,s} {west,south,north,east}
+   bspc node -{f,s} {west,south,north,east}
 
 # focus the node for the given path jump
 super + {p,b,comma,period}
-	bspc node -f @{parent,brother,first,second}
+   bspc node -f @{parent,brother,first,second}
 
 # focus the next/previous desktop in the current monitor
 super + {,shift + Tab,Tab}
-	bspc desktop -f {prev,next}.occupied
+   bspc desktop -f {prev,next}.occupied
 
 # focus the last node/desktop
 super + grave
-	bspc node -f last
+   bspc node -f last
 
 # focus the older or newer node in the focus history
 super + {o,i}
-	bspc wm -h off; \
-	bspc node {older,newer} -f; \
-	bspc wm -h on
+   bspc wm -h off; \
+   bspc node {older,newer} -f; \
+   bspc wm -h on
 
 # focus or send to the given desktop
 super + {_,shift + }{1-9,0}
-	bspc {desktop -f,node -d} '^{1-9,10}'
+   bspc {desktop -f,node -d} '^{1-9,10}'
 
 #############
 # preselect #
@@ -155,15 +156,15 @@ super + {_,shift + }{1-9,0}
 
 # preselect the direction
 super + ctrl + {h,j,k,l}
-	bspc node -p {west,south,north,east}
+   bspc node -p {west,south,north,east}
 
 # preselect the ratio
 super + ctrl + {1-9}
-	bspc node -o 0.{1-9}
+   bspc node -o 0.{1-9}
 
 # cancel the preselection for the focused node
 super + ctrl + space
-	bspc node -p cancel
+   bspc node -p cancel
 
 ############
 ## Laptop ##
@@ -171,34 +172,33 @@ super + ctrl + space
 
 # useless
 alt + ctrl + {h,j,k,l}
-    xdotool mousemove_relative {-- -50 0,0 50,-- 0 -50,50 0}
+   xdotool mousemove_relative {-- -10 0,0 10,-- 0 -10,10 0}
 
-# SCROT
-
+# screenshot
 {_,alt + } {_,shift +}Print
-    scrot {_,-s} {_,-d 3} '%m-%h-%H%M%S.png' -e 'mv $f ~/Billeder/screenshots/'
+   scrot {_,-s} {_,-d 3} '%m-%h-%H%M%S.png' -e 'mv $f ~/Billeder/screenshots/'
 
-# LIGHT
+# LIGHT | BRIGHTNESS
 XF86MonBrightness{Up,Down}
-	xbacklight -time 100 -{inc,dec} 5;((;:;))& dunstbar -b
-Function + h
-      dunstify hej
+   xbacklight -time 100 -{inc,dec} 5;((;:;))& dunstbar -b
 
 # SOUND
 {_,super + } XF86Audio{Raise,Lower}Volume
-	pamixer {_,--allow-boost} {-i,-d}5 && dunstbar -v
+   pamixer {_,--allow-boost} {-i,-d}5 && dunstbar -v
 
+# mute sound
 XF86AudioMute
-	pamixer -t && dunstbar -v
+   pamixer -t && dunstbar -v
 
+# mute mic
 XF86AudioMicMute
-	amixer sset Capture toggle
+   amixer sset Capture toggle
 
 super + shift + n 		
-	xbacklight -time 400 -set 1 && dunstbar -b
+   xbacklight -time 400 -set 1 && dunstbar -b
 super + n 			
-	redshift -P -O 4000
+   redshift -P -O 4000
 super + shift + m
-	xbacklight -time 400 -set 100 && dunstbar -b
+   xbacklight -time 400 -set 100 && dunstbar -b
 super + m
-	redshift -x
+   redshift -x
