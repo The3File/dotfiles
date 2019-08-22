@@ -7,7 +7,7 @@ tomd(){
 	 pandoc -t markdown "${1}x" -o "${1%.doc}.md"
 	 rm "${1}x"
 	 ;;
-      docx) pandoc -t docx "$1" -o "${1%.*}.md"
+      docx) pandoc -t markdown "$1" -o "${1%.*}.md"
    esac
 }
 

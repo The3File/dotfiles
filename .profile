@@ -4,5 +4,9 @@ export VISUAL="nvim"
 export EDITOR="nvim"
 export BROWSER="qutebrowser"
 
+export CONFIG="$HOME/.config/bspwm/bspwmrc"
+export PANELFIFO="/tmp/panel-fifo"
+export GAPFIFO="/tmp/gap-fifo"
+
 [[ -f ~/.bashrc ]] && source ~/.bashrc
 [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx &>/dev/null

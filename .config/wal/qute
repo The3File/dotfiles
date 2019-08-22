@@ -16,8 +16,8 @@ c.colors.statusbar.url.warn.fg = '{color0}'
 c.colors.statusbar.url.success.http.fg = '{color0}'
 c.colors.statusbar.url.success.https.fg = '{color0}'
 
-c.colors.statusbar.normal.bg = '{color4}'
-c.colors.statusbar.normal.fg = '{color0}'
+c.colors.statusbar.normal.bg = 'black'
+c.colors.statusbar.normal.fg = 'white'
 c.colors.tabs.bar.bg = 'black'
 c.colors.tabs.odd.bg = 'black'
 c.colors.tabs.even.bg = 'black'
@@ -163,6 +163,7 @@ c.fonts.web.size.default_fixed = 14
 
 c.messages.timeout = 5000
 # Bindings for normal mode
+config.bind(',p', 'spawn --userscript qute-pass')
 config.bind(',n', 'config-cycle content.user_stylesheets style.scss "" ')
 config.bind('td', 'hint links spawn transmission-remote -a {hint-url}')
 config.bind(',hy', 'hint links spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {hint-url}"')

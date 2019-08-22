@@ -6,7 +6,9 @@ short() {
       /) open "/" ;;
       a) open "$HOME/.apps" ;;
       h) open "$HOME/Hentet" ;;
+      H) open "$HOME" ;;
       b) open "$HOME/.bin" ;;
+      B) open "$HOME/Dokumenter/bible" ;;
       S) open "$HOME/.Scripts" ;;
       p) open "$HOME/Projekter" ;;
       d) open "$HOME/.dotfiles" ;;
@@ -43,7 +45,7 @@ key() {
 	 [[ -z ${list[*]} || -z $cmd_reply ]] && { list=("${cur_list[@]}")
       	    ((list_total=${#list[@]}-1)); redraw; search= ;} || { search=1; } ;;
       S) reset_terminal; cd "$PWD" && "$SHELL"; setup_terminal; redraw ;;
-
+      W) chwal -f "${list[scroll]##*/}"; redraw full ;;
       y|m|d|v) mark "$scroll" "$1" ;;
 
       p) [[ ${marked_files[*]} ]] && {
@@ -89,6 +91,7 @@ key() {
 	    [[ $cmd_reply ]] && pushd "${cmd_reply/\~/$HOME}" &>/dev/null && open "$PWD" ;;
 	    c) marked_files=(); redraw full
 	 esac ;;
+
       q) : "${FFF_CD_FILE:=${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d}"
       printf '%s\n' "$PWD" > "$FFF_CD_FILE"; exit
    esac
@@ -144,8 +147,7 @@ cmd_line() {
       
       $'\t') comp_glob="$cmd_reply*"
       
-      [[ $2 == dirs ]] &&
-	 comp_glob="$cmd_reply*/"
+      [[ $2 == dirs ]] && comp_glob="$cmd_reply*/"
       
       [[ -z ${comp[0]} ]] &&
 	 IFS=$'\n' read -d "" -ra comp < <(compgen -G "$comp_glob")
