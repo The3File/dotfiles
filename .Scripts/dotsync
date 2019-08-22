@@ -32,7 +32,7 @@ prompt() {
 push() {
 
    cd $HOME/.dotfiles/; git add . 
-   printf '\e[33m%s\e[0m' "Commit message (empty='update'): "; read
+   printf '\e[33m%s\e[0m' "Commit message (empty='dotsync'): "; read
 
    [[ -z $REPLY ]] && REPLY="update"
 
