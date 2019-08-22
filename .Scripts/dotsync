@@ -3,8 +3,11 @@
 sync() { for i in {1..2}; do get_dots $i; done }
 
 get_dots() {
+
    op=( -ai --delete ${o[@]} --exclude='.git/' --exclude='plugged/')
+
    case $1 in
+
       1) d="$HOME/.config"; ot="$HOME/.dotfiles/.config"
          fs="bspwm sxhkd dunst i3 nvim qutebrowser polybar ranger wal mimeapps.list compton.conf" ;;
 
@@ -12,18 +15,27 @@ get_dots() {
 	 fs=".Scripts .bin .local/share/applications .apps .latexmkrc\
 	 .nvimrc .profile .oh-my-zsh .vimrc .xinitrc .Xmodmap .Xresources\
 	 .xsessionrc .zprofile .aliases .zshrc .bashrc .bash_profile .bash_prompt" ;;
+
    esac
+
    for f in $fs; do [[ -f "$d/$f" || -d "$d/$f" ]] && rsync ${op[@]} "$d/$f" $ot; done
 }
 
 prompt() {
+
    printf '\e[33m%s\e[0m' "Push? [y/N]"; read -rsn1; printf '\n'
+
    case $REPLY in y) o=("-q"); sync; push ;; *) exit 0; esac
+
 }
 
 push() {
+
    cd $HOME/.dotfiles/; git add . 
-   printf '\e[33m%s\e[0m' "Commit message: "; read
+   printf '\e[33m%s\e[0m' "Commit message (empty='update'): "; read
+
+   [[ -z $REPLY ]] && REPLY="update"
+
    git commit -a -m "$REPLY" && git push -u origin master
 }
 
