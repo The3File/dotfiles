@@ -3,6 +3,17 @@
 handler(){
    case "$1" in
       button/power) [[ $2 = "PBTN" ]] && "$HOME/.Scripts/byebye" ;;
+      button/screenlock)
+	 [[ $(<"$HOME/.keylock") = "enabled" ]] && {
+	    xinput disable 'AT Translated Set 2 keyboard'
+	    printf '%s' "disabled" > "$HOME/.keylock"
+	    dunstify -r 10 -t 4000 "keyboard disabled"
+	 } || {
+	    xinput enable 'AT Translated Set 2 keyboard'
+	    printf '%s' "enabled" > "$HOME/.keylock"
+	    dunstify -r 10 -t 4000 "keyboard enabled"
+	 }
+	 ;;
       ac_adapter)
 	 proc=$(ps -aux | sed -n "/vim/d;/ukill/d;/\<$app\>$/p" | awk '{print $2}')
 	 [[ $2 = *ACPI* ]] && {

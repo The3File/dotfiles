@@ -1,5 +1,7 @@
 # ~/.aliases
 
+alias hot="nmcli d w c Vedsidenaf"
+
 alias x="extract"
 
 alias spe="speedtest"

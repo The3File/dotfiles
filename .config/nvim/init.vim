@@ -68,7 +68,7 @@ autocmd FileType tex inoremap ;s \sqrt{}<++><ESC>Ftf}i
 
 " GNUPLOT
 
-autocmd FileType tex nnoremap ;g i\begin{figure}[h!]<Enter>\caption{<++>}<Enter>\label{fig:<++>}<ENTER>\begin{gnuplot}[terminal=epslatex]<ENTER><++><ENTER>\end{gnuplot}<ENTER>\end{figure}<ESC>5k/<+*+><Enter>"_c4l
+autocmd FileType tex nnoremap ;g i\begin{figure}[h!]<Enter>\caption{<++>}<Enter>\label{fig:<++>}<ENTER>\begin{gnuplot}[terminal=epslatex]<CR>set key box top left<CR>set size 1.1,1.0<CR>set tics out<CR>set grid ytics mytics<CR>set grid xtics mytics<CR>set mytics 1<CR>set grid<CR><CR>set yr [<++>:<++>]<CR>set xr [<++>:<++>]<CR><CR>plot <++> w l title '<++>'<CR><CR>\end{gnuplot}<ENTER>\end{figure}<ESC>17k/<+*+><Enter>"_c4l
 
 "" MARKDOWN
 

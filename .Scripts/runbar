@@ -55,10 +55,10 @@ printb(){
       -g 1366x20\
       -f "SF Mono:size=9"\
       -o 1\
-      -B "000000"\
+      -B "$background"\
+      -F "$foreground"\
       -u 2 |
       while read line; do eval "$line"; done &
-      #-B "$color0"\
 }
 
 main(){

@@ -59,8 +59,7 @@ barnot(){
       *) bat; net; out=("$bat | $net | " "<b>$(date '+%R')</b>") || exit 1
    esac
 
-   dunstify "${out[@]}" -t 5000 -r 90211
-   ((w<1&&t!=1100)) && { sleep 4; dunstify "${out[@]}" -t "$t" -r 90211; }
+   dunstify "${out[@]}" -t "$t" -r 90211
 }
 
 loop(){ for ((;;)){ barnot;sleep 10;}; }

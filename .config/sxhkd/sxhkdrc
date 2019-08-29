@@ -49,6 +49,9 @@ super + shift + w
 super + Insert
    rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
 
+super + i
+   fontawesome
+
 super + w
    qutebrowser
 
@@ -67,6 +70,9 @@ super + alt + shift + w
 
 super + alt + shift + r
    wal -Rgt
+
+super + x
+   lock
 
 # make sxhkd reload its configuration files:
 super + Escape
