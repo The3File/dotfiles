@@ -1,11 +1,2 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =9
-let g:netrw_dirhist_1='/home/ringdal/.oh-my-zsh/plugins/vi-mode'
-let g:netrw_dirhist_2='/home/ringdal/.oh-my-zsh/plugins'
-let g:netrw_dirhist_3='/home/ringdal/.oh-my-zsh/plugins/vi-mode'
-let g:netrw_dirhist_4='/home/ringdal/.oh-my-zsh/plugins'
-let g:netrw_dirhist_5='/home/ringdal/.oh-my-zsh/plugins/vim-interaction'
-let g:netrw_dirhist_6='/home/ringdal/.oh-my-zsh/plugins/vi-mode'
-let g:netrw_dirhist_7='/etc/sudoers.d'
-let g:netrw_dirhist_8='/home/ringdal/Billeder/favoritter'
-let g:netrw_dirhist_9='/home/ringdal/pure-bash-bible/manuscript'
+let g:netrw_dirhist_cnt =0
