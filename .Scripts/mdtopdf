@@ -12,15 +12,16 @@ tomd(){
 }
 
 tex(){
+   clean=( gnuploterrors log aux )
    pdflatex -shell-escape "$1"
-   for ext in log aux; do
+   for ext in "${clean[@]}"; do
       rm "${1%.*}.$ext"
    done
 }
 
 main(){
    case $1 in
-      -d) pandoc -t docx "$2" -o "${2%.md}.docx" ;;
+      -d) pandoc -t docx "$2" -o "${2%.*}.docx" ;;
       -o) [[ -r "${2%.*}.pdf" ]] && xdg-open "${2%.*}.pdf" & disown ;;
       -t) tex "$2" ;;
       --to-md) tomd "$2" ;;

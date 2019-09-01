@@ -17,8 +17,12 @@ config() {
    bspc config split_ratio          0.5
    bspc config automatic_scheme spiral
    bspc config gapless_monocle true
-   bspc config left_padding 0
-   bspc config right_padding 0
+
+   for i in {1..10}; do
+      bspc config -d $i left_padding 0
+      bspc config -d $i right_padding 0
+      bspc config -d $i window_gap 5
+   done
 
    bspc monitor -d 1 2 3 4 5 6 7 8 9 10
 
@@ -26,22 +30,7 @@ config() {
 
 }
 
-
 apps() {
-
-   ukill "dunstbar --boot"
-   ukill autogap
-   pkill compton
-
-   if [[ -z $(pgrep lemonbar) ]]; then
-
-      dunstbar --boot & disown
-      autogap & disown
-      compton --dbus -b & disown
-
-   else
-      ukill runbar && runbar & disown
-   fi
 
    pkill dunst &&
       dunst & disown
@@ -52,7 +41,42 @@ apps() {
    killall xbanish &&
       xbanish -i Mod1 -i Mod4 & disown
 
+   [[ -z $(pgrep lemonbar) ]] && {
+      #autogap & autogap="$!"
+      dbar
+      cton
+   } || rbar
+
 }
+
+
+autogap() {
+
+[[ -e "$GAPFIFO" ]] && rm "$GAPFIFO"
+mkfifo "$GAPFIFO"
+
+bspc subscribe node_add node_remove desktop_focus > "$GAPFIFO" &
+
+while read line; do
+   W=$(bspc query -N -n .local.\!floating | wc -l)
+   (( W <= 1 )) && W=1
+
+   (( G=26-(W-1)*(8+2/3) ))
+   (( G <= 0 )) && G=0
+
+   (( P=81-(W-1)*60 ))
+   (( P <= 0 )) && P=0
+
+   bspc config --desktop focused left_padding $P
+   bspc config --desktop focused right_padding $P
+   bspc config --desktop focused window_gap $G
+done < "$GAPFIFO"
+
+}
+
+dbar() { ukill "dunstbar --boot" && dunstbar --boot & disown; }
+rbar() { ukill runbar && runbar & disown; }
+cton() { pkill compton && compton --dbus -b & disown; }
 
 
 rules() {

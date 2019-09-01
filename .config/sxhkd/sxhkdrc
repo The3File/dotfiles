@@ -59,7 +59,7 @@ super + shift + b
    electron /usr/lib/android-messages-desktop/resources/app.asar
 
 super + shift + r
-   $HOME/.config/bspwm/bspwmrc
+   ukill bspwmrc; "$CONFIG"
 
 #super + b
 #	runpoly toggle
