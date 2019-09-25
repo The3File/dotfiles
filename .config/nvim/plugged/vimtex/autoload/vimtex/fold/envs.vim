@@ -66,9 +66,6 @@ function! s:folder.text(line, level) abort dict " {{{1
   let env = matchstr(a:line, self.re.name)
   if !self.validate(env) | return | endif
 
-  let nt = 73
-  let ne = 12
-
   " Set caption/label based on type of environment
   if env ==# 'frame'
     let label = ''
@@ -81,23 +78,40 @@ function! s:folder.text(line, level) abort dict " {{{1
     let caption = self.parse_caption(a:line)
   endif
 
-  " Add parenthesis to label
-  if label !=# ''
-    let label = substitute(strpart(label,0,nt-ne-2), '\(.*\)', '(\1)','')
+  let width_ind = len(matchstr(a:line, '^\s*'))
+  let width = winwidth(0) - (&number ? &numberwidth : 0) - 4 - width_ind
+
+  let width_env = 19
+  let width_lab = len(label) + 2 > width - width_env
+        \ ? width - width_env
+        \ : len(label) + 2
+  let width_cap = width - width_env - width_lab
+
+  if !empty(label)
+    let label = printf('(%.*S)', width_lab, label)
   endif
 
-  " Set size of label and caption part of string
-  let nl = len(label) > nt - ne ? nt - ne : len(label)
-  let nc = nt - ne - nl - 1
-  let caption = strpart(caption, 0, nc)
+  if !empty(caption)
+    if strchars(caption) > width_cap
+      let caption = strpart(caption, 0, width_cap - 4) . '...'
+    endif
+  else
+    let width_env += width_cap
+    let width_cap = 0
+  endif
 
-  " Create title based on env, caption and label
-  let title = printf('%-' . ne . 's%-' . nc . 's %' . nl . 's',
-        \ env, caption, label)
+  if strlen(env) > width_env - 8
+    let env = strpart(env, 0, width_env - 11) . '...'
+  endif
+  let env = '\begin{' . env . '}'
 
-  " Combine level and title and return the trimmed fold text
-  let text = printf('%-5s %-' . nt . 's', a:level, strpart(title, 0, nt))
-  return substitute(text, '\s\+$', '', '') . ' '
+  let title = printf('%*S%-*S %-*S  %*S',
+        \ width_ind, '',
+        \ width_env, env,
+        \ width_cap, caption,
+        \ width_lab, label)
+
+  return substitute(title, '\s\+$', '', '')
 endfunction
 
 " }}}1
@@ -145,26 +159,26 @@ endfunction
 " }}}1
 function! s:folder.parse_caption_frame(line) abort dict " {{{1
   " Test simple variants first
-  let caption1 = matchstr(a:line,'\\begin\*\?{.*}{\zs.\+\ze}')
-  let caption2 = matchstr(a:line,'\\begin\*\?{.*}{\zs.\+')
-
-  if len(caption1) > 0
+  let caption1 = matchstr(a:line,'\\begin\*\?{.*}\(\[[^]]*\]\)\?{\zs.\+\ze}')
+  let caption2 = matchstr(a:line,'\\begin\*\?{.*}\(\[[^]]*\]\)\?{\zs.\+')
+  if !empty(caption1)
     return caption1
-  elseif len(caption2) > 0
+  elseif !empty(caption2)
     return caption2
-  else
-    let i = v:foldstart
-    while i <= v:foldend
-      if getline(i) =~# '^\s*\\frametitle'
-        return matchstr(getline(i),
-              \ '^\s*\\frametitle\(\[.*\]\)\?{\zs.\{-1,}\ze\(}\s*\)\?$')
-      end
-      let i += 1
-    endwhile
-
-    " If no caption found, check for a caption comment
-    return matchstr(a:line,'\\begin\*\?{.*}\s*%\s*\zs.*')
   endif
+
+  " Search for \frametitle command
+  let i = v:foldstart
+  while i <= v:foldend
+    if getline(i) =~# '^\s*\\frametitle'
+      return matchstr(getline(i),
+            \ '^\s*\\frametitle\(\[.*\]\)\?{\zs.\{-1,}\ze\(}\s*\)\?$')
+    end
+    let i += 1
+  endwhile
+
+  " If no caption found, check for a caption comment
+  return matchstr(a:line,'\\begin\*\?{.*}\s*%\s*\zs.*')
 endfunction
 
 " }}}1

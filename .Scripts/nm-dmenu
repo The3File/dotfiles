@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+con-up() { nmcli c u "$q";}
+con-down() { nmcli c d "$c";}
+
+main() {
+   a=$(nmcli c s | awk '{if (NR!=1) {print $1}}')
+   c=$(nmcli c s -a | awk '{if (NR!=1){print $1}}')
+   e="** Active: [ $c ]"
+
+   [[ $c ]] && a=$(printf '%s\n' "${a/$c/$e}")
+
+   q=$(printf '%s\n%s\n' "$a" | rofi -dmenu -i -p "[ nmcli ]")
+
+   case $q in
+      "$e") con-down ;;
+      *"$c"*) con-up ;;
+   esac
+}
+
+main "$@"

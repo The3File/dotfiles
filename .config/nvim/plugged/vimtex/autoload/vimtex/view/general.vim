@@ -43,6 +43,13 @@ function! s:general.view(file) dict abort " {{{1
   else
     let outfile = a:file
   endif
+
+  " Update the path for Windows on cygwin
+  if executable('cygpath')
+    let outfile = substitute(
+          \ system('cygpath -aw "' . outfile . '"'), '\n', '', 'g')
+  endif
+
   if vimtex#view#common#not_readable(outfile) | return | endif
 
   " Parse options
@@ -76,6 +83,21 @@ function! s:general.latexmk_append_argument() dict abort " {{{1
             \                    '@line', line('.'), 'g')
     endif
     return vimtex#compiler#latexmk#wrap_option('pdf_previewer', l:option)
+  endif
+endfunction
+
+" }}}1
+function! s:general.compiler_callback(status) dict abort " {{{1
+  if !a:status && g:vimtex_view_use_temp_files < 2
+    return
+  endif
+
+  if g:vimtex_view_use_temp_files
+    call self.copy_files()
+  endif
+
+  if has_key(self, 'hook_callback')
+    call self.hook_callback()
   endif
 endfunction
 

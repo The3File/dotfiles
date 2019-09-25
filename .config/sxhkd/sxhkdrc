@@ -44,7 +44,7 @@ super + d
    rofi -show drun
 
 super + shift + w
-   networkmanager_dmenu
+   nm-dmenu
 
 super + Insert
    rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'

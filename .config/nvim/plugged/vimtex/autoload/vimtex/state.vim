@@ -15,7 +15,7 @@ endfunction
 " }}}1
 function! vimtex#state#init() abort " {{{1
   let l:main = s:get_main()
-  let l:id   = s:get_main_id(l:main)
+  let l:id = s:get_main_id(l:main)
 
   if l:id >= 0
     let b:vimtex_id = l:id
@@ -175,13 +175,6 @@ function! s:get_main() abort " {{{1
   endif
 
   "
-  " Check if the current file is a main file
-  "
-  if s:file_is_main(expand('%:p'))
-    return expand('%:p')
-  endif
-
-  "
   " Use buffer variable if it exists
   "
   if exists('b:vimtex_main') && filereadable(b:vimtex_main)
@@ -195,6 +188,13 @@ function! s:get_main() abort " {{{1
   let l:candidate = s:get_main_from_texroot()
   if !empty(l:candidate)
     return l:candidate
+  endif
+
+  "
+  " Check if the current file is a main file
+  "
+  if s:file_is_main(expand('%:p'))
+    return expand('%:p')
   endif
 
   "
@@ -230,8 +230,8 @@ function! s:get_main() abort " {{{1
   " Search for main file recursively through include specifiers
   "
   if !get(g:, 'vimtex_disable_recursive_main_file_detection', 0)
-    let l:candidate = s:get_main_recurse()
-    if l:candidate !=# ''
+    let l:candidate = s:get_main_choose(s:get_main_recurse())
+    if !empty(l:candidate)
       return l:candidate
     endif
   endif
@@ -249,14 +249,18 @@ endfunction
 " }}}1
 function! s:get_main_from_texroot() abort " {{{1
   for l:line in getline(1, 5)
-    let l:filename = matchstr(l:line, g:vimtex#re#tex_input_root)
-    if len(l:filename) > 0
-      if l:filename[0] ==# '/'
-        if filereadable(l:filename) | return l:filename | endif
-      else
-        let l:candidate = simplify(expand('%:p:h') . '/' . l:filename)
-        if filereadable(l:candidate) | return l:candidate | endif
-      endif
+    let l:file_pattern = matchstr(l:line, g:vimtex#re#tex_input_root)
+    if empty(l:file_pattern) | continue | endif
+
+    if !vimtex#paths#is_abs(l:file_pattern)
+      let l:file_pattern = simplify(expand('%:p:h') . '/' . l:file_pattern)
+    endif
+
+    let l:candidates = glob(l:file_pattern, 0, 1)
+    if len(l:candidates) > 1
+      return s:get_main_choose(l:candidates)
+    elseif len(l:candidates) == 1
+      return l:candidates[0]
     endif
   endfor
 
@@ -269,7 +273,7 @@ function! s:get_main_from_subfile() abort " {{{1
     let l:filename = matchstr(l:line,
           \ '^\C\s*\\documentclass\[\zs.*\ze\]{subfiles}')
     if len(l:filename) > 0
-      if l:filename[0] ==# '/'
+      if vimtex#paths#is_abs(l:filename)
         " Specified path is absolute
         if filereadable(l:filename) | return l:filename | endif
       else
@@ -328,9 +332,9 @@ function! s:get_main_recurse(...) abort " {{{1
     let l:tried = a:2
 
     if s:file_is_main(l:file)
-      return l:file
+      return [l:file]
     elseif !filereadable(l:file)
-      return ''
+      return []
     endif
   endif
 
@@ -343,17 +347,49 @@ function! s:get_main_recurse(...) abort " {{{1
         \ . '\s*\f*' . fnamemodify(l:file, ':t:r')
 
   " Search through candidates found recursively upwards in the directory tree
+  let l:results = []
   for l:cand in s:findfiles_recursive('*.tex', fnamemodify(l:file, ':p:h'))
     if index(l:tried[l:file], l:cand) >= 0 | continue | endif
     call add(l:tried[l:file], l:cand)
 
     if len(filter(readfile(l:cand), 'v:val =~# l:re_filter')) > 0
-      let l:res = s:get_main_recurse(fnamemodify(l:cand, ':p'), l:tried)
-      if !empty(l:res) | return l:res | endif
+      let l:results += s:get_main_recurse(fnamemodify(l:cand, ':p'), l:tried)
     endif
   endfor
 
-  return ''
+  return l:results
+endfunction
+
+" }}}1
+function! s:get_main_choose(list) abort " {{{1
+  let l:list = vimtex#util#uniq_unsorted(a:list)
+
+  if empty(l:list) | return '' | endif
+  if len(l:list) == 1 | return l:list[0] | endif
+
+  let l:all = map(copy(l:list), '[s:get_main_id(v:val), v:val]')
+  let l:new = map(filter(copy(l:all), 'v:val[0] < 0'), 'v:val[1]')
+  let l:existing = {}
+  for [l:key, l:val] in filter(copy(l:all), 'v:val[0] >= 0')
+    let l:existing[l:key] = l:val
+  endfor
+  let l:alternate_id = getbufvar('#', 'vimtex_id', -1)
+
+  if len(l:existing) == 1
+    return values(l:existing)[0]
+  elseif len(l:existing) > 1 && has_key(l:existing, l:alternate_id)
+    return l:existing[l:alternate_id]
+  elseif len(l:existing) < 1 && len(l:new) == 1
+    return l:new[0]
+  else
+    let l:choices = {}
+    for l:tex in l:list
+      let l:choices[l:tex] = vimtex#paths#relative(l:tex, getcwd())
+    endfor
+
+    return vimtex#echo#choose(l:choices,
+          \ 'Please select an appropriate main file:')
+  endif
 endfunction
 
 " }}}1
@@ -382,7 +418,7 @@ function! s:file_reaches_current(file) abort " {{{1
     let l:file = matchstr(l:line, g:vimtex#re#tex_input . '\zs\f+')
     if empty(l:file) | continue | endif
 
-    if l:file[0] !=# '/'
+    if !vimtex#paths#is_abs(l:file)
       let l:file = fnamemodify(a:file, ':h') . '/' . l:file
     endif
 
@@ -522,7 +558,7 @@ function! s:vimtex.parse_graphicspath() abort dict " {{{1
   let self.graphicspath = []
   for l:path in split(l:graphicspath, '\s*}\s*{\s*')
     let l:path = substitute(l:path, '\/\s*$', '', '')
-    call add(self.graphicspath, l:path[0] ==# '/'
+    call add(self.graphicspath, vimtex#paths#is_abs(l:path)
           \ ? l:path
           \ : simplify(self.root . '/' . l:path))
   endfor
@@ -530,15 +566,23 @@ endfunction
 
 " }}}1
 function! s:vimtex.parse_packages() abort dict " {{{1
-  let self.packages = {}
+  let self.packages = get(self, 'packages', {})
 
-  call self.parse_packages_from_fls()
-  if !empty(self.packages) | return | endif
+  " Try to parse .fls file if present, as it is usually more complete. That is,
+  " it contains a generated list of all the packages that are used.
+  for l:line in vimtex#parser#fls(self.fls())
+    let l:package = matchstr(l:line, '^INPUT \zs.\+\ze\.sty$')
+    let l:package = fnamemodify(l:package, ':t')
+    if !empty(l:package)
+      let self.packages[l:package] = {}
+    endif
+  endfor
 
+  " Now parse preamble as well for usepackage and RequirePackage
+  if !has_key(self, 'preamble') | return | endif
+  let l:usepackages = filter(copy(self.preamble), 'v:val =~# ''\v%(usep|RequireP)ackage''')
   let l:pat = g:vimtex#re#not_comment . g:vimtex#re#not_bslash
-      \ . '\v\\usepackage\s*%(\[[^[\]]*\])?\s*\{\s*\zs%([^{}]+)\ze\s*\}'
-
-  let l:usepackages = filter(copy(self.preamble), 'v:val =~# ''usepackage''')
+      \ . '\v\\%(usep|RequireP)ackage\s*%(\[[^[\]]*\])?\s*\{\s*\zs%([^{}]+)\ze\s*\}'
   call map(l:usepackages, 'matchstr(v:val, l:pat)')
   call map(l:usepackages, 'split(v:val, ''\s*,\s*'')')
 
@@ -547,31 +591,6 @@ function! s:vimtex.parse_packages() abort dict " {{{1
       let self.packages[l:package] = {}
     endfor
   endfor
-endfunction
-
-" }}}1
-function! s:vimtex.parse_packages_from_fls() abort dict " {{{1
-  "
-  " The .fls file contains a generated list of all the packages that are used,
-  " and as such it is a better way of parsing for packages then reading the
-  " preamble.
-  "
-  let l:fls = self.fls()
-  if empty(l:fls) | return | endif
-
-  let l:fls_packages = {}
-
-  for l:line in vimtex#parser#fls(l:fls)
-    let l:package = matchstr(l:line, '^INPUT \zs.\+\ze\.sty$')
-    let l:package = fnamemodify(l:package, ':t')
-    if !empty(l:package)
-      let l:fls_packages[l:package] = {}
-    endif
-  endfor
-
-  if !empty(l:fls_packages)
-    let self.packages = l:fls_packages
-  endif
 endfunction
 
 " }}}1
@@ -645,7 +664,7 @@ function! s:vimtex.ext(ext, ...) abort dict " {{{1
   " First check build dir (latexmk -output_directory option)
   if !empty(get(get(self, 'compiler', {}), 'build_dir', ''))
     let cand = self.compiler.build_dir . '/' . self.name . '.' . a:ext
-    if self.compiler.build_dir[0] !=# '/'
+    if !vimtex#paths#is_abs(self.compiler.build_dir)
       let cand = self.root . '/' . cand
     endif
     if a:0 > 0 || filereadable(cand)

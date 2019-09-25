@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
 theme() {
-
    #theme="base16-isotope"
    #theme="base16-brewer"
    #theme="base16-atelier-heath"
    #theme="base16-gruvbox"
-   theme="base16-gruvbox-hard"
+   #theme="base16-gruvbox-hard"
+   theme="base16-rebecca"
 
    wal --theme $theme &>/dev/null
-
 }
 
 on() {
@@ -19,7 +18,7 @@ on() {
    source /home/ringdal/.cache/wal/colors.sh
 
    ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &
-   #xsetroot -solid "$background"
+   xsetroot -solid "$background"
 
    pkill dunst && dunst &>/dev/null & disown
 

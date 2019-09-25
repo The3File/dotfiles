@@ -1,4 +1,5 @@
 call plug#begin()
+"Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'lervag/vimtex'
@@ -8,6 +9,8 @@ Plug 'gioele/vim-autoswap'
 Plug 'sheerun/vim-polyglot'
 "Plug 'kovetskiy/sxhkd-vim'
 call plug#end()
+
+"let g:Hexokinase_highlighters = ['foregroundfull']
 
 syntax enable
 
@@ -52,7 +55,7 @@ autocmd FileType tex nnoremap ;i <ESC>\item<Space>
 autocmd FileType tex nnoremap ;b i\begin{}<Enter>\end{}<ESC>kf}i
 autocmd FileType tex nnoremap ;e i\begin{enumerate}<Enter>\item <++><ENTER>\end{enumerate}<ESC>2k0f=a
 autocmd FileType tex nnoremap ;a i\begin{enumerate}[label=\textbf{\alph*)}]<Enter>\end{enumerate}<ESC>O\item 
-autocmd FileType tex nnoremap ;t i\begin{table}[h]<Enter>\centering<Enter>\begin{tabular}{}<Enter>\end{tabular}<Enter>\end{table}<ESC>
+autocmd FileType tex nnoremap ;t i\begin{table}[h]<Enter>\centering<Enter>\setlength{\tabcolsep}{1.0em}<CR>\renewcommand{\arraystretch}{1.5}<CR>\begin{tabular}{}<Enter>\end{tabular}<Enter>\end{table}<ESC>
 autocmd FileType tex inoremap ;r \ref{}<++><ESC>T{i
 
 autocmd FileType tex inoremap ;m \[\]<ESC>hi
@@ -61,7 +64,7 @@ autocmd FileType tex inoremap __ _{}<++><ESC>F}i
 autocmd FileType tex inoremap ;e \begin{equation}<ESC>o\end{equation}<ESC>O\label{eq:<++>}<ESC>o
 autocmd FileType tex inoremap ;E \begin{align}<ESC>o\end{align}<ESC>O\label{eq:<++>}<ESC>o
 autocmd FileType tex inoremap ;a \begin{align*}<ESC>o\end{align*}<ESC>O
-autocmd FileType tex inoremap ;t \times
+autocmd FileType tex inoremap ;t \cdot
 autocmd FileType tex inoremap ;d \div
 autocmd FileType tex inoremap ;f \frac{}{<++>}<++><ESC>Fcf}i
 autocmd FileType tex inoremap ;s \sqrt{}<++><ESC>Ftf}i
@@ -86,7 +89,8 @@ autocmd FileType html inoremap ;html <!DOCTYPE html><ENTER><html><ENTER><head><E
 autocmd FileType html inoremap ;ln <link rel="stylesheet" type="text/css" href=""><ESC>hi
 autocmd FileType html inoremap ;id <div id=""><++></div><ESC>F"i
 autocmd FileType html inoremap ;cl <div class=""><++></div><ESC>F"i
-autocmd FileType html inoremap ;b <b></b><Space><++><Esc>FbT>i
+autocmd FileType html inoremap ;bo <b></b><Space><++><Esc>FbT>i
+autocmd FileType html inoremap ;br <br>
 autocmd FileType html inoremap ;it <em></em><Space><++><Esc>FeT>i
 autocmd FileType html inoremap ;1 <h1></h1><Enter><Enter><++><Esc>2kf<i
 autocmd FileType html inoremap ;2 <h2></h2><Enter><Enter><++><Esc>2kf<i

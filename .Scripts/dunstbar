@@ -1,87 +1,54 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 net(){
    st="$(nmcli | sed -n "1s/.*: //p")"
-   inf="$(networkctl status | grep Address |
-      sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}')"
-
-   case $st in
-      no-carrier) n="No connection" ;;
-      'tilsluttet'*)
-	 [[ $inf = "wlp3s0" ]] && {
-	    sn=$(iwlist wlp3s0 scan | sed -n '5P' |
-	       awk -F'=' '{print $3}' | awk -F' ' '{print $1}')
-	    ((sn<=-20)) && i=" ****"
-	    ((sn<=-45)) && i=" ***"
-	    ((sn<=-60)) && i=" **"
-	    ((sn<=-75)) && i=" *"
-	 }
-	 ;;
-      *) 
-   esac
-   net="$st$i"
+   inf="$(networkctl status | grep Address | sed -n 's/Address://g;s/  *//g; s/on/ /g; P; Q' | awk '{print $2}')"
+   [[ $st = "tilsluttet"* && $inf = "wlp3s0" ]] && {
+      sn=$(iwlist wlp3s0 scan | sed -n '5P' | awk -F'=' '{print $3}' | awk -F' ' '{print $1}')
+      ((sn<=-20)) && i=" ****"; ((sn<=-45)) && i=" ***"; ((sn<=-60)) && i=" **"; ((sn<=-75)) && i=" *";
+   }; net="$st$i"
 }
 
 bat(){
    p="$(acpi -b | sed 's/,//g;s/://g;s/%//g' | awk '{print $4}')"
    s="$(acpi -b | sed 's/,//g;s/://g;s/%//g' | awk '{print $3}')"
-   case $s in
-      Charging) l="" ;;
-      Unknown) l="" ;;
-      Full) l="" ;;
-      Discharging)
-	 ((p>80)) && l=""; ((p<80)) && l=""
-	 ((p<65)) && l=""; ((p<40)) && l=""
-	 ((p<20)) && l="" ;;
+   case $s in Charging) l="" ;; Unknown) l="" ;; Full) l="" ;;
+      Discharging) ((p>80)) && l=""; ((p<80)) && l=""; ((p<65)) && l=""; ((p<40)) && l=""; ((p<20)) && l="" ;;
       *) l="?"
-   esac
-   bat="$l $p%"
+   esac; bat="$l $p%"
 }
 
 barnot(){
    case $1 in
-      -c)
-	 temp="$(acpi -t | sed 's/Thermal 0: ok,//g' | awk -F . '{print $1}')°C"
+      -c) temp="$(acpi -t | sed 's/Thermal 0: ok,//g' | awk -F . '{print $1}')°C"
 	 cpu=" $(mpstat | grep all | awk '{print $3}' | awk -F"," '{print $1}')%"
-	 out=("$cpu | $temp")
-	 ;;
-      -d)
-	 d=$(date +%d" "%B);dy=$(date +%A);dt=$(date +%d/%m/%y)
-	 out=("$dy, $d" "<b>($dt)</b>")
-	 ;;
-      -b)
-	 out=( $(light | awk -F"." '{print $1}')%)
-	 ;;
-      -v)
-	 volume="$(pamixer --get-volume)%"
-	 [[ $(pamixer --get-mute) = "true" ]] && out=(" ($volume)") || out=(" $volume ")
-	 ;;
+	 out=("$cpu | $temp") ;;
+      -d) d=$(date +%d" "%B);dy=$(date +%A);dt=$(date +%d/%m/%y)
+	 out=("$dy, $d" "<b>($dt)</b>") ;;
+      -b) out=( $(light | awk -F"." '{print $1}')%) ;;
+      -v) volume="$(pamixer --get-volume)%"
+	 [[ $(pamixer --get-mute) = "true" ]] && out=(" ($volume)") || out=(" $volume ") ;;
       *) bat; net; out=("$bat | $net | " "<b>$(date '+%R')</b>") || exit 1
    esac
 
    dunstify "${out[@]}" -t "$t" -r 90211
 }
 
-loop(){ for ((;;)){ barnot;sleep 10;}; }
-
 bar(){
-   bspc subscribe node_add node_remove desktop_focus | while read -r line; do
+   while read -r line; do
       w=$(bspc query -N -n .local.\!floating | wc -l)
-
       [[ $line != *remove* ]] && kill -9 "$loop" && dunstify -C 90211
-
       ((w<1)) && sleep 1.2 && loop & loop="$!"
-
       [[ $line = *focus* ]] && {
 	 ws=$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3+1}')
-	 dunstify -C 90210; sleep .05; dunstify "" "<b>$ws </b>" -t 1000 -r 90211
-      }
-   done
-}
+	       dunstify -C 90210; sleep .05; dunstify "" "<b>$ws </b>" -t 1250 -r 90211
+	    }
+      done < "$BARFIFO"
+   }
 
-main(){
-   w=$(bspc query -N -n .local.\!floating | wc -l)
-   [[ $1 = "--boot" ]] && { t=11000; bar; } || { t=5000; barnot "$1"; }
-}
+loop(){ for ((;;)){ barnot;sleep 10;}; }
 
-main "$@"
+main(){ w=$(bspc query -N -n .local.\!floating | wc -l)
+   [[ $1 = "--boot" ]] && { t=11000; bar; } || { t=5000; barnot "$1"; }; }
+
+   main "$@"

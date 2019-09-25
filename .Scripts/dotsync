@@ -3,8 +3,6 @@
 sync() { for i in {1..2}; do get_dots $i; done }
 
 get_dots() {
-   op=( -ai --delete ${o[@]} --exclude='.git/' --exclude='plugged/')
-
    case $1 in
 
       1) d="$HOME/.config"; ot="$HOME/.dotfiles/.config"
@@ -17,26 +15,25 @@ get_dots() {
 
    esac
 
-   for f in $fs; do [[ -f "$d/$f" || -d "$d/$f" ]] && rsync ${op[@]} "$d/$f" $ot; done
+   op=( -ai --delete "${o[@]}" "--exclude='.git/'" "--exclude='plugged/'")
+
+   for f in $fs; do [[ -f "$d/$f" || -d "$d/$f" ]] && rsync "${op[@]}" "$d/$f" "$ot"; done
 }
 
 prompt() {
    printf '\e[33m%s\e[0m' "Push? [y/N]"; read -rsn1; printf '\n'
-
    case $REPLY in y) o=("-q"); sync; push ;; *) exit 0; esac
-
 }
 
 push() {
-   cd $HOME/.dotfiles/
-   git add . 
+   cd "$HOME/.dotfiles/" || exit
 
    printf '\e[33m%s\e[0m' "Commit message (empty='dotsync'): "
-   read a 
+   read -r a; [[ -z $a ]] && a="update"
 
-   [[ -z $a ]] && a="update"
-
-   git commit -a -m "$a" && git push -u origin master
+   git add . 
+   git commit -a -m "$a" &&
+      git push -u origin master
 }
 
 main() { o=("-n"); sync; prompt; }

@@ -43,14 +43,15 @@ function! vimtex#debug#stacktrace(...) abort " {{{1
     if l:name =~# '\v(\<SNR\>|^)\d+_'
       let l:sid = matchstr(l:name, '\v(\<SNR\>|^)\zs\d+\ze_')
       let l:name  = substitute(l:name, '\v(\<SNR\>|^)\d+_', 's:', '')
-      let l:filename = map(
-            \ vimtex#util#command('scriptnames'),
-            \ 'split(v:val, "\\v:=\\s+")[1]')[l:sid-1]
+      let l:filename = substitute(
+            \ vimtex#util#command('scriptnames')[l:sid-1],
+            \ '^\s*\d\+:\s*', '', '')
     else
-      let l:name = l:name
+      let l:func_name = l:name =~# '^\d\+$' ? '{' . l:name . '}' : l:name
       let l:filename = matchstr(
-            \ vimtex#util#command('verbose function ' . l:name)[1],
-            \ '.\{-}\s\+\zs\f\+$')
+            \ vimtex#util#command('verbose function ' . l:func_name)[1],
+            \ v:lang[0:1] ==# 'en'
+            \   ? 'Last set from \zs.*\.vim' : '\f\+\.vim')
     endif
 
     let l:filename = fnamemodify(l:filename, ':p')
@@ -59,18 +60,43 @@ function! vimtex#debug#stacktrace(...) abort " {{{1
         let l:files[l:filename] = reverse(readfile(l:filename))
       endif
 
-      let l:lnum = l:offset + len(l:files[l:filename])
-            \ - match(l:files[l:filename], '^\s*fu\%[nction]!\=\s\+' . l:name)
-      let l:text = len(l:qflist) == 0 ? l:exception : '#' . len(l:qflist)
-
-      call add(l:qflist, {
-            \ 'filename': l:filename,
-            \ 'function': l:name,
-            \ 'lnum': l:lnum,
-            \ 'text': l:text,
-            \})
+      if l:name =~# '^\d\+$'
+        let l:lnum = 0
+        let l:output = vimtex#util#command('function {' . l:name . '}')
+        let l:text = substitute(
+              \ matchstr(l:output, '^\s*' . l:offset),
+              \ '^\d\+\s*', '', '')
+      else
+        let l:lnum = l:offset + len(l:files[l:filename])
+              \ - match(l:files[l:filename], '^\s*fu\%[nction]!\=\s\+' . l:name .'(')
+        let l:lnum_rev = len(l:files[l:filename]) - l:lnum
+        let l:text = substitute(l:files[l:filename][l:lnum_rev], '^\s*', '', '')
+      endif
+    else
+      let l:filename = ''
+      let l:lnum = 0
+      let l:text = ''
     endif
+
+    call add(l:qflist, {
+          \ 'filename': l:filename,
+          \ 'function': l:name,
+          \ 'lnum': l:lnum,
+          \ 'text': len(l:qflist) == 0 ? l:exception : l:text,
+          \ 'nr': len(l:qflist),
+          \})
   endfor
+
+  " Fill in empty filenames
+  let l:prev_filename = '_'
+  call reverse(l:qflist)
+  for l:entry in l:qflist
+    if empty(l:entry.filename)
+      let l:entry.filename = l:prev_filename
+    endif
+    let l:prev_filename = l:entry.filename
+  endfor
+  call reverse(l:qflist)
 
   if a:0 > 0
     call setqflist(l:qflist)

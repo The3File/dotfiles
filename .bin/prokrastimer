@@ -9,9 +9,9 @@ prompt() {
    printf '\e[1;37m%s\e[m' "breaks in min. (5): "; read -r break
    printf '\e[1;37m%s\e[m' "number of sessions (2): "; read -r s
 
-   [[ -n $work ]]	&& 	((work*=60)) 	|| ((work=1500))
-   [[ -n $break ]] 	&& 	((break*=60)) 	|| ((break=300))
-   [[ -n $s ]] 		&& 	((s*=2)) 	|| ((s=4))
+   [[ -n $work ]]  &&  ((work*=60)) ||  ((work=1500))
+   [[ -n $break ]] && ((break*=60)) || ((break=300))
+   [[ -n $s ]] 	   &&     ((s*=2))  ||     ((s=4))
 }
 
 timer() {
@@ -26,7 +26,7 @@ timer() {
 
    [[ $state == "work" ]] && ((count++))
    play ~/.bin/.prokrastimer/gong.wav 2>/dev/null &
-   notify-send "$state completed" -a Prokrastimer
+   dunstify "$state completed" -t 5000
 }
 
 bar() {
@@ -44,8 +44,7 @@ _done() {
 }
 
 complet() {
-   clean
-   printf '\e[10;0H\e[1;33m%s%2dh%2dm\e[?25h\n' "combined time worked:"\
+   clean; printf '\e[10;0H\e[1;33m%s%2dh%2dm\e[?25h\n' "combined time worked:"\
       "$((count*work/60/60))" "$((count*work/60%60))"
 }
 

@@ -1,21 +1,21 @@
-@import "files/colors.css";
+@import "../../.cache/wal/colors.scss";
+
 *,div,pre,textarea,body,input,td,tr,p {
-    background-color: #000 !important;
-    /*background-image: none !important;*/
-    color: #bbb !important;
+    background-color: $background !important;
+    color: $color4 !important;
 }
-h1,h2,h3,h4,h5,h6 {
-    background-color: #000 !important;
-    color: #b8ddea !important;
+header,h1,h2,h3,h4,h5,h6 {
+    background-color: $background !important;
+    color: $color4 !important;
 }
 a {
-    color: #7e7 !important;
+    color: $color4 !important;
 }
 a:hover,a:focus {
-    color: #77e !important;
+    color: $color4 !important;
 }
 a:visited {
-    color: #e77 !important;
+    color: $color4 !important;
 }
 img {
     opacity: 1;

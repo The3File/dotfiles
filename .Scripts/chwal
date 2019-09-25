@@ -14,8 +14,6 @@ sel(){
 
    cp $next "$HOME/.config/wall.png"
 
-   ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &&
-      pkill dunst && dunst &>/dev/null & disown
    $CONFIG
 }
 

@@ -34,14 +34,26 @@ function! vimtex#init_options() abort " {{{1
 
   call s:init_option('vimtex_complete_enabled', 1)
   call s:init_option('vimtex_complete_close_braces', 0)
-  call s:init_option('vimtex_complete_recursive_bib', 0)
   call s:init_option('vimtex_complete_ignore_case', &ignorecase)
   call s:init_option('vimtex_complete_smart_case', &smartcase)
+  call s:init_option('vimtex_complete_bib', {
+        \ 'simple': 0,
+        \ 'recursive': 0,
+        \ 'menu_fmt': '[@type] @author_short (@year), "@title"',
+        \ 'abbr_fmt': '',
+        \ 'custom_patterns': [],
+        \})
+  call s:init_option('vimtex_complete_ref', {
+        \ 'custom_patterns': [],
+        \})
+
+  call s:init_option('vimtex_include_search_enabled', 1)
 
   call s:init_option('vimtex_doc_enabled', 1)
   call s:init_option('vimtex_doc_handlers', [])
 
   call s:init_option('vimtex_echo_ignore_wait', 0)
+  call s:init_option('vimtex_echo_verbose_input', 1)
 
   call s:init_option('vimtex_env_change_autofill', 0)
 
@@ -63,6 +75,7 @@ function! vimtex#init_options() abort " {{{1
         \ 'env_options' : {},
         \ 'markers' : {},
         \ 'sections' : {
+        \   'parse_levels' : 0,
         \   'sections' : [
         \     'part',
         \     'chapter',
@@ -82,6 +95,7 @@ function! vimtex#init_options() abort " {{{1
         \     'hypersetup',
         \     'tikzset',
         \     'pgfplotstableread',
+        \     'lstset',
         \   ],
         \ },
         \ 'cmd_single_opt' : {
@@ -120,6 +134,7 @@ function! vimtex#init_options() abort " {{{1
         \ { 'lhs' : '*',  'rhs' : '\times' },
         \ { 'lhs' : '<',  'rhs' : '\langle' },
         \ { 'lhs' : '>',  'rhs' : '\rangle' },
+        \ { 'lhs' : 'H',  'rhs' : '\hbar' },
         \ { 'lhs' : '[',  'rhs' : '\subseteq' },
         \ { 'lhs' : ']',  'rhs' : '\supseteq' },
         \ { 'lhs' : '(',  'rhs' : '\subset' },
@@ -192,6 +207,24 @@ function! vimtex#init_options() abort " {{{1
   call s:init_option('vimtex_quickfix_open_on_warning', '1')
   call s:init_option('vimtex_quickfix_blgparser', {})
   call s:init_option('vimtex_quickfix_autoclose_after_keystrokes', '0')
+
+  call s:init_option('vimtex_syntax_enabled', 1)
+  call s:init_option('vimtex_syntax_nested', {
+        \ 'aliases' : {
+        \   'C' : 'c',
+        \   'csharp' : 'cs',
+        \ },
+        \ 'ignored' : {
+        \   'cs' : [
+        \     'csBraces',
+        \   ],
+        \   'python' : [
+        \     'pythonEscape',
+        \     'pythonBEscape',
+        \     'pythonBytesEscape',
+        \   ]
+        \ }
+        \})
 
   call s:init_option('vimtex_texcount_custom_arg', '')
 
@@ -292,8 +325,8 @@ function! s:init_highlights() abort " {{{1
         \ ['VimtexImapsWrapper', 'Type'],
         \ ['VimtexInfo', 'Question'],
         \ ['VimtexInfoTitle', 'PreProc'],
-        \ ['VimtexInfoKey', 'Statement'],
-        \ ['VimtexInfoValue', 'ModeMsg'],
+        \ ['VimtexInfoKey', 'PreProc'],
+        \ ['VimtexInfoValue', 'Statement'],
         \ ['VimtexInfoOther', 'Normal'],
         \ ['VimtexMsg', 'ModeMsg'],
         \ ['VimtexSuccess', 'Statement'],
@@ -356,7 +389,7 @@ function! s:init_buffer() abort " {{{1
         \ ]
     execute 'set suffixes+=' . l:suf
   endfor
-  setlocal suffixesadd=.tex,.sty,.cls
+  setlocal suffixesadd=.sty,.tex,.cls
   setlocal comments=sO:%\ -,mO:%\ \ ,eO:%%,:%
   setlocal commentstring=%%s
   setlocal iskeyword+=:

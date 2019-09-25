@@ -31,33 +31,37 @@ function! s:qf.init(state) abort dict "{{{1
     endif
   endif
 
+  call self.set_errorformat()
+endfunction
+
+function! s:qf.set_errorformat() abort dict "{{{1
   " Each new item starts with two asterics followed by the file, potentially
   " a line number and sometimes even the message itself is on the same line.
   " Please note that the trailing whitspaces in the error formats are
   " intentional as pplatex produces these.
 
   " Start of new items with file and line number, message on next line(s).
-  setlocal errorformat=%E**\ Error\ \ \ in\ %f\\,\ Line\ %l:\ 
-  setlocal errorformat+=%W**\ Warning\ in\ %f\\,\ Line\ %l:\ 
-  setlocal errorformat+=%I**\ BadBox\ \ in\ %f\\,\ Line\ %l:\ 
+  setlocal errorformat=%E**\ Error\ \ \ in\ %f\\,\ Line\ %l:%m
+  setlocal errorformat+=%W**\ Warning\ in\ %f\\,\ Line\ %l:%m
+  setlocal errorformat+=%I**\ BadBox\ \ in\ %f\\,\ Line\ %l:%m
 
   " Start of items with with file, line and message on the same line. There are
   " no BadBoxes reported this way.
-  setlocal errorformat+=%E**\ Error\ \ \ in\ %f\\,\ Line\ %l:\ %m
-  setlocal errorformat+=%W**\ Warning\ in\ %f\\,\ Line\ %l:\ %m
+  setlocal errorformat+=%E**\ Error\ \ \ in\ %f\\,\ Line\ %l:%m
+  setlocal errorformat+=%W**\ Warning\ in\ %f\\,\ Line\ %l:%m
 
   " Start of new items with only a file.
-  setlocal errorformat+=%E**\ Error\ \ \ in\ %f:\ 
-  setlocal errorformat+=%W**\ Warning\ in\ %f:\ 
-  setlocal errorformat+=%I**\ BadBox\ \ in\ %f:\ 
+  setlocal errorformat+=%E**\ Error\ \ \ in\ %f:%m
+  setlocal errorformat+=%W**\ Warning\ in\ %f:%m
+  setlocal errorformat+=%I**\ BadBox\ \ in\ %f:%m
 
   " Start of items with with file and message on the same line. There are
   " no BadBoxes reported this way.
-  setlocal errorformat+=%E**\ Error\ in\ %f:\ %m
-  setlocal errorformat+=%W**\ Warning\ in\ %f:\ %m
+  setlocal errorformat+=%E**\ Error\ in\ %f:%m
+  setlocal errorformat+=%W**\ Warning\ in\ %f:%m
 
   " Some errors are difficult even for pplatex
-  setlocal errorformat+=%E**\ Error\ \ :\ 
+  setlocal errorformat+=%E**\ Error\ \ :%m
 
   " Anything that starts with three spaces is part of the message from a
   " previously started multiline error item.
@@ -72,6 +76,7 @@ function! s:qf.init(state) abort dict "{{{1
   setlocal errorformat+=%-G
 endfunction
 
+" }}}1
 function! s:qf.setqflist(tex, log, jump) abort dict " {{{1
   if empty(a:log) || !filereadable(a:log)
     call setqflist([])

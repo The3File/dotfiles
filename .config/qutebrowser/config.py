@@ -6,36 +6,63 @@
 c.url.start_pages = 'file:///home/ringdal/Projekter/startskærm/index.html'
 c.url.default_page = 'file:///home/ringdal/Projekter/startskærm/index.html'
 
-# Uncomment this to still load settings configured via autoconfig.yml
-# config.load_autoconfig()
-#
-c.colors.statusbar.url.fg = '#070909'
-c.colors.statusbar.url.error.fg = '#070909'
-c.colors.statusbar.url.hover.fg = '#070909'
-c.colors.statusbar.url.warn.fg = '#070909'
-c.colors.statusbar.url.success.http.fg = '#070909'
-c.colors.statusbar.url.success.https.fg = '#070909'
+c.colors.completion.fg = '#998471'
+c.colors.completion.fg = '#998471'
+c.colors.completion.odd.bg = '#0C1417'
+c.colors.completion.even.bg = '#0C1417'
+c.colors.completion.category.fg = '#0C1417'
+c.colors.completion.category.bg = '#998471'
+c.colors.completion.category.bg = '#998471'
+c.colors.completion.item.selected.fg = '#0C1417'
+c.colors.completion.item.selected.bg = '#998471'
+c.colors.completion.item.selected.bg = '#998471'
+c.colors.completion.item.selected.border.top = '#998471'
+c.colors.completion.item.selected.border.top = '#998471'
+c.colors.completion.item.selected.border.bottom = '#998471'
+c.colors.completion.item.selected.border.bottom = '#998471'
+c.colors.completion.item.selected.match.fg = '#E16142'
+c.colors.completion.match.fg = '#E16142'
+c.colors.completion.scrollbar.fg = '#998471'
+c.colors.completion.scrollbar.fg = '#998471'
+c.colors.completion.scrollbar.bg = '#0C1417'
 
-c.colors.statusbar.normal.bg = 'black'
-c.colors.statusbar.normal.fg = 'white'
-c.colors.tabs.bar.bg = 'black'
-c.colors.tabs.odd.bg = 'black'
-c.colors.tabs.even.bg = 'black'
-c.colors.tabs.selected.odd.bg = '#766e72'
-c.colors.tabs.selected.odd.bg = '#766e72'
-c.colors.tabs.selected.even.bg = '#766e72'
-c.colors.tabs.selected.even.bg = '#766e72'
-c.colors.tabs.selected.odd.fg = '#070909'
-c.colors.tabs.selected.even.fg = '#070909'
+c.colors.statusbar.url.fg = '#998471'
+c.colors.statusbar.url.fg = '#998471'
+c.colors.statusbar.url.error.fg = '#998471'
+c.colors.statusbar.url.error.fg = '#998471'
+c.colors.statusbar.url.hover.fg = '#998471'
+c.colors.statusbar.url.hover.fg = '#998471'
+c.colors.statusbar.url.warn.fg = '#998471'
+c.colors.statusbar.url.warn.fg = '#998471'
+c.colors.statusbar.url.success.http.fg = '#998471'
+c.colors.statusbar.url.success.http.fg = '#998471'
+c.colors.statusbar.url.success.https.fg = '#998471'
+c.colors.statusbar.url.success.https.fg = '#998471'
+c.colors.statusbar.normal.bg = '#0C1417'
+c.colors.statusbar.normal.fg = '#998471'
+c.colors.statusbar.normal.fg = '#998471'
 
-c.colors.tabs.indicator.start = '#766e72'
-c.colors.tabs.indicator.start = '#766e72'
-c.colors.tabs.indicator.stop = '#766e72'
-c.colors.tabs.indicator.stop = '#766e72'
-#c.colors.tabs.indicator.error = '#766e72'
-#c.colors.tabs.indicator.error = '#766e72'
-#c.colors.tabs.indicator.system = '#766e72'
-#c.colors.tabs.indicator.system = '#766e72'
+c.colors.tabs.bar.bg = '#0C1417'
+c.colors.tabs.odd.bg = '#0C1417'
+c.colors.tabs.odd.fg = '#998471'
+c.colors.tabs.odd.fg = '#998471'
+c.colors.tabs.even.bg = '#0C1417'
+c.colors.tabs.even.fg = '#998471'
+c.colors.tabs.even.fg = '#998471'
+c.colors.tabs.selected.odd.bg = '#998471'
+c.colors.tabs.selected.odd.bg = '#998471'
+c.colors.tabs.selected.even.bg = '#998471'
+c.colors.tabs.selected.even.bg = '#998471'
+c.colors.tabs.selected.odd.fg = '#0C1417'
+c.colors.tabs.selected.even.fg = '#0C1417'
+
+c.colors.tabs.selected.odd.fg = '#0C1417'
+c.colors.tabs.selected.even.fg = '#0C1417'
+
+c.colors.tabs.indicator.start = '#998471'
+c.colors.tabs.indicator.start = '#998471'
+c.colors.tabs.indicator.stop = '#998471'
+c.colors.tabs.indicator.stop = '#998471'
 
 # Aliases for commands. The keys of the given dictionary are the
 # aliases, while the values are the commands they map to.
@@ -70,7 +97,6 @@ config.set('content.javascript.enabled', True, 'qute://*/*')
 
 # List of user stylesheet filenames to use.
 # Type: List of File, or File
-#c.content.user_stylesheets = ['style.scss']
 
 # Duration (in milliseconds) to wait before removing finished downloads.
 # If set to -1, downloads are never removed.
@@ -167,10 +193,14 @@ c.fonts.web.size.default = 17
 # Type: Int
 c.fonts.web.size.default_fixed = 14
 
+c.colors.webpage.bg = '#0C1417'
+
+c.content.user_stylesheets = ['style.css']
+#
 c.messages.timeout = 5000
 # Bindings for normal mode
 config.bind(',p', 'spawn --userscript qute-pass')
-config.bind(',n', 'config-cycle content.user_stylesheets style.scss "" ')
+config.bind(',n', 'config-cycle content.user_stylesheets style.css "" ')
 config.bind('td', 'hint links spawn transmission-remote -a {hint-url}')
 config.bind(',hy', 'hint links spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {hint-url}"')
 config.bind(',y', 'spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {url}"')

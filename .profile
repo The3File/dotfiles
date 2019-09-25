@@ -6,7 +6,9 @@ export BROWSER="qutebrowser"
 
 export CONFIG="$HOME/.config/bspwm/bspwmrc"
 export PANELFIFO="/tmp/panel-fifo"
+
 export GAPFIFO="/tmp/gap-fifo"
+export BARFIFO="/tmp/bar-fifo"
 
 [[ -f ~/.bashrc ]] && source ~/.bashrc
 [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx &>/dev/null

@@ -6,30 +6,44 @@
 c.url.start_pages = 'file:///home/ringdal/Projekter/startskærm/index.html'
 c.url.default_page = 'file:///home/ringdal/Projekter/startskærm/index.html'
 
-# Uncomment this to still load settings configured via autoconfig.yml
-# config.load_autoconfig()
-#
-c.colors.statusbar.url.fg = '{color0}'
-c.colors.statusbar.url.error.fg = '{color0}'
-c.colors.statusbar.url.hover.fg = '{color0}'
-c.colors.statusbar.url.warn.fg = '{color0}'
-c.colors.statusbar.url.success.http.fg = '{color0}'
-c.colors.statusbar.url.success.https.fg = '{color0}'
+c.colors.completion.fg = '{color4}'
+c.colors.completion.odd.bg = '{color0}'
+c.colors.completion.even.bg = '{color0}'
+c.colors.completion.category.fg = '{color0}'
+c.colors.completion.category.bg = '{color4}'
+c.colors.completion.item.selected.fg = '{color0}'
+c.colors.completion.item.selected.bg = '{color4}'
+c.colors.completion.item.selected.border.top = '{color4}'
+c.colors.completion.item.selected.border.bottom = '{color4}'
+c.colors.completion.item.selected.match.fg = '{color2}'
+c.colors.completion.match.fg = '{color2}'
+c.colors.completion.scrollbar.fg = '{color4}'
+c.colors.completion.scrollbar.bg = '{color0}'
 
-c.colors.statusbar.normal.bg = 'black'
-c.colors.statusbar.normal.fg = 'white'
-c.colors.tabs.bar.bg = 'black'
-c.colors.tabs.odd.bg = 'black'
-c.colors.tabs.even.bg = 'black'
+c.colors.statusbar.url.fg = '{color4}'
+c.colors.statusbar.url.error.fg = '{color4}'
+c.colors.statusbar.url.hover.fg = '{color4}'
+c.colors.statusbar.url.warn.fg = '{color4}'
+c.colors.statusbar.url.success.http.fg = '{color4}'
+c.colors.statusbar.url.success.https.fg = '{color4}'
+c.colors.statusbar.normal.bg = '{color0}'
+c.colors.statusbar.normal.fg = '{color4}'
+
+c.colors.tabs.bar.bg = '{color0}'
+c.colors.tabs.odd.bg = '{color0}'
+c.colors.tabs.odd.fg = '{color4}'
+c.colors.tabs.even.bg = '{color0}'
+c.colors.tabs.even.fg = '{color4}'
 c.colors.tabs.selected.odd.bg = '{color4}'
 c.colors.tabs.selected.even.bg = '{color4}'
 c.colors.tabs.selected.odd.fg = '{color0}'
 c.colors.tabs.selected.even.fg = '{color0}'
 
+c.colors.tabs.selected.odd.fg = '{color0}'
+c.colors.tabs.selected.even.fg = '{color0}'
+
 c.colors.tabs.indicator.start = '{color4}'
 c.colors.tabs.indicator.stop = '{color4}'
-#c.colors.tabs.indicator.error = '{color4}'
-#c.colors.tabs.indicator.system = '{color4}'
 
 # Aliases for commands. The keys of the given dictionary are the
 # aliases, while the values are the commands they map to.
@@ -64,7 +78,6 @@ config.set('content.javascript.enabled', True, 'qute://*/*')
 
 # List of user stylesheet filenames to use.
 # Type: List of File, or File
-#c.content.user_stylesheets = ['style.scss']
 
 # Duration (in milliseconds) to wait before removing finished downloads.
 # If set to -1, downloads are never removed.
@@ -161,10 +174,14 @@ c.fonts.web.size.default = 17
 # Type: Int
 c.fonts.web.size.default_fixed = 14
 
+c.colors.webpage.bg = '{color0}'
+
+c.content.user_stylesheets = ['style.css']
+#
 c.messages.timeout = 5000
 # Bindings for normal mode
 config.bind(',p', 'spawn --userscript qute-pass')
-config.bind(',n', 'config-cycle content.user_stylesheets style.scss "" ')
+config.bind(',n', 'config-cycle content.user_stylesheets style.css "" ')
 config.bind('td', 'hint links spawn transmission-remote -a {hint-url}')
 config.bind(',hy', 'hint links spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {hint-url}"')
 config.bind(',y', 'spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {url}"')

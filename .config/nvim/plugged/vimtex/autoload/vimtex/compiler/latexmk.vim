@@ -41,6 +41,7 @@ let s:compiler = {
       \   '-synctex=1',
       \   '-interaction=nonstopmode',
       \ ],
+      \ 'hooks' : [],
       \ 'shell' : fnamemodify(&shell, ':t'),
       \}
 
@@ -72,7 +73,7 @@ function! s:compiler.init_build_dir_option() abort dict " {{{1
   let l:out_dir = s:parse_latexmkrc_option(self.root, 'out_dir', 0, '')[0]
 
   if !empty(l:out_dir)
-    if !empty(self.build_dir)
+    if !empty(self.build_dir) && (self.build_dir !=# l:out_dir)
       call vimtex#log#warning(
             \ 'Setting out_dir from latexmkrc overrides build_dir!',
             \ 'Changed build_dir from: ' . self.build_dir,
@@ -123,10 +124,10 @@ endfunction
 function! s:compiler.init_check_requirements() abort dict " {{{1
   " Check option validity
   if self.callback
-    if !(has('clientserver') || has('nvim'))
+    if !(has('clientserver') || has('nvim') || has('job'))
       let self.callback = 0
       call vimtex#log#warning(
-            \ 'Can''t use callbacks without +clientserver',
+            \ 'Can''t use callbacks without +job, +nvim, or +clientserver',
             \ 'Callback option has been disabled.')
     endif
   endif
@@ -167,7 +168,7 @@ function! s:compiler.build_cmd() abort dict " {{{1
   let l:cmd .= ' ' . self.get_engine()
 
   if !empty(self.build_dir)
-    let l:cmd .= ' -outdir=' . self.build_dir
+    let l:cmd .= ' -outdir=' . fnameescape(self.build_dir)
   endif
 
   if self.continuous
@@ -184,7 +185,15 @@ function! s:compiler.build_cmd() abort dict " {{{1
     endif
 
     if self.callback
-      if empty(v:servername)
+      if has('job') || has('nvim')
+        for [l:opt, l:val] in items({
+              \ 'success_cmd' : 'vimtex_compiler_callback_success',
+              \ 'failure_cmd' : 'vimtex_compiler_callback_failure',
+              \})
+          let l:func = 'echo ' . l:val
+          let l:cmd .= vimtex#compiler#latexmk#wrap_option(l:opt, l:func)
+        endfor
+      elseif empty(v:servername)
         call vimtex#log#warning('Can''t use callbacks with empty v:servername')
       else
         " Some notes:
@@ -296,7 +305,7 @@ function! s:compiler.clean(full) abort dict " {{{1
         \   : 'cd ' . vimtex#util#shellescape(self.root) . '; ')
         \ . self.executable . ' ' . (a:full ? '-C ' : '-c ')
   if !empty(self.build_dir)
-    let l:cmd .= printf(' -outdir=%s ', self.build_dir)
+    let l:cmd .= printf(' -outdir=%s ', fnameescape(self.build_dir))
   endif
   let l:cmd .= vimtex#util#shellescape(self.target)
   call vimtex#process#run(l:cmd)
@@ -325,7 +334,9 @@ function! s:compiler.start(...) abort dict " {{{1
     call map(l:dirs, 'fnamemodify(v:val, '':h'')')
     call map(l:dirs, 'strpart(v:val, strlen(self.root) + 1)')
     call vimtex#util#uniq(sort(filter(l:dirs, "v:val !=# ''")))
-    call map(l:dirs, "self.root . '/' . self.build_dir . '/' . v:val")
+    call map(l:dirs,
+          \ (vimtex#paths#is_abs(self.build_dir) ? '' : "self.root . '/' . ")
+          \ . "self.build_dir . '/' . v:val")
     call filter(l:dirs, '!isdirectory(v:val)')
 
     " Create the non-existing directories
@@ -450,27 +461,28 @@ function! s:compiler_jobs.exec() abort dict " {{{1
   let l:cmd = has('win32')
         \ ? 'cmd /s /c "' . self.cmd . '"'
         \ : ['sh', '-c', self.cmd]
+
   let l:options = {
         \ 'out_io' : 'file',
         \ 'err_io' : 'file',
         \ 'out_name' : self.output,
         \ 'err_name' : self.output,
         \}
-
-  if !self.continuous
+  if self.continuous
+    let l:options.out_io = 'pipe'
+    let l:options.err_io = 'pipe'
+    let l:options.out_cb = function('s:callback_continuous_output')
+    let l:options.err_cb = function('s:callback_continuous_output')
+    call writefile([], self.output, 'a')
+  else
     let s:cb_target = self.target_path !=# b:vimtex.tex
           \ ? self.target_path : ''
     let l:options.exit_cb = function('s:callback')
   endif
 
-  if !empty(self.root)
-    let l:save_pwd = getcwd()
-    execute 'lcd' fnameescape(self.root)
-  endif
+  call vimtex#paths#pushd(self.root)
   let self.job = job_start(l:cmd, l:options)
-  if !empty(self.root)
-    execute 'lcd' fnameescape(l:save_pwd)
-  endif
+  call vimtex#paths#popd()
 endfunction
 
 " }}}1
@@ -500,6 +512,26 @@ endfunction
 " }}}1
 function! s:callback(ch, msg) abort " {{{1
   call vimtex#compiler#callback(!vimtex#qf#inquire(s:cb_target))
+endfunction
+
+" }}}1
+function! s:callback_continuous_output(channel, msg) abort " {{{1
+  if exists('b:vimtex') && filewritable(b:vimtex.compiler.output)
+    call writefile([a:msg], b:vimtex.compiler.output, 'a')
+  endif
+
+  if a:msg ==# 'vimtex_compiler_callback_success'
+    call vimtex#compiler#callback(1)
+  elseif a:msg ==# 'vimtex_compiler_callback_failure'
+    call vimtex#compiler#callback(0)
+  endif
+
+  try
+    for l:Hook in get(get(get(b:, 'vimtex', {}), 'compiler', {}), 'hooks', [])
+      call l:Hook(a:msg)
+    endfor
+  catch /E716/
+  endtry
 endfunction
 
 " }}}1
@@ -565,9 +597,25 @@ endfunction
 
 " }}}1
 function! s:callback_nvim_output(id, data, event) abort dict " {{{1
-  if !empty(a:data) && filewritable(self.output)
-    call writefile(filter(a:data, '!empty(v:val)'), self.output, 'a')
+  " Filter out unwanted newlines
+  let l:data = split(substitute(join(a:data, 'QQ'), '^QQ\|QQ$', '', ''), 'QQ')
+
+  if !empty(l:data) && filewritable(self.output)
+    call writefile(l:data, self.output, 'a')
   endif
+
+  if match(a:data, 'vimtex_compiler_callback_success') != -1
+    call vimtex#compiler#callback(!vimtex#qf#inquire(self.target))
+  elseif match(a:data, 'vimtex_compiler_callback_failure') != -1
+    call vimtex#compiler#callback(0)
+  endif
+
+  try
+    for l:Hook in get(get(get(b:, 'vimtex', {}), 'compiler', {}), 'hooks', [])
+      call l:Hook(join(a:data, "\n"))
+    endfor
+  catch /E716/
+  endtry
 endfunction
 
 " }}}1

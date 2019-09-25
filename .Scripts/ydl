@@ -11,8 +11,6 @@ qute(){
       qutebrowser ":message-info \"youtube-dl interrupted\"" &>/dev/null
 }
 
-main(){
-   case $1 in qute) url=$2; qute ;; *) url=$1; dl ;; esac
-}
+main(){ case $1 in qute) url=$2; qute ;; *) url=$1; dl ;; esac; }
 
 main "$@"

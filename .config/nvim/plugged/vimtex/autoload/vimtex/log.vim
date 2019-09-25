@@ -76,17 +76,16 @@ function! s:logger.add(msg_arg, type) abort dict " {{{1
   if !self.verbose | return | endif
 
   " Ignore message
-  let l:msg = join(l:msg_list)
   for l:re in get(g:, 'vimtex_log_ignore', [])
-    if l:msg =~# l:re | return | endif
+    if join(l:msg_list) =~# l:re | return | endif
   endfor
 
   call vimtex#echo#formatted([
         \ [self.type_to_highlight[a:type], 'vimtex:'],
         \ ' ' . l:msg_list[0]
         \])
-  for l:msg in l:msg_list[1:]
-    call vimtex#echo#echo('        ' . l:msg)
+  for l:line in l:msg_list[1:]
+    call vimtex#echo#echo('        ' . l:line)
   endfor
 endfunction
 
@@ -95,7 +94,15 @@ function! s:logger.print_content() abort dict " {{{1
   for l:entry in self.entries
     call append('$', printf('%s: %s', l:entry.time, l:entry.type))
     for l:stack in l:entry.callstack
-      call append('$', printf('  from: %s', l:stack.function))
+      if l:stack.lnum > 0
+        call append('$', printf('  #%d %s:%d', l:stack.nr, l:stack.filename, l:stack.lnum))
+      else
+        call append('$', printf('  #%d %s', l:stack.nr, l:stack.filename))
+      endif
+      call append('$', printf('  In %s', l:stack.function))
+      if !empty(l:stack.text)
+        call append('$', printf('    %s', l:stack.text))
+      endif
     endfor
     for l:msg in l:entry.msg
       call append('$', printf('  %s', l:msg))
@@ -107,7 +114,13 @@ endfunction
 " }}}1
 function! s:logger.syntax() abort dict " {{{1
   syntax match VimtexInfoOther /.*/
-  syntax match VimtexInfoKey /^.*:/ nextgroup=VimtexInfoValue
+
+  syntax include @VIM syntax/vim.vim
+  syntax match VimtexInfoVimCode /^    .*/ transparent contains=@VIM
+
+  syntax match VimtexInfoKey /^\S*:/ nextgroup=VimtexInfoValue
+  syntax match VimtexInfoKey /^  #\d\+/ nextgroup=VimtexInfoValue
+  syntax match VimtexInfoKey /^  In/ nextgroup=VimtexInfoValue
   syntax match VimtexInfoValue /.*/ contained
 endfunction
 

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+show_colors(){
+   perl -e 'foreach $a(@ARGV){print "\e[48;2;".join(";",unpack("C*",pack("H*",$a)))."m \e[49m "}; print "\n"' "$@"
+}
+
+[[ $1 ]] && show_colors "$@" && exit
+
+IFS=$'\n' read -d '' -r -a a
+
+for i in "${a[@]}"; do
+   printf '%s ' "${i}"
+   show_colors "${i##\#}"
+done

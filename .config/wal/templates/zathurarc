@@ -1,7 +1,7 @@
 set recolor true
 set guioptions n
-set recolor-keephue
-set recolor-darkcolor "#ffffff"
-set recolor-lightcolor "#000000"
-#set recolor-darkcolor "{color7}"
-#set recolor-lightcolor "{color0}"
+set recolor-keephue false
+set recolor-reverse-video true
+set recolor-darkcolor "{color7}"
+set recolor-lightcolor "{color0}"
+set default-bg "{color0}"

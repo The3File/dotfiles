@@ -85,6 +85,13 @@ function! vimtex#parser#toc#parse(file) abort " {{{1
     endfor
   endfor
 
+  for l:matcher in s:matchers
+    try
+      call l:matcher.filter(l:entries)
+    catch /E716/
+    endtry
+  endfor
+
   return l:entries
 endfunction
 
@@ -139,6 +146,7 @@ let s:re_prefilter = '\v%(\\' . join([
       \ 'part',
       \ 'printbib',
       \ 'printindex',
+      \ 'paragraph',
       \ 'section',
       \ 'subfile',
       \ 'tableofcontents',
@@ -163,7 +171,7 @@ let s:matcher_include = {
       \}
 function! s:matcher_include.get_entry(context) abort dict " {{{1
   let l:file = matchstr(a:context.line, self.re)
-  if l:file[0] !=# '/'
+  if !vimtex#paths#is_abs(l:file[0])
     let l:file = b:vimtex.root . '/' . l:file
   endif
   let l:file = fnamemodify(l:file, ':~:.')
@@ -194,7 +202,7 @@ let s:matcher_include_graphics = {
       \}
 function! s:matcher_include_graphics.get_entry(context) abort dict " {{{1
   let l:file = matchstr(a:context.line, self.re)
-  if l:file[0] !=# '/'
+  if !vimtex#paths#is_abs(l:file)
     let l:file = vimtex#misc#get_graphicspath(l:file)
   endif
   let l:file = fnamemodify(l:file, ':~:.')
@@ -228,7 +236,7 @@ let s:matcher_include_vimtex = {
       \}
 function! s:matcher_include_vimtex.get_entry(context) abort dict " {{{1
   let l:file = matchstr(a:context.line, self.re)
-  if l:file[0] !=# '/'
+  if !vimtex#paths#is_abs(l:file)
     let l:file = b:vimtex.root . '/' . l:file
   endif
   let l:file = fnamemodify(l:file, ':~:.')
@@ -341,9 +349,9 @@ endfunction
 " }}}1
 
 let s:matcher_sections = {
-      \ 're' : '\v^\s*\\%(part|chapter|%(sub)*section)\*?\s*(\[|\{)',
+      \ 're' : '\v^\s*\\%(part|chapter|%(sub)*section|%(sub)?paragraph)\*?\s*(\[|\{)',
       \ 're_starred' : '\v^\s*\\%(part|chapter|%(sub)*section)\*',
-      \ 're_level' : '\v^\s*\\\zs%(part|chapter|%(sub)*section)',
+      \ 're_level' : '\v^\s*\\\zs%(part|chapter|%(sub)*section|%(sub)?paragraph)',
       \ 'in_preamble' : 0,
       \ 'in_content' : 1,
       \ 'priority' : 1,
@@ -353,6 +361,7 @@ function! s:matcher_sections.get_entry(context) abort dict " {{{1
   let level = matchstr(a:context.line, self.re_level)
   let type = matchlist(a:context.line, self.re)[1]
   let title = matchstr(a:context.line, self.re_title)
+  let number = ''
 
   let [l:end, l:count] = s:find_closing(0, title, 1, type)
   if l:count == 0
@@ -365,11 +374,14 @@ function! s:matcher_sections.get_entry(context) abort dict " {{{1
 
   if a:context.line !~# self.re_starred
     call a:context.level.increment(level)
+    if a:context.line !~# '\v^\s*\\%(sub)?paragraph'
+      let number = deepcopy(a:context.level)
+    endif
   endif
 
   return {
         \ 'title'  : title,
-        \ 'number' : a:context.line =~# self.re_starred ? '' : deepcopy(a:context.level),
+        \ 'number' : number,
         \ 'file'   : a:context.file,
         \ 'line'   : a:context.lnum,
         \ 'level'  : a:context.max_level - a:context.level.current,
@@ -431,11 +443,91 @@ let s:matcher_bibliography = {
       \        .  'printbib%(liography|heading)\s*(\{|\[)?'
       \        . '|begin\s*\{\s*thebibliography\s*\}'
       \        . '|bibliography\s*\{)',
+      \ 're_biblatex' : '\v^\s*\\printbib%(liography|heading)',
       \ 'in_preamble' : 0,
       \ 'in_content' : 1,
       \ 'priority' : 1,
-      \ 'get_entry' : function('vimtex#parser#toc#get_entry_general'),
       \}
+function! s:matcher_bibliography.get_entry(context) abort dict " {{{1
+  let l:entry = call('vimtex#parser#toc#get_entry_general', [a:context], self)
+
+  if a:context.line !~# self.re_biblatex
+    return l:entry
+  endif
+
+  let self.options = matchstr(a:context.line, self.re_biblatex . '\s*\[\zs.*')
+
+  let [l:end, l:count] = s:find_closing(
+        \ 0, self.options, !empty(self.options), '[')
+  if l:count == 0
+    let self.options = strpart(self.options, 0, l:end)
+    call self.parse_options(a:context, l:entry)
+  else
+    let self.count = l:count
+    let s:matcher_continue = deepcopy(self)
+  endif
+
+  return l:entry
+endfunction
+
+" }}}1
+function! s:matcher_bibliography.continue(context) abort dict " {{{1
+  let [l:end, l:count] = s:find_closing(0, a:context.line, self.count, '[')
+  if l:count == 0
+    let self.options .= strpart(a:context.line, 0, l:end)
+    unlet! s:matcher_continue
+    call self.parse_options(a:context, a:context.entry)
+  else
+    let self.options .= a:context.line
+    let self.count = l:count
+  endif
+endfunction
+
+" }}}1
+function! s:matcher_bibliography.parse_options(context, entry) abort dict " {{{1
+  " Parse the options
+  let l:opt_pairs = map(split(self.options, ','), 'split(v:val, ''='')')
+  let l:opts = {}
+  for [l:key, l:val] in l:opt_pairs
+    let l:key = substitute(l:key, '^\s*\|\s*$', '', 'g')
+    let l:val = substitute(l:val, '^\s*\|\s*$', '', 'g')
+    let l:val = substitute(l:val, '{\|}', '', 'g')
+    let l:opts[l:key] = l:val
+  endfor
+
+  " Check if entry should appear in the TOC
+  let l:heading = get(l:opts, 'heading')
+  let a:entry.added_to_toc = l:heading =~# 'intoc\|numbered'
+
+  " Check if entry should be numbered
+  if l:heading =~# '\v%(sub)?bibnumbered'
+    if a:context.level.chapter > 0
+      let l:levels = ['chapter', 'section']
+    else
+      let l:levels = ['section', 'subsection']
+    endif
+    call a:context.level.increment(l:levels[l:heading =~# '^sub'])
+    let a:entry.level = a:context.max_level - a:context.level.current
+    let a:entry.number = deepcopy(a:context.level)
+  endif
+
+  " Parse title
+  try
+    let a:entry.title = remove(l:opts, 'title')
+  catch /E716/
+    let a:entry.title = l:heading =~# '^sub' ? 'References' : 'Bibliography'
+  endtry
+endfunction
+
+" }}}1
+function! s:matcher_bibliography.filter(entries) abort dict " {{{1
+  if !empty(
+        \ filter(deepcopy(a:entries), 'get(v:val, "added_to_toc")'))
+    call filter(a:entries, 'get(v:val, "added_to_toc", 1)')
+  endif
+endfunction
+
+" }}}1
 
 let s:matcher_todos = {
       \ 're' : g:vimtex#re#not_bslash . '\%\s+('
@@ -516,9 +608,6 @@ function! s:matcher_labels.get_entry(context) abort dict " {{{1
         \ 'level'  : a:context.max_level - a:context.level.current,
         \ 'rank'   : a:context.lnum_total,
         \ 'type'   : 'label',
-        \ }
-  return {
-        \ 'title'  : printf('TODO: %s', matchstr(a:context.line, self.re)),
         \ }
 endfunction
 " }}}1
@@ -608,6 +697,8 @@ function! s:level.reset(part, level) abort dict " {{{1
   let self.subsection = 0
   let self.subsubsection = 0
   let self.subsubsubsection = 0
+  let self.paragraph = 0
+  let self.subparagraph = 0
   let self.current = a:level
   let self[a:part] = 1
 endfunction
@@ -627,20 +718,35 @@ function! s:level.increment(level) abort dict " {{{1
     let self.subsection = 0
     let self.subsubsection = 0
     let self.subsubsubsection = 0
+    let self.paragraph = 0
+    let self.subparagraph = 0
   elseif a:level ==# 'section'
     let self.section += 1
     let self.subsection = 0
     let self.subsubsection = 0
     let self.subsubsubsection = 0
+    let self.paragraph = 0
+    let self.subparagraph = 0
   elseif a:level ==# 'subsection'
     let self.subsection += 1
     let self.subsubsection = 0
     let self.subsubsubsection = 0
+    let self.paragraph = 0
+    let self.subparagraph = 0
   elseif a:level ==# 'subsubsection'
     let self.subsubsection += 1
     let self.subsubsubsection = 0
+    let self.paragraph = 0
+    let self.subparagraph = 0
   elseif a:level ==# 'subsubsubsection'
     let self.subsubsubsection += 1
+    let self.paragraph = 0
+    let self.subparagraph = 0
+  elseif a:level ==# 'paragraph'
+    let self.paragraph += 1
+    let self.subparagraph = 0
+  elseif a:level ==# 'subparagraph'
+    let self.subparagraph += 1
   endif
 endfunction
 
@@ -648,10 +754,12 @@ endfunction
 
 let s:sec_to_value = {
       \ '_' : 0,
-      \ 'subsubsubsection' : 1,
-      \ 'subsubsection' : 2,
-      \ 'subsection' : 3,
-      \ 'section' : 4,
-      \ 'chapter' : 5,
-      \ 'part' : 6,
+      \ 'subparagraph' : 1,
+      \ 'paragraph' : 2,
+      \ 'subsubsubsection' : 3,
+      \ 'subsubsection' : 4,
+      \ 'subsection' : 5,
+      \ 'section' : 6,
+      \ 'chapter' : 7,
+      \ 'part' : 8,
       \ }

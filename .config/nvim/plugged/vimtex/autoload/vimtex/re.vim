@@ -15,14 +15,19 @@ let g:vimtex#re#tex_input_latex = '\v\\%('
       \        '|') . ')\s*\{'
 let g:vimtex#re#tex_input_import =
       \ '\v\\%(sub)?%(import|%(input|include)from)\*?\{[^\}]*\}\{'
+let g:vimtex#re#tex_input_package =
+      \ '\v\\%(usepackage|RequirePackage)%(\s*\[[^]]*\])?\s*\{\zs[^}]*\ze\}'
 
 let g:vimtex#re#tex_input = '\v^\s*%(' . join([
       \   g:vimtex#re#tex_input_latex,
       \   g:vimtex#re#tex_input_import,
       \ ], '|') . ')'
 
+let g:vimtex#re#bib_input = '\v\\%(addbibresource|bibliography)>'
+
 let g:vimtex#re#tex_include = g:vimtex#re#tex_input_root
       \ . '|' . g:vimtex#re#tex_input . '\zs[^\}]*\ze\}?'
+      \ . '|' . g:vimtex#re#tex_input_package
 
 " {{{1 Completion regexes
 let g:vimtex#re#neocomplete =

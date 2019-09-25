@@ -13,6 +13,7 @@ endfunction
 
 let s:folder = {
       \ 'name' : 'sections',
+      \ 'parse_levels' : 0,
       \ 're' : {},
       \ 'folds' : [],
       \ 'sections' : [],
@@ -22,7 +23,9 @@ let s:folder = {
 function! s:folder.init() abort dict " {{{1
   let self.re.parts = '\v^\s*\\%(' . join(self.parts, '|') . ')'
   let self.re.sections = '\v^\s*\\%(' . join(self.sections, '|') . ')'
-  let self.re.fake_sections = '\v^\s*\% \vFake%('
+  let self.re.fake_sections = '\v^\s*\% Fake%('
+        \ . join(self.sections, '|') . ').*'
+  let self.re.any_sections = '\v^\s*%(\\|\% Fake)%('
         \ . join(self.sections, '|') . ').*'
 
   let self.re.start = self.re.parts
@@ -67,12 +70,50 @@ function! s:folder.text(line, level) abort dict " {{{1
     let l:title = matchstr(a:line, self.re.fake_sections)
   endif
 
-  return printf('%-5s %-73s', a:level, strpart(l:title, 0, 73))
+  let l:level = self.parse_level(v:foldstart, a:level)
+
+  return printf('%-5s %-s', l:level,
+        \ substitute(strpart(l:title, 0, winwidth(0) - 7), '\s\+$', '', ''))
+endfunction
+
+" }}}1
+function! s:folder.parse_level(lnum, level) abort dict " {{{1
+  if !self.parse_levels | return a:level | endif
+
+  if !has_key(self, 'toc')
+    let self.toc = vimtex#toc#new({
+        \ 'name' : 'Fold text ToC',
+        \ 'layers' : ['content'],
+        \ 'refresh_always' : 0,
+        \})
+    let self.toc_updated = 0
+    let self.file_updated = {}
+  endif
+
+  let l:file = expand('%')
+  let l:ftime = getftime(l:file)
+
+  if l:ftime > get(self.file_updated, l:file)
+        \ || localtime() > self.toc_updated + 300
+    call self.toc.get_entries(1)
+    let self.toc_entries = filter(
+          \ self.toc.get_visible_entries(),
+          \ '!empty(v:val.number)')
+    let self.file_updated[l:file] = l:ftime
+    let self.toc_updated = localtime()
+  endif
+
+  let l:entries = filter(deepcopy(self.toc_entries), 'v:val.line == a:lnum')
+  if len(l:entries) > 1
+    call filter(l:entries, "v:val.file ==# expand('%:p')")
+  endif
+
+  return empty(l:entries) ? '' : self.toc.print_number(l:entries[0].number)
 endfunction
 
 " }}}1
 function! s:folder.parse_title(string, type) abort dict " {{{1
-  let l:idx = 0
+  let l:idx = -1
   let l:length = strlen(a:string)
   let l:level = 1
   while l:level >= 1
@@ -85,7 +126,9 @@ function! s:folder.parse_title(string, type) abort dict " {{{1
       let l:level += 1
     endif
   endwhile
-  return strpart(a:string, 0, l:idx)
+  let l:parsed = strpart(a:string, 0, l:idx)
+  return empty(l:parsed)
+        \ ? '<untitled>' : l:parsed
 endfunction
 
 " }}}1
@@ -117,7 +160,7 @@ function! s:folder.refresh() abort dict " {{{1
   endif
 
   " Parse section commands (part, chapter, [sub...]section)
-  let lines = filter(copy(buffer), 'v:val =~ ''' . self.re.sections . '''')
+  let lines = filter(copy(buffer), 'v:val =~ ''' . self.re.any_sections . '''')
   for part in self.sections
     let partpattern = '^\s*\%(\\\|% Fake\)' . part . ':\?\>'
     for line in lines

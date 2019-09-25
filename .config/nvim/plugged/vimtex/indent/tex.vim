@@ -18,8 +18,14 @@ set cpoptions&vim
 
 setlocal autoindent
 setlocal indentexpr=VimtexIndentExpr()
-setlocal indentkeys&
-setlocal indentkeys+=[,(,{,),},],\&,=item,=else,=fi
+setlocal indentkeys=!^F,o,O,(,),],},\&,=item,=else,=fi
+
+" Add standard closing math delimiters to indentkeys
+for s:delim in [
+      \ 'rangle', 'rbrace', 'rvert', 'rVert', 'rfloor', 'rceil', 'urcorner']
+  let &l:indentkeys .= ',=' . s:delim
+endfor
+
 
 function! VimtexIndentExpr() abort " {{{1
   return VimtexIndent(v:lnum)
@@ -133,11 +139,11 @@ function! s:indent_amps.parse_context(lnum, line) abort dict " {{{1
   while l:lnum >= 1
     let l:line = getline(l:lnum)
 
-    if l:line =~# '\v^\s*\\%(end|])'
+    if l:line =~# '\v^\s*%(}|\\%(end|]))'
       let l:depth += 1
     endif
 
-    if l:line =~# '\v\\%(begin|[)'
+    if l:line =~# '\v\\%(end>)@!%(\w+\s*\{|[)'
       let l:depth -= 1
       if l:depth == l:init_depth - 1
         let self.init_lnum = l:lnum
@@ -171,12 +177,12 @@ function! s:indent_envs(cur, prev) abort " {{{1
 
   " First for general environments
   let l:ind += s:sw*(
-        \    a:prev =~# '\\begin{.*}'
-        \ && a:prev !~# '\\end{.*}'
+        \    a:prev =~# s:envs_begin
+        \ && a:prev !~# s:envs_end
         \ && a:prev !~# s:envs_ignored)
   let l:ind -= s:sw*(
-        \    a:cur !~# '\\begin{.*}'
-        \ && a:cur =~# '\\end{.*}'
+        \    a:cur !~# s:envs_begin
+        \ && a:cur =~# s:envs_end
         \ && a:cur !~# s:envs_ignored)
 
   " Indentation for prolonged items in lists
@@ -187,8 +193,11 @@ function! s:indent_envs(cur, prev) abort " {{{1
   return l:ind
 endfunction
 
+let s:envs_begin = '\\begin{.*}\|\\\@<!\\\['
+let s:envs_end = '\\end{.*}\|\\\]'
 let s:envs_ignored = '\v'
       \ . join(get(g:, 'vimtex_indent_ignored_envs', ['document']), '|')
+
 let s:envs_lists = join(get(g:, 'vimtex_indent_lists', [
       \ 'itemize',
       \ 'description',
@@ -203,15 +212,21 @@ let s:envs_enditem = s:envs_item . '\|' . s:envs_endlist
 
 " }}}1
 function! s:indent_delims(line, lnum, prev_line, prev_lnum) abort " {{{1
-  return s:sw*(  max([  s:count(a:prev_line, s:re_open)
-        \             - s:count(a:prev_line, s:re_close), 0])
-        \      - max([  s:count(a:line, s:re_close)
-        \             - s:count(a:line, s:re_open), 0]))
+  if s:re_opt.close_indented
+    return s:sw*(s:count(a:prev_line, s:re_open)
+          \ - s:count(a:prev_line, s:re_close))
+  else
+    return s:sw*(  max([  s:count(a:prev_line, s:re_open)
+          \             - s:count(a:prev_line, s:re_close), 0])
+          \      - max([  s:count(a:line, s:re_close)
+          \             - s:count(a:line, s:re_open), 0]))
+  endif
 endfunction
 
 let s:re_opt = extend({
-      \ 'open' : ['{', '\\\@<!\\\['],
-      \ 'close' : ['}', '\\\]'],
+      \ 'open' : ['{'],
+      \ 'close' : ['}'],
+      \ 'close_indented' : 0,
       \ 'include_modified_math' : 1,
       \}, get(g:, 'vimtex_indent_delims', {}))
 let s:re_open = join(s:re_opt.open, '\|')
@@ -235,7 +250,7 @@ function! s:indent_conditionals(line, lnum, prev_line, prev_lnum) abort " {{{1
     endif
 
     let s:re_cond = extend({
-          \ 'open': '\v(\\newif)@<!\\if(field|name|numequal|thenelse)@!',
+          \ 'open': '\v(\\newif\s*)@<!\\if(f|field|name|numequal|thenelse)@!',
           \ 'else': '\\else\>',
           \ 'close': '\\fi\>',
           \}, l:cfg)
@@ -243,20 +258,25 @@ function! s:indent_conditionals(line, lnum, prev_line, prev_lnum) abort " {{{1
 
   if empty(s:re_cond) | return 0 | endif
 
-  " Match for conditional indents
-  if a:line =~# s:re_cond.close
-    silent! unlet s:conditional_opened
-    return -s:sw
-  elseif get(s:, 'conditional_opened')
-        \ && a:line =~# s:re_cond.else
-    return -s:sw
-  elseif get(s:, 'conditional_opened')
-        \ && a:prev_line =~# s:re_cond.else
-    return s:sw
-  elseif a:prev_line =~# s:re_cond.open
-    let s:conditional_opened = 1
-    return s:sw
+  if get(s:, 'conditional_opened')
+    if a:line =~# s:re_cond.close
+      silent! unlet s:conditional_opened
+      return a:prev_line =~# s:re_cond.open ? 0 : -s:sw
+    elseif a:line =~# s:re_cond.else
+      return -s:sw
+    elseif a:prev_line =~# s:re_cond.else
+      return s:sw
+    elseif a:prev_line =~# s:re_cond.open
+      return s:sw
+    endif
   endif
+
+  if a:line =~# s:re_cond.open
+        \ && a:line !~# s:re_cond.close
+    let s:conditional_opened = 1
+  endif
+
+  return 0
 endfunction
 
 " }}}1

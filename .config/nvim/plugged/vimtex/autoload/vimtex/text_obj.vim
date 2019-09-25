@@ -7,6 +7,7 @@
 function! vimtex#text_obj#init_buffer() abort " {{{1
   if !g:vimtex_text_obj_enabled | return | endif
 
+  " Note: I've permitted myself long lines here to make this more readable.
   for [l:map, l:name, l:opt] in [
         \ ['c', 'commands', ''],
         \ ['d', 'delimited', 'delim_all'],
@@ -14,46 +15,82 @@ function! vimtex#text_obj#init_buffer() abort " {{{1
         \ ['$', 'delimited', 'env_math'],
         \ ['P', 'sections', ''],
         \]
-    let l:p1 = 'noremap <silent><buffer> <plug>(vimtex-'
-    let l:p2 = l:map . ') :<c-u>call vimtex#text_obj#' . l:name
-    let l:p3 = empty(l:opt) ? ')<cr>' : ',''' . l:opt . ''')<cr>'
-    execute 'x' . l:p1 . 'i' . l:p2 . '(1, 1' . l:p3
-    execute 'x' . l:p1 . 'a' . l:p2 . '(0, 1' . l:p3
-    execute 'o' . l:p1 . 'i' . l:p2 . '(1, 0' . l:p3
-    execute 'o' . l:p1 . 'a' . l:p2 . '(0, 0' . l:p3
+    let l:optional = empty(l:opt) ? '' : ',''' . l:opt . ''''
+    execute printf('xnoremap <silent><buffer> <plug>(vimtex-i%s) :<c-u>call vimtex#text_obj#%s(1, 1%s)<cr>', l:map, l:name, l:optional)
+    execute printf('xnoremap <silent><buffer> <plug>(vimtex-a%s) :<c-u>call vimtex#text_obj#%s(0, 1%s)<cr>', l:map, l:name, l:optional)
+    execute printf('onoremap <silent><buffer> <plug>(vimtex-i%s) :<c-u>call vimtex#text_obj#%s(1, 0%s)<cr>', l:map, l:name, l:optional)
+    execute printf('onoremap <silent><buffer> <plug>(vimtex-a%s) :<c-u>call vimtex#text_obj#%s(0, 0%s)<cr>', l:map, l:name, l:optional)
   endfor
 endfunction
 
 " }}}1
 
 function! vimtex#text_obj#commands(is_inner, mode) abort " {{{1
+  let l:obj = {}
+  let l:pos_save = vimtex#pos#get_cursor()
   if a:mode
     call vimtex#pos#set_cursor(getpos("'>"))
   endif
 
-  let l:cmd = vimtex#cmd#get_current()
-  if empty(l:cmd) | return | endif
+  " Get the delimited text object positions
+  for l:count in range(v:count1)
+    if !empty(l:obj)
+      call vimtex#pos#set_cursor(vimtex#pos#prev(l:obj.cmd_start))
+    endif
 
-  let l:pos_start = l:cmd.pos_start
-  let l:pos_end = l:cmd.pos_end
-
-  if a:is_inner
-    let l:pos_end.lnum = l:pos_start.lnum
-    let l:pos_end.cnum = l:pos_start.cnum + strlen(l:cmd.name) - 1
-    let l:pos_start.cnum += 1
-  elseif a:mode
-        \ && vimtex#pos#equal(l:pos_start, getpos("'<"))
-        \ && vimtex#pos#equal(l:pos_end, getpos("'>"))
-    let l:cursor = vimtex#pos#get_cursor()
-    call vimtex#pos#set_cursor(vimtex#pos#next(l:cursor))
+    let l:obj_prev = l:obj
+    let l:obj = {}
 
     let l:cmd = vimtex#cmd#get_current()
-    if empty(l:cmd) | return | endif
+    if empty(l:cmd) | break | endif
 
-    if vimtex#pos#smaller(l:cmd.pos_start, l:cursor)
-      let l:pos_start = l:cmd.pos_start
-      let l:pos_end = l:cmd.pos_end
+    let l:pos_start = copy(l:cmd.pos_start)
+    let l:pos_end = l:cmd.pos_end
+
+    if a:is_inner
+      let l:pos_end.lnum = l:pos_start.lnum
+      let l:pos_end.cnum = l:pos_start.cnum + strlen(l:cmd.name) - 1
+      let l:pos_start.cnum += 1
     endif
+
+    if a:mode
+          \ && vimtex#pos#equal(l:pos_start, getpos("'<"))
+          \ && vimtex#pos#equal(l:pos_end, getpos("'>"))
+      let l:pos_old = l:cmd.pos_start
+      call vimtex#pos#set_cursor(vimtex#pos#prev(l:pos_old))
+
+      let l:cmd = vimtex#cmd#get_current()
+      if empty(l:cmd) | break | endif
+
+      if vimtex#pos#smaller(l:pos_old, l:cmd.pos_end)
+        let l:pos_start = l:cmd.pos_start
+        let l:pos_end = l:cmd.pos_end
+
+        if a:is_inner
+          let l:pos_end.lnum = l:pos_start.lnum
+          let l:pos_end.cnum = l:pos_start.cnum + strlen(l:cmd.name) - 1
+          let l:pos_start.cnum += 1
+        endif
+      endif
+    endif
+
+    let l:obj = {
+          \ 'pos_start' : l:pos_start,
+          \ 'pos_end' : l:pos_end,
+          \ 'cmd_start' : l:cmd.pos_start,
+          \}
+  endfor
+
+  if empty(l:obj)
+    if empty(l:obj_prev)
+      if a:mode
+        normal! gv
+      else
+        call vimtex#pos#set_cursor(l:pos_save)
+      endif
+      return
+    endif
+    let l:obj = l:obj_prev
   endif
 
   call vimtex#pos#set_cursor(l:pos_start)
@@ -63,16 +100,61 @@ endfunction
 
 " }}}1
 function! vimtex#text_obj#delimited(is_inner, mode, type) abort " {{{1
-  if a:mode
-    let l:object = s:get_sel_delimited_visual(a:is_inner, a:type)
+  let l:object = {}
+  let l:prev_object = {}
+  let l:pos_save = vimtex#pos#get_cursor()
+  let l:startpos = getpos("'>")
+
+  " Get the delimited text object positions
+  for l:count in range(v:count1)
+    if !empty(l:object)
+      let l:pos_next = vimtex#pos#prev(
+            \ a:is_inner ? l:object.open : l:object.pos_start)
+
+      if a:mode
+        let l:startpos = l:pos_next
+      else
+        call vimtex#pos#set_cursor(l:pos_next)
+      endif
+    endif
+
+    if a:mode
+      let l:object = s:get_sel_delimited_visual(a:is_inner, a:type, l:startpos)
+    else
+      let [l:open, l:close] = vimtex#delim#get_surrounding(a:type)
+      let l:object = empty(l:open)
+            \ ? {} : s:get_sel_delimited(l:open, l:close, a:is_inner)
+    endif
+
     if empty(l:object)
-      normal! gv
+      if !empty(l:prev_object)
+        let l:object = l:prev_object
+        break
+      endif
+
+      if a:mode
+        normal! gv
+      else
+        call vimtex#pos#set_cursor(l:pos_save)
+      endif
       return
     endif
-  else
-    let [l:open, l:close] = vimtex#delim#get_surrounding(a:type)
-    if empty(l:open) | return | endif
-    let l:object = s:get_sel_delimited(l:open, l:close, a:is_inner)
+
+    let l:prev_object = l:object
+  endfor
+
+  " Handle empty inner objects
+  if vimtex#pos#smaller(l:object.pos_end, l:object.pos_start)
+    if v:operator ==# 'y' && !a:mode
+      return
+    endif
+
+    if index(['c', 'd'], v:operator) >= 0
+      call vimtex#pos#set_cursor(l:object.pos_start)
+      normal! ix
+    endif
+
+    let l:object.pos_end = l:object.pos_start
   endif
 
   " Apply selection
@@ -95,7 +177,7 @@ function! vimtex#text_obj#sections(is_inner, mode) abort " {{{1
     return
   endif
 
-  " Increase visual area
+  " Increase visual area if applicable
   if a:mode
         \ && visualmode() ==# 'V'
         \ && getpos("'<")[1] == l:pos_start[0]
@@ -108,6 +190,16 @@ function! vimtex#text_obj#sections(is_inner, mode) abort " {{{1
     endif
   endif
 
+  " Repeat for count
+  for l:count in range(v:count1 - 1)
+    let [l:pos_start_new, l:pos_end_new, l:type]
+          \ = s:get_sel_sections(a:is_inner, l:type)
+
+    if empty(l:pos_start_new) | break | endif
+    let l:pos_start = l:pos_start_new
+    let l:pos_end = l:pos_end_new
+  endfor
+
   " Apply selection
   call vimtex#pos#set_cursor(l:pos_start)
   normal! V
@@ -116,9 +208,9 @@ endfunction
 
 " }}}1
 
-function! s:get_sel_delimited_visual(is_inner, type) abort " {{{1
+function! s:get_sel_delimited_visual(is_inner, type, startpos) abort " {{{1
   if a:is_inner
-    call vimtex#pos#set_cursor(vimtex#pos#next(getpos("'>")))
+    call vimtex#pos#set_cursor(vimtex#pos#next(a:startpos))
     let [l:open, l:close] = vimtex#delim#get_surrounding(a:type)
     if !empty(l:open)
       let l:object = s:get_sel_delimited(l:open, l:close, a:is_inner)
@@ -138,7 +230,7 @@ function! s:get_sel_delimited_visual(is_inner, type) abort " {{{1
     endif
   endif
 
-  call vimtex#pos#set_cursor(getpos("'>"))
+  call vimtex#pos#set_cursor(a:startpos)
   let [l:open, l:close] = vimtex#delim#get_surrounding(a:type)
   if empty(l:open) | return {} | endif
   let l:object = s:get_sel_delimited(l:open, l:close, a:is_inner)
@@ -154,7 +246,7 @@ function! s:get_sel_delimited_visual(is_inner, type) abort " {{{1
     call vimtex#pos#set_cursor(vimtex#pos#prev(l:open.lnum, l:open.cnum))
     let [l:open, l:close] = vimtex#delim#get_surrounding(a:type)
     if empty(l:open) | return {} | endif
-    let l:object = s:get_sel_delimited(l:open, l:close, a:is_inner)
+    return s:get_sel_delimited(l:open, l:close, a:is_inner)
   endif
 
   return l:object
@@ -203,6 +295,8 @@ function! s:get_sel_delimited(open, close, is_inner) abort " {{{1
   endif
 
   return {
+        \ 'open' : a:open,
+        \ 'close' : a:close,
         \ 'pos_start' : [l1, c1],
         \ 'pos_end' : [l2, c2],
         \ 'is_inline' : l:is_inline,

@@ -1,5 +1,6 @@
 # ~/.aliases
 
+alias sshd="/bin/sshd"
 alias hot="nmcli d w c Vedsidenaf"
 
 alias x="extract"
@@ -24,10 +25,11 @@ alias xr="xrdb ~/.Xresources"
 alias con="nvim ~/.config/bspwm/bspwmrc"
 alias bsp="~/.config/bspwm/bspwmrc"
 
-alias c="printf '\e[H\e[2J'"
 alias nf="clear -x && echo -e \ && neofetch"
 alias uf="ufetch"
 alias p="sudo pacman"
+
+alias c="clear"
 
 alias ls="ls --color=auto"
 alias la="ls -a"
@@ -38,4 +40,4 @@ alias fastboot="sudo fastboot"
 alias fr="fastboot reboot"
 alias ff="fastboot flash"
 alias ap="adb push"
-alias rr="adb reboot recovery"
+alias arr="adb reboot recovery"

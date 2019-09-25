@@ -20,7 +20,7 @@ function! s:check_general() abort " {{{1
     call health#report_warn('bibtex is not executable, so bibtex completions are disabled.')
   endif
 
-  if g:vimtex_complete_recursive_bib && !executable('kpsewhich')
+  if g:vimtex_complete_bib.recursive && !executable('kpsewhich')
     call health#report_warn(
           \ 'kpsewhich is not executable, and is required for recursive bib search')
   endif
@@ -47,7 +47,8 @@ function! s:check_compiler() abort " {{{1
     let l:ok = 0
   endif
 
-  if has('nvim') && g:vimtex_compiler_progname !=# 'nvr'
+  if has('nvim')
+        \ && fnamemodify(g:vimtex_compiler_progname, ':t') !=# 'nvr'
     call health#report_warn('Compiler callbacks will not work!', [
           \ '`neovim-remote` / `nvr` is required for callbacks to work with neovim',
           \ "Please also set |g:vimtex_compiler_progname| = 'nvr'",

@@ -21,14 +21,13 @@ function! s:qf.init(state) abort dict "{{{1
   let self.config.packages = get(self.config, 'packages', {})
   let self.config.packages.default = get(self.config.packages, 'default',
         \ self.config.default)
-  let self.config.fix_paths = get(self.config, 'fix_paths', 1)
+  let self.config.ignore_filters = get(self.config, 'ignore_filters', [])
 
   let self.types = map(
         \ filter(items(s:), 'v:val[0] =~# ''^type_'''),
         \ 'v:val[1]')
 
   call self.set_errorformat()
-  unlet self.set_errorformat
 endfunction
 
 " }}}1
@@ -77,6 +76,7 @@ function! s:qf.set_errorformat() abort dict "{{{1
 
   if get(self.config, 'overfull', l:default)
     setlocal errorformat+=%+WOverfull\ %\\%\\hbox%.%#\ at\ lines\ %l--%*\\d
+    setlocal errorformat+=%+WOverfull\ %\\%\\hbox%.%#\ at\ line\ %l
     setlocal errorformat+=%+WOverfull\ %\\%\\vbox%.%#\ at\ line\ %l
   endif
 
@@ -90,7 +90,9 @@ function! s:qf.set_errorformat() abort dict "{{{1
   "
   let l:default = self.config.packages.default
   if get(self.config.packages, 'natbib', l:default)
-    setlocal errorformat+=%+WPackage\ natbib\ Warning:\ %m\ on\ input\ line\ %l%.
+    setlocal errorformat+=%+WPackage\ natbib\ Warning:\ %m\ on\ input\ line\ %l.
+  else
+    setlocal errorformat+=%-WPackage\ natbib\ Warning:\ %m\ on\ input\ line\ %l.
   endif
 
   if get(self.config.packages, 'biblatex', l:default)
@@ -99,32 +101,52 @@ function! s:qf.set_errorformat() abort dict "{{{1
     setlocal errorformat+=%-C(biblatex)%.%#Please\ v%.%#
     setlocal errorformat+=%-C(biblatex)%.%#LaTeX\ a%.%#
     setlocal errorformat+=%-C(biblatex)%m
+  else
+    setlocal errorformat+=%-WPackage\ biblatex\ Warning:\ %m
   endif
 
   if get(self.config.packages, 'babel', l:default)
+    setlocal errorformat+=%+WPackage\ babel\ Warning:\ %m
     setlocal errorformat+=%-Z(babel)%.%#input\ line\ %l.
     setlocal errorformat+=%-C(babel)%m
+  else
+    setlocal errorformat+=%-WPackage\ babel\ Warning:\ %m
   endif
 
   if get(self.config.packages, 'hyperref', l:default)
     setlocal errorformat+=%+WPackage\ hyperref\ Warning:\ %m
-    setlocal errorformat+=%-C(hyperref)%.%#on\ input\ line\ %l.
+    setlocal errorformat+=%-C(hyperref)%m\ on\ input\ line\ %l.
     setlocal errorformat+=%-C(hyperref)%m
+  else
+    setlocal errorformat+=%-WPackage\ hyperref\ Warning:\ %m
   endif
 
   if get(self.config.packages, 'scrreprt', l:default)
     setlocal errorformat+=%+WPackage\ scrreprt\ Warning:\ %m
     setlocal errorformat+=%-C(scrreprt)%m
+  else
+    setlocal errorformat+=%-WPackage\ scrreprt\ Warning:\ %m
   endif
 
   if get(self.config.packages, 'fixltx2e', l:default)
     setlocal errorformat+=%+WPackage\ fixltx2e\ Warning:\ %m
     setlocal errorformat+=%-C(fixltx2e)%m
+  else
+    setlocal errorformat+=%-WPackage\ fixltx2e\ Warning:\ %m
   endif
 
   if get(self.config.packages, 'titlesec', l:default)
     setlocal errorformat+=%+WPackage\ titlesec\ Warning:\ %m
     setlocal errorformat+=%-C(titlesec)%m
+  else
+    setlocal errorformat+=%-WPackage\ titlesec\ Warning:\ %m
+  endif
+
+  if get(self.config.packages, 'general', l:default)
+    setlocal errorformat+=%+WPackage\ %.%#\ Warning:\ %m\ on\ input\ line\ %l.
+    setlocal errorformat+=%+WPackage\ %.%#\ Warning:\ %m
+    setlocal errorformat+=%-Z(%.%#)\ %m\ on\ input\ line\ %l.
+    setlocal errorformat+=%-C(%.%#)\ %m
   endif
 
   " Ignore unmatched lines
@@ -138,23 +160,25 @@ function! s:qf.setqflist(tex, log, jump) abort dict "{{{1
     throw 'Vimtex: No log file found'
   endif
 
-  "
-  " We use a temporary autocmd to fix some paths in the quickfix entry
-  "
-  if self.config.fix_paths
-    let self.main = a:tex
-    let self.root = b:vimtex.root
-    augroup vimtex_qf_tmp
-      autocmd!
-      autocmd QuickFixCmdPost [cl]*file call b:vimtex.qf.fix_paths()
-    augroup END
-  endif
-
   execute (a:jump ? 'cfile' : 'cgetfile') fnameescape(a:log)
 
-  if self.config.fix_paths
-    autocmd! vimtex_qf_tmp
+  " Apply some post processing of the quickfix list (if configured)
+  let self.main = a:tex
+  let self.root = b:vimtex.root
+  call self.fix_paths()
+  if !empty(self.config.ignore_filters)
+    let l:qflist = getqflist()
+    for l:re in self.config.ignore_filters
+      call filter(l:qflist, 'v:val.text !~# l:re')
+    endfor
+    call setqflist(l:qflist, 'r')
   endif
+
+  " Set title if supported
+  try
+    call setqflist([], 'r', {'title': 'Vimtex errors (' . self.name . ')'})
+  catch
+  endtry
 endfunction
 
 " }}}1
@@ -189,14 +213,7 @@ function! s:qf.fix_paths() abort dict " {{{1
     let l:qf.bufnr = bufnr(l:file)
   endfor
 
-  " Update qflist
   call setqflist(l:qflist, 'r')
-
-  " Set title if supported
-  try
-    call setqflist([], 'r', {'title': 'Vimtex errors (' . self.name . ')'})
-  catch
-  endtry
 endfunction
 
 " }}}1

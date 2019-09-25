@@ -83,10 +83,14 @@ let s:completer_bib = {
       \          . '\\(%(no)?bibliography|add(bibresource|globalbib|sectionbib))'
       \          . '\m\s*{\zs[^}]\+\ze}''',
       \ 'type_length' : 0,
-      \ 'bstfile' :  expand('<sfile>:p:h') . '/vimcomplete',
+      \ 'bstfile' : expand('<sfile>:p:h') . '/vimcomplete',
+      \ 'initialized' : 0,
       \}
 
 function! s:completer_bib.init() dict abort " {{{2
+  if self.initialized | return | endif
+  let self.initialized = 1
+
   " Check if bibtex is executable
   if !executable('bibtex')
     let self.enabled = 0
@@ -97,7 +101,7 @@ function! s:completer_bib.init() dict abort " {{{2
   endif
 
   " Check if kpsewhich is required and available
-  if g:vimtex_complete_recursive_bib && !executable('kpsewhich')
+  if g:vimtex_complete_bib.recursive && !executable('kpsewhich')
     let self.enabled = 0
     call vimtex#log#warning(
           \ 'kpsewhich is not executable!',
@@ -111,111 +115,70 @@ function! s:completer_bib.init() dict abort " {{{2
     let self.bstfile = tempname()
     call writefile(readfile(l:oldbst), self.bstfile . '.bst')
   endif
+
+  " Add custom patterns
+  let self.patterns += g:vimtex_complete_bib.custom_patterns
 endfunction
 
 function! s:completer_bib.complete(regex) dict abort " {{{2
   let self.candidates = []
 
-  let self.type_length = 4
+  let self.type_length = 1
   for m in self.search(a:regex)
-    let type = m['type']   ==# '' ? '[-]' : '[' . m['type']   . '] '
-    let auth = m['author'] ==# '' ? ''    :       m['author'][:20] . ' '
-    let year = m['year']   ==# '' ? ''    : '(' . m['year']   . ')'
+    let cand = {'word': m['key']}
 
-    " Align the type entry and fix minor annoyance in author list
-    let type = printf('%-' . self.type_length . 's', type)
+    let auth = empty(m['author']) ? 'Unknown' : m['author'][:20]
     let auth = substitute(auth, '\~', ' ', 'g')
-    let auth = substitute(auth, ',.*\ze', ' et al. ', '')
+    let substitutes = {
+          \ '@key' : m['key'],
+          \ '@title' : empty(m['title']) ? 'No title' : m['title'],
+          \ '@year' : empty(m['year']) ? '?' : m['year'],
+          \ '@author_all' : auth,
+          \ '@author_short' : substitute(auth, ',.*\ze', ' et al.', ''),
+          \ '@type' : empty(m['type']) ? '-' : m['type'],
+          \}
 
-    call add(self.candidates, {
-          \ 'word': m['key'],
-          \ 'abbr': type . auth . year,
-          \ 'menu': m['title']
-          \ })
+    " Create menu string
+    if !empty(g:vimtex_complete_bib.menu_fmt)
+      let cand.menu = copy(g:vimtex_complete_bib.menu_fmt)
+      for [key, val] in items(substitutes)
+        let cand.menu = substitute(cand.menu, key, escape(val, '&'), '')
+      endfor
+    endif
+
+    " Create abbreviation string
+    if !empty(g:vimtex_complete_bib.abbr_fmt)
+      let cand.abbr = copy(g:vimtex_complete_bib.abbr_fmt)
+      for [key, val] in items(substitutes)
+        let cand.abbr = substitute(cand.abbr, key, escape(val, '&'), '')
+      endfor
+    endif
+
+    call add(self.candidates, cand)
   endfor
+
+  if g:vimtex_complete_bib.simple
+    call s:filter_with_options(self.candidates, a:regex)
+  endif
 
   return self.candidates
 endfunction
 
 function! s:completer_bib.search(regex) dict abort " {{{2
-  let res = []
-
-  " The bibtex completion seems to require that we are in the project root
-  let l:save_pwd = getcwd()
-  execute 'lcd ' . fnameescape(b:vimtex.root)
+  let l:results = []
 
   " Find data from external bib files
-  let bibfiles = join(self.find_bibs(), ',')
-  if bibfiles !=# ''
-    " Define temporary files
-    let tmp = {
-          \ 'aux' : 'tmpfile.aux',
-          \ 'bbl' : 'tmpfile.bbl',
-          \ 'blg' : 'tmpfile.blg',
-          \ }
-
-    " Write temporary aux file
-    call writefile([
-          \ '\citation{*}',
-          \ '\bibstyle{' . self.bstfile . '}',
-          \ '\bibdata{' . bibfiles . '}',
-          \ ], tmp.aux)
-
-    " Create the temporary bbl file
-    call vimtex#process#run('bibtex -terse ' . fnameescape(tmp.aux), {
-          \ 'background' : 0,
-          \ 'silent' : 1,
-          \})
-
-    " Parse temporary bbl file
-    let lines = map(readfile(tmp.bbl), 's:tex2unicode(v:val)')
-    let lines = split(substitute(join(lines, "\n"),
-          \ '\n\n\@!\(\s\=\)\s*\|{\|}', '\1', 'g'), "\n")
-
-    for line in s:filter_with_options(lines, a:regex)
-      let matches = matchlist(line,
-            \ '^\(.*\)||\(.*\)||\(.*\)||\(.*\)||\(.*\)')
-      if !empty(matches) && !empty(matches[1])
-        let self.type_length = max([self.type_length, len(matches[2]) + 3])
-        call add(res, {
-              \ 'key':    matches[1],
-              \ 'type':   matches[2],
-              \ 'author': matches[3],
-              \ 'year':   matches[4],
-              \ 'title':  matches[5],
-              \ })
-      endif
-    endfor
-
-    " Clean up
-    call delete(tmp.aux)
-    call delete(tmp.bbl)
-    call delete(tmp.blg)
-  endif
-
-  " Return to previous working directory
-  execute 'lcd' fnameescape(l:save_pwd)
+  " Note: bibtex completion seems to require that we are in the project root
+  call vimtex#paths#pushd(b:vimtex.root)
+  for l:file in self.find_bibs()
+    let l:results += self.parse_bib(l:file, a:regex)
+  endfor
+  call vimtex#paths#popd()
 
   " Find data from 'thebibliography' environments
-  let lines = readfile(b:vimtex.tex)
-  if match(lines, '\C\\begin{thebibliography}') >= 0
-    for line in s:filter_with_options(
-          \ filter(lines, 'v:val =~# ''\C\\bibitem'''),
-          \ a:regex)
-      let matches = matchlist(line, '\\bibitem\(\[[^]]\]\)\?{\([^}]*\)')
-      if len(matches) > 1
-        call add(res, {
-              \ 'key': matches[2],
-              \ 'type': 'thebibliography',
-              \ 'author': '',
-              \ 'year': '',
-              \ 'title': matches[2],
-              \ })
-      endif
-    endfor
-  endif
+  let l:results += self.parse_thebibliography(a:regex)
 
-  return res
+  return l:results
 endfunction
 
 function! s:completer_bib.find_bibs() dict abort " {{{2
@@ -224,7 +187,6 @@ function! s:completer_bib.find_bibs() dict abort " {{{2
   " * Parse commands such as \bibliography{file1,file2.bib,...}
   " * This also removes the .bib extensions
   "
-  "
 
   " Handle local file editing (e.g. subfiles package)
   let l:id = get(get(b:, 'vimtex_local', {'main_id' : b:vimtex_id}), 'main_id')
@@ -232,7 +194,7 @@ function! s:completer_bib.find_bibs() dict abort " {{{2
 
   let l:lines = vimtex#parser#tex(l:file, {
         \ 'detailed' : 0,
-        \ 'recursive' : g:vimtex_complete_recursive_bib,
+        \ 'recursive' : g:vimtex_complete_bib.recursive,
         \ })
 
   let l:bibfiles = []
@@ -242,7 +204,114 @@ function! s:completer_bib.find_bibs() dict abort " {{{2
     let l:bibfiles += map(split(l:entry, ','), 'fnamemodify(v:val, '':r'')')
   endfor
 
-  return l:bibfiles
+  return vimtex#util#uniq(l:bibfiles)
+endfunction
+
+function! s:completer_bib.parse_bib(file, regex) dict abort " {{{2
+  if empty(a:file) | return [] | endif
+
+  " Get ftime for the input file
+  let l:ftime = getftime(substitute(a:file, '\%(\.bib\)\?$', '.bib', ''))
+
+  " Caching
+  if !has_key(b:vimtex, 'complete')
+    let b:vimtex.complete = {}
+  endif
+  if !has_key(b:vimtex.complete, 'bibtex')
+    let b:vimtex.complete.bibtex = {}
+  endif
+  if !has_key(b:vimtex.complete.bibtex, a:file)
+    let b:vimtex.complete.bibtex[a:file] = {'res': [], 'time': -1}
+  endif
+  if b:vimtex.complete.bibtex[a:file].time > 0
+        \ && getftime(a:file) <= b:vimtex.complete.bibtex[a:file].time
+    return b:vimtex.complete.bibtex[a:file].res
+  endif
+
+  " Define temporary files
+  let tmp = {
+        \ 'aux' : 'tmpfile.aux',
+        \ 'bbl' : 'tmpfile.bbl',
+        \ 'blg' : 'tmpfile.blg',
+        \ }
+
+  " Write temporary aux file
+  call writefile([
+        \ '\citation{*}',
+        \ '\bibstyle{' . self.bstfile . '}',
+        \ '\bibdata{' . a:file . '}',
+        \ ], tmp.aux)
+
+  " Create the temporary bbl file
+  call vimtex#process#run('bibtex -terse ' . fnameescape(tmp.aux), {
+        \ 'background' : 0,
+        \ 'silent' : 1,
+        \})
+
+  " Parse temporary bbl file
+  let lines = join(readfile(tmp.bbl), "\n")
+  let lines = substitute(lines, '\n\n\@!\(\s\=\)\s*\|{\|}', '\1', 'g')
+  let lines = s:tex2unicode(lines)
+  let lines = split(lines, "\n")
+
+  if !g:vimtex_complete_bib.simple
+    call s:filter_with_options(lines, a:regex, {'anchor': 0})
+  endif
+
+  let l:res = []
+  for line in lines
+    let matches = split(line, '||')
+    if !empty(matches) && !empty(matches[0])
+      let self.type_length = max([self.type_length, len(matches[1])])
+      call add(l:res, {
+            \ 'key':    matches[0],
+            \ 'type':   matches[1],
+            \ 'author': matches[2],
+            \ 'year':   matches[3],
+            \ 'title':  matches[4],
+            \})
+    endif
+  endfor
+
+  " Clean up
+  call delete(tmp.aux)
+  call delete(tmp.bbl)
+  call delete(tmp.blg)
+
+  " Cache results
+  let b:vimtex.complete.bibtex[a:file].time = l:ftime
+  let b:vimtex.complete.bibtex[a:file].res = res
+
+  return l:res
+endfunction
+
+function! s:completer_bib.parse_thebibliography(regex) dict abort " {{{2
+  let l:res = []
+
+  " Find data from 'thebibliography' environments
+  let l:lines = readfile(b:vimtex.tex)
+  if match(l:lines, '\C\\begin{thebibliography}') >= 0
+    call filter(l:lines, 'v:val =~# ''\C\\bibitem''')
+
+    if !g:vimtex_complete_bib.simple
+      call s:filter_with_options(l:lines, a:regex)
+    endif
+
+    for l:line in l:lines
+      let l:matches = matchlist(l:line, '\\bibitem\(\[[^]]\]\)\?{\([^}]*\)')
+      if len(l:matches) > 1
+        call add(l:res, {
+              \ 'key': l:matches[2],
+              \ 'type': 'thebibliography',
+              \ 'author': '',
+              \ 'year': '',
+              \ 'title': l:matches[2],
+              \ })
+      endif
+    endfor
+  endif
+
+  return l:res
 endfunction
 
 " }}}1
@@ -257,24 +326,23 @@ let s:completer_ref = {
       \ 're_context' : '\\\w*{[^}]*$',
       \ 'cache' : {},
       \ 'labels' : [],
+      \ 'initialized' : 0,
       \}
 
+function! s:completer_ref.init() dict abort " {{{2
+  if self.initialized | return | endif
+  let self.initialized = 1
+
+  " Add custom patterns
+  let self.patterns += g:vimtex_complete_ref.custom_patterns
+endfunction
+
 function! s:completer_ref.complete(regex) dict abort " {{{2
-  let self.candidates = []
+  let self.candidates = self.get_matches(a:regex)
 
-  for m in self.get_matches(a:regex)
-    call add(self.candidates, {
-          \ 'word' : m[0],
-          \ 'menu' : printf('%7s [p. %s]', '('.m[1].')', m[2])
-          \ })
-  endfor
-
-  "
-  " If context is 'eqref', then only show eq: labels
-  "
   if self.context =~# '\\eqref'
-        \ && !empty(filter(copy(self.matches), 'v:val[0] =~# ''eq:'''))
-    call filter(self.candidates, 'v:val.word =~# ''eq:''')
+        \ && !empty(filter(copy(self.matches), 'v:val.word =~# ''^eq:'''))
+    call filter(self.candidates, 'v:val.word =~# ''^eq:''')
   endif
 
   return self.candidates
@@ -284,11 +352,11 @@ function! s:completer_ref.get_matches(regex) dict abort " {{{2
   call self.parse_aux_files()
 
   " Match number
-  let self.matches = filter(copy(self.labels), 'v:val[1] =~# ''^' . a:regex . '''')
+  let self.matches = filter(copy(self.labels), 'v:val.menu =~# ''' . a:regex . '''')
   if !empty(self.matches) | return self.matches | endif
 
   " Match label
-  let self.matches = filter(copy(self.labels), 'v:val[0] =~# ''' . a:regex . '''')
+  let self.matches = filter(copy(self.labels), 'v:val.word =~# ''' . a:regex . '''')
 
   " Match label and number
   if empty(self.matches)
@@ -297,8 +365,8 @@ function! s:completer_ref.get_matches(regex) dict abort " {{{2
       let l:base = l:regex_split[0]
       let l:number = escape(join(l:regex_split[1:], ' '), '.')
       let self.matches = filter(copy(self.labels),
-            \ 'v:val[0] =~# ''' . l:base   . ''' &&' .
-            \ 'v:val[1] =~# ''' . l:number . '''')
+            \ 'v:val.word =~# ''' . l:base   . ''' &&' .
+            \ 'v:val.menu =~# ''' . l:number . '''')
     endif
   endif
 
@@ -339,8 +407,9 @@ function! s:completer_ref.parse_labels(file, prefix) dict abort " {{{2
   "
   "   \newlabel{name}{{number}{page}.*}.*
   "   \newlabel{name}{{text {number}}{page}.*}.*
+  "   \newlabel{name}{{number}{page}{...}{type}.*}.*
   "
-  " Returns a list of [name, number, page] tuples.
+  " Returns a list of candidates like {'word': name, 'menu': type number page}.
   "
 
   let l:labels = []
@@ -352,12 +421,33 @@ function! s:completer_ref.parse_labels(file, prefix) dict abort " {{{2
   for l:line in l:lines
     let l:line = s:tex2unicode(l:line)
     let l:tree = s:tex2tree(l:line)[1:]
-    let l:name = a:prefix . remove(l:tree, 0)[0]
+    let l:name = get(remove(l:tree, 0), 0, '')
+    if empty(l:name)
+      continue
+    else
+      let l:name = a:prefix . l:name
+    endif
     let l:context = remove(l:tree, 0)
     if type(l:context) == type([]) && len(l:context) > 1
+      let l:menu = ''
+      try
+        let l:type = substitute(l:context[3][0], '\..*$', ' ', '')
+        let l:type = substitute(l:type, 'AMS', 'Equation', '')
+        let l:menu .= toupper(l:type[0]) . l:type[1:]
+      catch
+      endtry
+
       let l:number = self.parse_number(l:context[0])
-      let l:page = l:context[1][0]
-      call add(l:labels, [l:name, l:number, l:page])
+      if l:menu =~# 'Equation'
+        let l:number = '(' . l:number . ')'
+      endif
+      let l:menu .= l:number
+
+      try
+        let l:menu .= ' [p. ' . l:context[1][0] . ']'
+      catch
+      endtry
+      call add(l:labels, {'word': l:name, 'menu': l:menu})
     endif
   endfor
 
@@ -373,7 +463,7 @@ function! s:completer_ref.parse_number(num_tree) dict abort " {{{2
       return self.parse_number(a:num_tree[l:index])
     endif
   else
-    let l:matches = matchlist(a:num_tree, '\v(^|.*\s)((\u|\d+)(\.\d+)*)($|\s.*)')
+    let l:matches = matchlist(a:num_tree, '\v(^|.*\s)((\u|\d+)(\.\d+)*\l?)($|\s.*)')
     return len(l:matches) > 3 ? l:matches[2] : '-'
   endif
 endfunction
@@ -382,9 +472,7 @@ endfunction
 " {{{1 Commands
 
 let s:completer_cmd = {
-      \ 'patterns' : [
-      \   '\v\\\a*$',
-      \ ],
+      \ 'patterns' : [g:vimtex#re#not_bslash . '\\\a*$'],
       \ 'candidates_from_packages' : [],
       \ 'candidates_from_newcommands' : [],
       \ 'candidates_from_lets' : [],
@@ -441,9 +529,10 @@ function! s:completer_cmd.gather_candidates_from_newcommands() dict abort " {{{2
 
   let l:candidates = vimtex#parser#tex(b:vimtex.tex, {'detailed' : 0})
 
-  call filter(l:candidates, 'v:val =~# ''\v\\(re)?newcommand''')
+  " catch commands defined by xparse and standard declaration
+  call filter(l:candidates, 'v:val =~# ''\v\\((provide|renew|new)command|(New|Declare|Provide|Renew)(Expandable)?DocumentCommand)''')
   call map(l:candidates, '{
-        \ ''word'' : matchstr(v:val, ''\v\\(re)?newcommand\*?\{\\?\zs[^}]*''),
+        \ ''word'' : matchstr(v:val, ''\v\\((provide|renew|new)command|(New|Declare|Provide|Renew)(Expandable)?DocumentCommand)\*?\{\\?\zs[^}]*''),
         \ ''mode'' : ''.'',
         \ ''kind'' : ''[cmd: newcommand]'',
         \ }')
@@ -765,9 +854,9 @@ function! s:completer_env.gather_candidates_from_newenvironments() dict abort " 
 
   let l:candidates = vimtex#parser#tex(b:vimtex.tex, {'detailed' : 0})
 
-  call filter(l:candidates, 'v:val =~# ''\v\\(re)?newenvironment''')
+  call filter(l:candidates, 'v:val =~# ''\v\\((renew|new)environment|(New|Renew|Provide|Declare)DocumentEnvironment)''')
   call map(l:candidates, '{
-        \ ''word'' : matchstr(v:val, ''\v\\(re)?newenvironment\*?\{\\?\zs[^}]*''),
+        \ ''word'' : matchstr(v:val, ''\v\\((renew|new)environment|(New|Renew|Provide|Declare)DocumentEnvironment)\*?\{\\?\zs[^}]*''),
         \ ''mode'' : ''.'',
         \ ''kind'' : ''[env: newenvironment]'',
         \ }')
@@ -780,10 +869,11 @@ endfunction
 "
 " Utility functions
 "
-function! s:filter_with_options(input, regex) abort " {{{1
+function! s:filter_with_options(input, regex, ...) abort " {{{1
   if empty(a:input) | return a:input | endif
 
   let l:expression = type(a:input[0]) == type({}) ? 'v:val.word' : 'v:val'
+  let l:opts = a:0 > 0 ? a:1 : {}
 
   if g:vimtex_complete_ignore_case && (!g:vimtex_complete_smart_case || a:regex !~# '\u')
     let l:expression .= ' =~? '
@@ -791,7 +881,11 @@ function! s:filter_with_options(input, regex) abort " {{{1
     let l:expression .= ' =~# '
   endif
 
-  let l:expression .= '''^'' . a:regex'
+  if get(l:opts, 'anchor', 1)
+    let l:expression .= '''^'' . '
+  endif
+
+  let l:expression .= 'a:regex'
 
   return filter(a:input, l:expression)
 endfunction
@@ -819,9 +913,7 @@ function! s:load_candidates_from_packages(packages) abort " {{{1
         \ '!has_key(s:candidates_from_packages, v:val)')
   if empty(l:packages) | return | endif
 
-  let l:save_pwd = getcwd()
-  let l:localdir = exists('*haslocaldir') ? haslocaldir() : 1
-  execute l:localdir ? 'lcd' : 'cd' fnameescape(s:complete_dir)
+  call vimtex#paths#pushd(s:complete_dir)
 
   for l:unreadable in filter(copy(l:packages), '!filereadable(v:val)')
     let s:candidates_from_packages[l:unreadable] = {}
@@ -869,7 +961,7 @@ function! s:load_candidates_from_packages(packages) abort " {{{1
     let s:candidates_from_packages[l:package].environments += l:candidates
   endfor
 
-  execute l:localdir ? 'lcd' : 'cd' fnameescape(l:save_pwd)
+  call vimtex#paths#popd()
 endfunction
 
 let s:candidates_from_packages = {}

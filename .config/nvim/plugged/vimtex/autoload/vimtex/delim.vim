@@ -811,8 +811,9 @@ function! s:get_matching_delim() dict abort " {{{1
         \ ? [self.re.close,  'nW', line('.') + s:stopline]
         \ : [self.re.open,  'bnW', max([line('.') - s:stopline, 1])]
 
-  let [lnum, cnum] = searchpairpos(self.re.open, '', self.re.close,
-        \ flags, '', stopline)
+  let [lnum, cnum] = searchpairpos(self.re.open, '', self.re.close, flags,
+        \ 'synIDattr(synID(line("."), col("."), 0), "name") =~? "comment"',
+        \ stopline)
   let match = matchstr(getline(lnum), '^' . re, cnum-1)
 
   return [match, lnum, cnum]
@@ -887,6 +888,7 @@ function! s:init_delim_lists() abort " {{{1
         \     ['[', ']'],
         \     ['\{', '\}'],
         \     ['\langle', '\rangle'],
+        \     ['\lbrace', '\rbrace'],
         \     ['\lvert', '\rvert'],
         \     ['\lVert', '\rVert'],
         \     ['\lfloor', '\rfloor'],

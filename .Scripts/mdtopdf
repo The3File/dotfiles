@@ -2,9 +2,9 @@
 
 tomd(){
    case ${1##*.} in
-      doc)
+      doc|pdf)
 	 lowriter --convert-to docx "$1"
-	 pandoc -t markdown "${1}x" -o "${1%.doc}.md"
+	 pandoc -t markdown "${1%.*}.docx" -o "${1%.*}.md"
 	 rm "${1}x"
 	 ;;
       docx) pandoc -t markdown "$1" -o "${1%.*}.md"
@@ -25,7 +25,8 @@ main(){
       -o) [[ -r "${2%.*}.pdf" ]] && xdg-open "${2%.*}.pdf" & disown ;;
       -t) tex "$2" ;;
       --to-md) tomd "$2" ;;
-      *) [[ -e $1 ]] && pandoc -V geometry:margin=1in -t latex "$1" -o "${1%.*}.pdf" ;;
+      *) [[ -e $1 ]] && pandoc -V geometry:margin=1in -t latex "$1" -o "${1%.*}.pdf" ||
+	 echo failed ;;
    esac
 }
 

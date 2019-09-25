@@ -75,11 +75,13 @@ function! vimtex#compiler#callback(status) abort " {{{1
   endif
 
   if a:status && exists('b:vimtex')
-    call b:vimtex.parse_packages_from_fls()
+    call b:vimtex.parse_packages()
   endif
 
   for l:hook in g:vimtex_compiler_callback_hooks
-    execute 'call' l:hook . '(' . a:status . ')'
+    if exists('*' . l:hook)
+      execute 'call' l:hook . '(' . a:status . ')'
+    endif
   endfor
 
   return ''
@@ -93,8 +95,7 @@ function! vimtex#compiler#compile() abort " {{{1
       call vimtex#compiler#stop()
     else
       call b:vimtex.compiler.start()
-      silent! let b:vimtex.compiler.check_timer =
-              \ timer_start(50, function('s:check_if_running'), {'repeat': 20})
+      let b:vimtex.compiler.check_timer = s:check_if_running_start()
     endif
   else
     call b:vimtex.compiler.start_single()
@@ -172,16 +173,18 @@ function! vimtex#compiler#output() abort " {{{1
       return
     endif
 
-    " Try to enforce a file read
-    execute 'checktime' self.name
-    redraw
+    if mode() ==? 'v' || mode() ==# "\<c-v>"
+      return
+    endif
 
     " Go to last line of file if it is not the current window
     if bufwinnr('%') != self.winnr
       let l:return = bufwinnr('%')
       execute 'keepalt' self.winnr . 'wincmd w'
+      edit
       normal! Gzb
       execute 'keepalt' l:return . 'wincmd w'
+      redraw
     endif
   endfunction
   function! s:output.destroy() dict abort
@@ -238,7 +241,9 @@ function! vimtex#compiler#clean(full) abort " {{{1
   sleep 100m
 
   " Remove auxilliary output directories if they are empty
-  let l:build_dir = b:vimtex.root . '/' . b:vimtex.compiler.build_dir
+  let l:build_dir = (vimtex#paths#is_abs(b:vimtex.compiler.build_dir)
+        \ ? '' : b:vimtex.root . '/')
+        \ . b:vimtex.compiler.build_dir
   let l:tree = glob(l:build_dir . '/**/*', 0, 1)
   let l:files = filter(copy(l:tree), 'filereadable(v:val)')
   if !empty(l:files) | return | endif
@@ -280,15 +285,33 @@ endfunction
 " }}}1
 
 
-function! s:check_if_running(...) abort " {{{1
-  if !exists('b:vimtex') | return | endif
+let s:check_timers = {}
+function! s:check_if_running_start() abort " {{{1
+  if !exists('*timer_start') | return -1 | endif
 
-  if !b:vimtex.compiler.is_running()
-    call timer_stop(b:vimtex.compiler.check_timer)
-    unlet b:vimtex.compiler.check_timer
+  let l:timer = timer_start(50, function('s:check_if_running'), {'repeat': 20})
+
+  let s:check_timers[l:timer] = {
+        \ 'compiler' : b:vimtex.compiler,
+        \ 'vimtex_id' : b:vimtex_id,
+        \}
+
+  return l:timer
+endfunction
+
+" }}}1
+function! s:check_if_running(timer) abort " {{{1
+  if s:check_timers[a:timer].compiler.is_running() | return | endif
+
+  call timer_stop(a:timer)
+
+  if get(b:, 'vimtex_id', -1) == s:check_timers[a:timer].vimtex_id
     call vimtex#compiler#output()
-    call vimtex#log#error('Compiler did not start successfully!')
   endif
+  call vimtex#log#error('Compiler did not start successfully!')
+
+  unlet s:check_timers[a:timer].compiler.check_timer
+  unlet s:check_timers[a:timer]
 endfunction
 
 " }}}1

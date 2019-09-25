@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+once(){ dict -d gcide $1 | less; }
+loop(){ printf '\e[H\e[2J'
+   for((;;)){ read -p "> "; dict -d gcide $REPLY | less; }
+}; [[ $1 ]] && once "$@" || loop
