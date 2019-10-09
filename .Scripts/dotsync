@@ -38,4 +38,4 @@ push() {
 
 main() { o=("-n"); sync; prompt; }
 
-main
+[[ $1 = "push" ]] && prompt || main
