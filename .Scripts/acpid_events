@@ -1,25 +1,15 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 handler(){
    case "$1" in
       button/power) [[ $2 = "PBTN" ]] && "$HOME/.Scripts/byebye" ;;
       button/screenlock)
-	 [[ $(<"$HOME/.keylock") = "enabled" ]] && {
-	    xinput disable 'AT Translated Set 2 keyboard'
-	    printf '%s' "disabled" > "$HOME/.keylock"
-	    dunstify -r 10 -t 4000 "keyboard disabled"
-	 } || {
-	    xinput enable 'AT Translated Set 2 keyboard'
-	    printf '%s' "enabled" > "$HOME/.keylock"
-	    dunstify -r 10 -t 4000 "keyboard enabled"
-	 }
-	 ;;
-      ac_adapter)
-	 proc=$(ps -aux | sed -n "/vim/d;/ukill/d;/\<$app\>$/p" | awk '{print $2}')
-	 [[ $2 = *ACPI* ]] && {
-	    [[ ! -z $(pgrep lemonbar) && -e "/tmp/panel-fifo" ]] &&
-	    echo "bat" > "/tmp/panel-fifo" || {
-	    sleep .1; dunstbar; }; } ;;
+	 [[ $(<"$HOME/.keylock") = "enable" ]] && state="disable" || state="enable"
+
+	 xinput $state 'AT Translated Set 2 keyboard' && printf '%s' "$state" > "$HOME/.keylock"
+	 dunstify -C 90211; dunstify -r 90210 -t 4000 "" "<b>${state}d </b>  "
+      ;;
+      ac_adapter) [[ $2 = *ACPI* ]] && dunstbar ;;
    esac
 }
 

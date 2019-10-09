@@ -1,8 +1,3 @@
 #!/usr/bin/env bash
-
-main(){
-   ip=$(ip r | awk '{getline $1; print $3}')
-   ssh "$ip" -p 8022 -i "$HOME/.ssh/id_rsa"
-}
-
-main "$@"
+ip=$(ip r | awk '{getline $1; print $3}')
+ssh "$ip" -p 8022 -i "$HOME/.ssh/id_rsa"

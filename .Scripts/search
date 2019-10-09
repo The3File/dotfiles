@@ -1,13 +1,3 @@
 #!/usr/bin/env bash
-
-search(){
-sear="$(cat $HOME/.searched | head -7)" 
-ask="$(printf "$sear" | rofi -dmenu -i -p "Search")" 
-
-[[ -z $ask ]] || printf "$ask\n$sear" > $HOME/.searched
-[[ -z $ask ]] || sr $ask & disown
-}
-
-main(){ search; }
-
-main "$@"
+sear="$(cat $HOME/.searched | head -7)"; ask="$(printf "$sear" | rofi -dmenu -i -p "Search")" 
+[[ -z $ask ]] || { printf "$ask\n$sear" > $HOME/.searched; sr $ask & disown;}

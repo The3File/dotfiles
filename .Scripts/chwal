@@ -14,7 +14,7 @@ sel(){
 
    cp $next "$HOME/.config/wall.png"
 
-   $CONFIG
+   $CONFIG &>/dev/null
 }
 
 fav(){
@@ -33,7 +33,7 @@ fav(){
 }
 
 main(){
-   case $1 in -f) [[ $1 ]] && fav $2 ;; *) sel ;; esac
+   case $1 in -f) [[ $2 ]] && fav $2 || exit 1;; *) sel ;; esac
 }
 
 main "$@"

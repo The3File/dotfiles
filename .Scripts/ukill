@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
-a="$1"; IFS=$' ' read -d '' -r -a p < <(ps ax | sed -n "/vim/d;/ukill/d;/.*\<$a\>.*/p");
-for a in ${p[0]}; do kill -9 $a; done;((p[0])) && echo "$a killed" || echo "no script '$a'"
+a="$1"
+for((;;)){ IFS=$' ' read -d '' -r -a p < \
+<(ps ax | sed -n "/vim/d;/ukill/d;/.*\<"$a"\>.*/p");
+   ((p[0])) || exit 1
+   kill -9 "${p[0]}"; echo "$a killed"
+   exit 0
+}

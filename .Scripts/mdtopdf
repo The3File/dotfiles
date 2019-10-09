@@ -7,15 +7,22 @@ tomd(){
 	 pandoc -t markdown "${1%.*}.docx" -o "${1%.*}.md"
 	 rm "${1}x"
 	 ;;
-      docx) pandoc -t markdown "$1" -o "${1%.*}.md"
+      docx) pandoc -t markdown "$1" -o "${1%.*}.md" ;;
+      *) err="${1##*.}"; return 1
    esac
 }
 
 tex(){
+   if [[ $(sed 1q $1) = "%math" ]]; then
+      pdflatex -shell-escape "$1" 1>/dev/null
+   else
+      pdflatex -shell-escape "$1" 1>/dev/null
+   fi
+
    clean=( gnuploterrors log aux )
-   pdflatex -shell-escape "$1"
+
    for ext in "${clean[@]}"; do
-      rm "${1%.*}.$ext"
+      [[ -f "${1%.*}.$ext" ]] && rm "${1%.*}.$ext"
    done
 }
 
@@ -24,9 +31,8 @@ main(){
       -d) pandoc -t docx "$2" -o "${2%.*}.docx" ;;
       -o) [[ -r "${2%.*}.pdf" ]] && xdg-open "${2%.*}.pdf" & disown ;;
       -t) tex "$2" ;;
-      --to-md) tomd "$2" ;;
-      *) [[ -e $1 ]] && pandoc -V geometry:margin=1in -t latex "$1" -o "${1%.*}.pdf" ||
-	 echo failed ;;
+      --to-md) tomd "$2" || echo "failed (can't convert $err to md)" ;;
+      *) [[ -e $1 ]] && pandoc -V geometry:margin=1in -t latex "$1" -o "${1%.*}.pdf" || echo failed ;;
    esac
 }
 

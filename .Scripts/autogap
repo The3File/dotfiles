@@ -1,12 +1,20 @@
 #!/usr/bin/env sh
-logic(){ W=$(bspc query -N -n .local.\!floating | wc -l)
-(( G=26-(W-1)*(8+2/3) )); (( G <= 0 )) && G=0
-(( P=81-(W-1)*60 )); (( P <= 0 )) && P=0; }
-doit(){ bspc config --desktop focused left_padding $P
-bspc config --desktop focused right_padding $P
-bspc config --desktop focused window_gap $G; }
-main(){ while read line; do
-   [[ $(bspc query -D -d) != $(bspc query -D -d 10) ]] && { logic; doit; }||
-{ ((P=0,G=0)); doit; }
-done < "$GAPFIFO"; }
-main "$@"
+logic(){
+   W=$(bspc query -N -n .local.\!floating | wc -l)
+   (( G=26-(W-1)*(8+2/3) )); (( G <= 1 )) && G=0
+   (( P=81-(W-1)*60 )); (( P <= 1 )) && P=0;
+}
+
+doit(){
+   bspc config --desktop focused left_padding $P
+   bspc config --desktop focused right_padding $P
+   bspc config --desktop focused window_gap $G;
+}
+
+main(){
+   while read line; do
+      [[ $(bspc query -D -d) != $(bspc query -D -d 10) ]] && { logic; doit; } ||
+	 { ((P=0,G=0)); doit; }
+   done < "$GAPFIFO";
+}
+main

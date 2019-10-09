@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 theme() {
-   #theme="base16-isotope"
+   theme="base16-isotope"
    #theme="base16-brewer"
    #theme="base16-atelier-heath"
    #theme="base16-gruvbox"
    #theme="base16-gruvbox-hard"
-   theme="base16-rebecca"
+   #theme="base16-rebecca"
 
    wal --theme $theme &>/dev/null
 }
@@ -21,15 +21,14 @@ on() {
    xsetroot -solid "$background"
 
    pkill dunst && dunst &>/dev/null & disown
+   ukill autogap
 
    for i in {1..10}; do
       bspc config -d $i left_padding 0
       bspc config -d $i right_padding 0
    done
 
-   runbar & disown
-
-   $CONFIG &>/dev/null
+   #runbar & disown
 
    bspc config window_gap 0
    bspc config border_width 1
@@ -39,8 +38,8 @@ on() {
 
 off() {
 
-   ukill runbar
-   pkill lemonbar
+   #ukill runbar
+   #pkill lemonbar
 
    bspc config top_padding 0
 

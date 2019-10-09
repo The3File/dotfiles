@@ -1,52 +1,36 @@
 #!/usr/bin/env bash
-#
-#   _   _          ____                   __ _
-#  | | | |        |___ \                 / _(_)
-#  | |_| |__   ___  __) | ___ ___  _ __ | |_ _  __ _
-#  | __| '_ \ / _ \|__ < / __/ _ \| '_ \|  _| |/ _` |
-#  | |_| | | |  __/___) | (_| (_) | | | | | | | (_| |
-#   \__|_| |_|\___|____/ \___\___/|_| |_|_| |_|\__, |
-#                                               __/ |
-#                                              |___/
+
+   #   _   _          ____                   __ _	  #
+   #  | | | |        |___ \                 / _(_)	  #
+   #  | |_| |__   ___  __) | ___ ___  _ __ | |_ _  __ _	  #
+   #  | __| '_ \ / _ \|__ < / __/ _ \| '_ \|  _| |/ _` |  #
+   #  | |_| | | |  __/___) | (_| (_) | | | | | | | (_| |  #
+   #   \__|_| |_|\___|____/ \___\___/|_| |_|_| |_|\__, |  #
+   #                                               __/ |  #
+   #                                              |___/	  #
 
 
 apps() {
 
-   pkill dunst
-   dunst & disown
 
-   ukill acpid_events
-   acpid_events & disown
+   for a in autogap dunstbar dunst; do
 
-   killall xbanish
-   xbanish -i Mod1 -i Mod4 & disown
+      case $a in
+	 dunstbar) 	o=(--boot) ;;
+	 *) 		o=()
+      esac
 
-   pkill "compton"
-   compton --dbus -b & disown
+      if [[ $(ps ax | sed -n "/sed/d;/\<$a\>/p") ]]; then
+	 ukill "$a" &>/dev/null && {
+	    "$a" "${o[@]}" &>/dev/null & disown
+	    printf '\e[33m%s: %s\n' "$a" "restarted"
+	 } || printf '\e[31m%s: %s %s\n' "$a" "ukill" "failed"
+      else
+	 "$a" "${o[@]}" &>/dev/null & disown
+	 printf '\e[37m%s: %s\n' "$a" "started"
+      fi
 
-   ukill "autogap"
-   ukill "dunstbar --boot"
-
-
-   if [[ -z $(pgrep lemonbar) ]]; then
-
-      autogap & disown
-      dunstbar --boot & disown
-
-      echo > $WMFIFO
-
-   else
-
-      ukill runbar &&
-	 runbar & disown
-
-      for i in {1..10}; do
-	 bspc config -d $i left_padding 0
-	 bspc config -d $i right_padding 0
-	 bspc config -d $i window_gap 0
-      done
-
-   fi
+   done
 
 }
 
@@ -71,9 +55,8 @@ rules() {
 }
 
 
-colors() {
+qute() {
 
-   source /home/ringdal/.cache/wal/colors.sh
    qute="$HOME/.config/qutebrowser"
 
    ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &
@@ -84,7 +67,7 @@ colors() {
       $HOME/.config/wal/qute >\
       $HOME/.config/qutebrowser/config.py
 
-   [[ ! -z $(pgrep -x qutebrowser) ]] && qutebrowser :config-source
+   #[[ ! -z $(pgrep -x qutebrowser) ]] && qutebrowser :config-source &>/dev/null
 
 }
 
@@ -106,15 +89,17 @@ config() {
 
 main() {
 
+   source "$HOME/.cache/wal/colors.sh"
+
    for fifo in $GAPFIFO $BARFIFO; do
       [[ -e "$fifo" ]] && rm "$fifo"; mkfifo "$fifo"
       bspc subscribe node_add node_remove desktop_focus > $fifo &
    done
 
-   colors
    apps
    rules
    config
+   qute
 
 }
 
