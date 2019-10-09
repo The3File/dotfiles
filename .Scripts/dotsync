@@ -22,7 +22,7 @@ get_dots() {
 
 prompt() {
    printf '\e[33m%s\e[0m' "Push? [y/N]"; read -rsn1; printf '\n'
-   case $REPLY in y) o=("-q"); sync; push ;; *) exit 0; esac
+   case $REPLY in y) o=("-q"); sync; push ;; *) exit 1; esac
 }
 
 push() {
@@ -38,4 +38,5 @@ push() {
 
 main() { o=("-n"); sync; prompt; }
 
-[[ $1 = "push" ]] && prompt || main
+[[ $1 = "push" ]] && prompt
+[[ -z $1 ]] && main || echo "don't know what to do"
