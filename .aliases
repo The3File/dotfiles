@@ -1,6 +1,7 @@
 # ~/.aliases
 
 alias sshd="/bin/sshd"
+alias kdeconnectd="/usr/lib/kdeconnectd"
 alias hot="nmcli d w c Vedsidenaf"
 
 alias x="extract"
@@ -22,7 +23,7 @@ alias src="nvim ~/.config/sxhkd/sxhkdrc"
 alias xrc="nvim ~/.Xresources"
 alias xr="xrdb ~/.Xresources"
 
-alias con="nvim ~/.config/bspwm/bspwmrc"
+alias con="nvim $CONFIG"
 alias bsp="~/.config/bspwm/bspwmrc"
 
 alias nf="clear -x && echo -e \ && neofetch"
@@ -41,3 +42,5 @@ alias fr="fastboot reboot"
 alias ff="fastboot flash"
 alias ap="adb push"
 alias arr="adb reboot recovery"
+
+alias hej="echo hej $USER!"

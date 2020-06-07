@@ -9,6 +9,7 @@ export PANELFIFO="/tmp/panel-fifo"
 
 export GAPFIFO="/tmp/gap-fifo"
 export BARFIFO="/tmp/bar-fifo"
+export WORKFIFO="/tmp/work-fifo"
 
 [[ -f ~/.bashrc ]] && source ~/.bashrc
 [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx &>/dev/null

@@ -176,13 +176,14 @@ c.fonts.web.size.default_fixed = 14
 
 c.colors.webpage.bg = '{color0}'
 
-c.content.user_stylesheets = ['style.css']
+# c.content.user_stylesheets = ['style.css']
 #
 c.messages.timeout = 5000
 # Bindings for normal mode
 config.bind(',p', 'spawn --userscript qute-pass')
 config.bind(',n', 'config-cycle content.user_stylesheets style.css "" ')
 config.bind('td', 'hint links spawn transmission-remote -a {hint-url}')
-config.bind(',hy', 'hint links spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {hint-url}"')
-config.bind(',y', 'spawn tmux new-window -t \'scratch\' -n:youtube-dl "ydl qute {url}"')
+config.bind(',hy', 'hint links spawn tmux new-window -t scratch -n:youtube-dl ydl qute {hint-url}')
+config.bind(',y', 'spawn tmux new-window -t scratch -n:youtube-dl ydl qute {url}')
+config.bind(',test', 'st -e spawn tmux new-window -t \"scratch\" -n:echo {url};sleep 5')
 config.bind('tg', 'tab-give')

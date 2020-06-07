@@ -22,9 +22,8 @@ magick convert -rotate 90 $glitchedfile $bmpfile
 sox -t ul -c 1 -r 48k $bmpfile -t ul $glitchedfile trim 0 90s : echo 0.9 0.9 15 1
 magick convert -rotate -90 $glitchedfile $glitchedfile
 
-# Add lock icon, pixelate and convert back to png
 magick convert -gravity center -font "Hack-Bold-Nerd-Font-Complete-Mono" \
-    -pointsize 200 -draw "text 0,240 ''" -channel RGBA -fill '#bf616a' \
+    -pointsize 200 -draw "text 0,240 ''" -channel RGBA -fill '#bf616a' \
     $glitchedfile $pngfile
 
 i3lock -i $pngfile

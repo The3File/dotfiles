@@ -12,8 +12,7 @@
 
 apps() {
 
-
-   for a in autogap dunstbar dunst; do
+   for a in autogap dunstbar dunst acpid_events; do
 
       case $a in
 	 dunstbar) 	o=(--boot) ;;
@@ -21,13 +20,14 @@ apps() {
       esac
 
       if [[ $(ps ax | sed -n "/sed/d;/\<$a\>/p") ]]; then
-	 ukill "$a" &>/dev/null && {
+	 ukill "$a" 1>/dev/null && {
 	    "$a" "${o[@]}" &>/dev/null & disown
 	    printf '\e[33m%s: %s\n' "$a" "restarted"
 	 } || printf '\e[31m%s: %s %s\n' "$a" "ukill" "failed"
       else
-	 "$a" "${o[@]}" &>/dev/null & disown
-	 printf '\e[37m%s: %s\n' "$a" "started"
+	 "$a" "${o[@]}" &>/dev/null & disown &&
+	 printf '\e[37m%s: %s\n' "$a" "started" ||
+	 printf '\e[31m%s: %s %s\n' "$a" "failed"
       fi
 
    done
@@ -37,11 +37,15 @@ apps() {
 
 rules() {
 
+   printf '\e[33m%s...' "setting rules"
    bspc rule -r Zathura
    bspc rule -a Zathura state=tiled
 
    bspc rule -r float
    bspc rule -a float sticky=off state=floating 
+
+   bspc rule -r gass
+   bspc rule -a gass sticky=on state=floating focus=off border=on
 
    bspc rule -r files
    bspc rule -a files locked=on sticky=on state=floating hidden=on
@@ -52,28 +56,43 @@ rules() {
    bspc rule -r scratchmath
    bspc rule -a scratchmath locked=on sticky=on state=floating hidden=on
 
+   bspc rule -r "VirtualBox Machine"
+   bspc rule -a "VirtualBox Machine" desktop=8
+   bspc rule -r "virtualbox"
+   bspc rule -a "virtualbox" desktop=8
+   printf '\e[34m%s\n\n' "done."
+
 }
 
 
 qute() {
 
-   qute="$HOME/.config/qutebrowser"
-
+   printf '\e[33m\n%s...' "linking files"
    ln -sf "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc" &
    ln -sf "$HOME/.cache/wal/zathurarc" "$HOME/.config/zathura/zathurarc" &
-   sassc "$qute/style.scss" > "$qute/style.css"
+   printf '\e[34m%s\n' "done."
 
+   printf '\e[33m%s...' "creating style"
+   qute="$HOME/.config/qutebrowser"
+   sassc "$qute/style.scss" > "$qute/style.css"
+   printf '\e[34m%s\n' "done."
+
+   printf '\e[33m%s...' "applying colors"
    sed 's/{color4}/'$color4'/p;s/{color2}/'$color2'/g;s/{color0}/'$color0'/g'\
       $HOME/.config/wal/qute >\
       $HOME/.config/qutebrowser/config.py
+   printf '\e[34m%s\n' "done."
 
-   #[[ ! -z $(pgrep -x qutebrowser) ]] && qutebrowser :config-source &>/dev/null
+   printf '\e[33m%s...' "reloading qutebrowser"
+   [[ ! -z $(pgrep -x qutebrowser) ]] && qutebrowser :config-source &>/dev/null
+   printf '\e[34m%s %s\n\n' "done."
 
 }
 
 
 config() {
 
+   printf '\e[33m%s...' "applying configs"
    bspc config focused_border_color "$color4"
    bspc config border_width         2
    bspc config split_ratio          0.5
@@ -82,25 +101,32 @@ config() {
 
    bspc monitor -d 1 2 3 4 5 6 7 8 9 10
 
-   exec xmodmap -e "keycode 135 = Super_R"
+   xmodmap -e "keycode 135 = Super_R"
+   printf '\e[34m%s\n\n' "done."
 
 }
 
 
 main() {
-
    source "$HOME/.cache/wal/colors.sh"
 
+   # -- BSP SUBSCRIBE -- #
    for fifo in $GAPFIFO $BARFIFO; do
       [[ -e "$fifo" ]] && rm "$fifo"; mkfifo "$fifo"
       bspc subscribe node_add node_remove desktop_focus > $fifo &
    done
+   # ------------------- #
 
-   apps
-   rules
-   config
-   qute
+   [[ $@ ]] &&
+   case "$@" in
+      rules) rules ;;
+      config) config ;;
+      qute) qute ;;
+      apps) apps ;;
+   esac && exit
+
+   rules; config; qute; apps
 
 }
 
-main
+main "$@" && printf '\e[m\n%s\n' "..all done"

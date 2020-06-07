@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 theme() {
-   theme="base16-isotope"
+   #theme="base16-isotope"
    #theme="base16-brewer"
    #theme="base16-atelier-heath"
-   #theme="base16-gruvbox"
+   theme="base16-gruvbox"
    #theme="base16-gruvbox-hard"
    #theme="base16-rebecca"
 
@@ -21,6 +21,8 @@ on() {
    xsetroot -solid "$background"
 
    pkill dunst && dunst &>/dev/null & disown
+   pkill compton
+   ukill dunstbar
    ukill autogap
 
    for i in {1..10}; do
@@ -28,27 +30,42 @@ on() {
       bspc config -d $i right_padding 0
    done
 
-   #runbar & disown
+   runbar -b & disown
 
    bspc config window_gap 0
    bspc config border_width 1
 
+   $CONFIG qute
+
+   #echo on > $fifo &
 
 }
 
 off() {
 
-   #ukill runbar
-   #pkill lemonbar
+   ukill runbar
+   pkill lemonbar
 
    bspc config top_padding 0
+   bspc config bottom_padding 0
 
-   chwal
+   chwal -r
 
    "$CONFIG" &>/dev/null
    sleep .1
    echo > "$GAPFIFO" &
 
+   #echo off > $fifo &
+
 }
 
+main(){
+
+#fifo="$WORKFIFO"
+#[[ -e "$fifo" ]] && rm "$fifo"; mkfifo "$fifo"
+
 case $1 in on) on ;; off) off; esac
+
+}
+
+main "$@"

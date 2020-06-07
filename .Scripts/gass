@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+st -f "SF Mono:style=Regular:pixelsize=12" -c gass -g 30x5+350-5 -e assistant

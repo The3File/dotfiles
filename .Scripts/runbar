@@ -22,7 +22,7 @@ net(){
    N="$st$i"
 }
 
-work() {
+ws() {
    s=($(xprop -root _NET_DESKTOP_NAMES | awk '{$1=$2=""; print $0}' |\
       sed -e 's/,//g' -e 's/\"//g' -e 's/^[[:space:]]*//'))
    c=$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}')
@@ -39,7 +39,7 @@ out(){
    while read -r line; do
       case $line in
 	 net) net ;;
-	 'desktop'*) work ;;
+	 'desktop'*) ws ;;
 	 *) 
 	    B=$(acpi | sed 's/ 0//g;s/%,.*//g')
 	    D="$(date '+%a %d %b %H:%M')"
@@ -51,7 +51,7 @@ out(){
 
 printb(){
    cat "$PANELFIFO" | out |
-      lemonbar -p\
+      lemonbar -p ${opt[@]}\
       -g 1366x20\
       -f "SF Mono:size=9"\
       -o 1\
@@ -66,6 +66,7 @@ main(){
    source /home/ringdal/.cache/wal/colors.sh
 
    ((updint=10))
+   opt=("$@")
 
    [[ -e "$PANELFIFO" ]] && rm "$PANELFIFO"
    mkfifo "$PANELFIFO"
@@ -74,9 +75,9 @@ main(){
    for((;;)){ echo net > "$PANELFIFO"; sleep 30; } &
    for((;;)){ echo > "$PANELFIFO"; sleep $updint; } &
 
-   work; printb
+   ws; printb
 
    wait
 }
 
-main
+main "$@"

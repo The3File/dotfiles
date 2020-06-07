@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+main(){
+   printf '\e[s'; stty -echo
+   case $1 in 
+      [0-9]*[0-9]) ((nr=$1)) ;;
+      *) read -rp "nr: " nr; ((REPLY)) || exit 1; printf '\e[1A\e[J' ;;
+   esac
+   [[ $2 ]] && msg="$2"
+
+   [[ "$msg" ]] && review || edit
+}
+
+review(){
+   ((re)) && printf '\e['$s'A\e[J'
+
+   printf '\r%s\n\n%s\n%s\n%s\n\n\e[?25h' "nr: $nr" \
+      "msg: ---------------" \
+      "$msg" \
+      "--------------------"
+
+   ((s=5+$(printf '%s\n' "$msg" | wc -l)))
+   query
+}
+
+query(){
+   stty echo; re=1; read -rsn1 -p "[(S)end|(E)dit|(D)iscard] "
+   case $REPLY in
+      s|S) send && exit 0 ;;
+      e|E) edit ;;
+      d|D) sure; printf "\n"; exit 0 ;;
+      *) stty -echo; printf '\e[?25l%s' "$REPLY: Not a command.";
+	 read -rsn1; review
+   esac
+}
+
+edit(){
+   tmp=`mktemp /tmp/sms.bashXXXXXXXX`
+   printf '%s\n' "${msg[*]}" > "$tmp"
+   nvim "$tmp"; msg=("$(< "$tmp")"); rm "$tmp"
+   review
+}
+
+sure(){
+   read -rsn1 -p "Sikker? [y/N]"
+   [[ $REPLY = y ]] || review
+}
+
+send(){
+   sure
+   printf '\n%s\e[5m%s\n\e[m' "Sender." "."
+
+   kdeconnect-cli --device "$(kdeconnect-cli --l --id-only)"\
+      --send-sms "$msg" --destination "$nr" &&
+      printf '\e[1A\e[J%s\n' "Sendt!" || { printf '%s\n' "failed."; exit 1; }
+}
+
+main "$@"

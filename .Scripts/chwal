@@ -3,15 +3,19 @@
 sel(){
    current=$(awk -F/ 'NF>1{print $NF}' $HOME/.cache/wal/wal)
    files=$(ls $HOME/Billeder/favoritter | sed '/.backend/d')
+   dir="$HOME/Billeder/favoritter"
 
+   if [[ $1 = "-r" ]]; then
+      next="$dir/$current"
+   else
    [[ $(printf "$files\n" | tail -1) = ${current} || -z $(echo $files | grep $current) ]] &&
-      next="$HOME/Billeder/favoritter/$(printf '%s' "$files" | head -1)" ||
-      next="$HOME/Billeder/favoritter/$(printf '%s' "$files" | awk "/$current/{getline; print}")"
+      next="$dir/$(printf '%s' "$files" | head -1)" ||
+      next="$dir/$(printf '%s' "$files" | awk "/$current/{getline; print}")"
+   fi
 
    backend="$(cat "${next%.*}.backend")"
 
    wal -tqi $next --backend $backend
-
    cp $next "$HOME/.config/wall.png"
 
    $CONFIG &>/dev/null
@@ -33,7 +37,7 @@ fav(){
 }
 
 main(){
-   case $1 in -f) [[ $2 ]] && fav $2 || exit 1;; *) sel ;; esac
+   case $1 in -f) [[ $2 ]] && fav $2 || exit 1;; *) sel "$@" ;; esac
 }
 
 main "$@"

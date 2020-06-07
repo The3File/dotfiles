@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+main(){
+   trap "printf '\e[H\e[2J\e[?25h'" EXIT
+
+   cmd=(googlesamples-assistant-pushtotalk\
+      --device-model-id 'x220'\
+      --project-id 'earnest-chimera-257418')
+
+   [[ $1 != "--loop" ]] && cmd+=(--once)
+
+   run
+}
+
+run(){
+   printf '\e[?25l\e[3;6H\e[2J%s\e[5m%s\e[m\n\n' 'Starter.' '.' &
+
+   while read line; do
+      [[ $line = *"Recording"* ]] && printf '\e[3;6H\e[2J\e[1;37m%s\e[5m%s' "Lytter " ""
+      [[ $line = *"Transcript"* ]] && printf '\e[1;2H\e[2J\e[m\e[1;37m%s\n%s'\
+	 "Du sagde" "${line//INFO:root:Transcript of user request:/}" | fold -w 30 -s
+   done < <(${cmd[*]} 2>&1)
+}
+
+main "$@"

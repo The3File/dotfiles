@@ -38,7 +38,7 @@ bar(){
    while read -r line; do
       w=$(bspc query -N -n .local.\!floating | wc -l)
       [[ $line != *remove* ]] && kill -9 "$loop" && dunstify -C 90211
-      ((w<1)) && sleep 1.2 && loop & loop="$!"
+      ((w<=0)) && sleep 1.2 && loop & loop="$!"
       [[ $line = *focus* ]] && {
 	 ws=$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3+1}')
 	 dunstify -C 90210; sleep .05; dunstify "" "<b>$ws </b>" -t 1250 -r 90211
