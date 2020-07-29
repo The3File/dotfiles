@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 theme() {
-   #theme="base16-isotope"
+   theme="base16-isotope"
    #theme="base16-brewer"
    #theme="base16-atelier-heath"
-   theme="base16-gruvbox"
+   #theme="base16-gruvbox"
    #theme="base16-gruvbox-hard"
    #theme="base16-rebecca"
 
