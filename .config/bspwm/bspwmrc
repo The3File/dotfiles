@@ -10,6 +10,36 @@
    #                                              |___/	  #
 
 
+config() {
+
+   printf '\e[33m%s...' "applying configs"
+
+   ## BSPWM
+      bspc config focused_border_color "$color4"
+      bspc config border_width         2
+      bspc config split_ratio          0.5
+      bspc config automatic_scheme spiral
+      bspc config gapless_monocle true
+
+      bspc monitor -d 1 2 3 4 5 6 7 8 9 10
+
+   ## AUTOGAP
+   # gaps
+      GS="10"	# gaps size integer
+      GN="4"	# number of windows before zero gaps
+
+   # left and right padding
+      PS="7"	# padding size integer
+      PN="2"	# number of windows before zero padding
+
+   ## MISC.
+      xmodmap -e "keycode 135 = Super_R"
+
+   printf '\e[34m%s\n\n' "done."
+
+}
+
+
 apps() {
 
    for a in autogap dunstbar dunst acpid_events; do
@@ -86,23 +116,6 @@ qute() {
    printf '\e[33m%s...' "reloading qutebrowser"
    [[ ! -z $(pgrep -x qutebrowser) ]] && qutebrowser :config-source &>/dev/null
    printf '\e[34m%s %s\n\n' "done."
-
-}
-
-
-config() {
-
-   printf '\e[33m%s...' "applying configs"
-   bspc config focused_border_color "$color4"
-   bspc config border_width         2
-   bspc config split_ratio          0.5
-   bspc config automatic_scheme spiral
-   bspc config gapless_monocle true
-
-   bspc monitor -d 1 2 3 4 5 6 7 8 9 10
-
-   xmodmap -e "keycode 135 = Super_R"
-   printf '\e[34m%s\n\n' "done."
 
 }
 

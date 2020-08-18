@@ -1,5 +1,8 @@
 # ~/.aliases
 
+alias con="nvim $CONFIG"
+alias bsp="~/.config/bspwm/bspwmrc"
+
 alias sshd="/bin/sshd"
 alias kdeconnectd="/usr/lib/kdeconnectd"
 alias hot="nmcli d w c Vedsidenaf"
@@ -22,9 +25,6 @@ alias src="nvim ~/.config/sxhkd/sxhkdrc"
 
 alias xrc="nvim ~/.Xresources"
 alias xr="xrdb ~/.Xresources"
-
-alias con="nvim $CONFIG"
-alias bsp="~/.config/bspwm/bspwmrc"
 
 alias nf="clear -x && echo -e \ && neofetch"
 alias uf="ufetch"

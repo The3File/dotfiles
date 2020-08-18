@@ -146,7 +146,8 @@ key() {
 	    d) cmd_line "go to dir: " "dirs"
 	       pushd "$PWD" &>/dev/null ||:
 	       [[ $cmd_reply ]] && pushd "${cmd_reply/\~/$HOME}" &>/dev/null && open "$PWD" ;;
-	    c) marked_files=(); redraw
+	    c) marked_files=(); redraw ;;
+	    t) rm -rf "${FFF_TRASH}/*"
 	 esac ;;
       C) marked_files=(); redraw full ;;
       q) : "${FFF_CD_FILE:=${XDG_CACHE_HOME:=${HOME}/.cache}/fff/.fff_d}"

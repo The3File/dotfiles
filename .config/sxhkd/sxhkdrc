@@ -3,7 +3,7 @@
 #===================#
 
 alt + shift + Pause
-      starwars
+      [[ $(ps aux | grep starwars | wc -l) > 1 ]] && sudo kill beep || starwars
 
 ##########################
 # wm independent hotkeys #
